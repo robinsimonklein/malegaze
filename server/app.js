@@ -51,4 +51,10 @@ io.on('connection', function (socket) {
 
         console.log(socket.id + ' joined mobile room :', mobileId)
     })
+
+    socket.on('start', () => {
+        console.log('start')
+        socket.emit('started')
+        socket.in(socket.mobileRoom).emit('started')
+    })
 });

@@ -1,7 +1,7 @@
 <template>
     <div class="mobile">
-        <h1>Mobile</h1>
         <p>ID : {{ this.mobileId }}</p>
+        <button @click="start">Commencer</button>
     </div>
 </template>
 
@@ -11,6 +11,17 @@
         computed: {
             mobileId() {
                 return this.$route.params.mobileId
+            }
+        },
+        sockets: {
+            started() {
+                // L'expérience commence
+                alert('L\'expérience commence')
+            }
+        },
+        methods: {
+            start(){
+                this.$socket.emit('start')
             }
         },
         created() {

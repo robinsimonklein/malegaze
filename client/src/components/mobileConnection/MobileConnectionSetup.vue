@@ -16,6 +16,11 @@
                 return this.$store.getters['mobile/mobileUrl']
             }
         },
+        sockets: {
+            started() {
+                alert('started')
+            }
+        },
         beforeCreate() {
             this.$store.commit('mobile/generateMobileId')
         },
