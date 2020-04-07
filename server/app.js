@@ -42,13 +42,13 @@ consola.success({
 io.on('connection', function (socket) {
     console.log('new connexion', socket.id)
 
-    socket.on('join_mobile_room', (data) => {
+    socket.on('join_mobile_room', (mobileId) => {
         if (socket.mobileRoom !== null){
             socket.leave(socket.mobileRoom)
         }
-        socket.join(data.mobileId)
-        socket.mobileRoom = data.mobileId
+        socket.join(mobileId)
+        socket.mobileRoom = mobileId
 
-        console.log(socket.id + ' joined mobile room : ', data.mobileId)
+        console.log(socket.id + ' joined mobile room :', mobileId)
     })
 });
