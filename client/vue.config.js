@@ -10,8 +10,15 @@ if(process.env.VUE_APP_HTTPS === "true" && process.env.NODE_ENV === 'development
 }
 
 module.exports = {
-    "devServer": {
-        "disableHostCheck": true,
-        "https": https,
+    devServer: {
+        disableHostCheck: true,
+        https: https,
+    },
+    css: {
+        loaderOptions: {
+            sass: {
+                prependData: `@import "@/assets/scss/main.scss";`
+            }
+        }
     }
 }

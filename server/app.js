@@ -8,7 +8,6 @@ require('dotenv').config()
 // Setup server
 let server;
 const port = process.env.PORT ? process.env.PORT : 3000
-console.log(process.env.NODE_ENV)
 if(process.env.HTTPS === "true" && process.env.NODE_ENV === 'development'){
     server = https.createServer({
         key: fs.readFileSync(`${__dirname}/cert/robin.local+3-key.pem`, 'utf8'),
@@ -18,7 +17,9 @@ if(process.env.HTTPS === "true" && process.env.NODE_ENV === 'development'){
     server = http.createServer(app)
 }
 
-console.log(process.env.PUBLIC_HOST)
+// Starting logs
+console.log('NODE_ENV: ', process.env.NODE_ENV)
+console.log('PUBLIC_HOST: ', process.env.PUBLIC_HOST)
 
 // Create io
 const io = require('socket.io')(server, {
@@ -26,6 +27,7 @@ const io = require('socket.io')(server, {
             'localhost:* http://localhost:* https://localhost:* ' +
             '127.0.0.1:* http://127.0.0.1:* https://127.0.0.1:* '
 });
+
 
 // Server listen
 server.listen(port);
@@ -35,13 +37,10 @@ consola.success({
     badge: true
 })
 
-// io configuration
+// IO configuration
 
 io.on('connection', function (socket) {
     console.log('new connexion', socket.id)
-    socket.on('message', function (data) {
-        console.log(data);
-    });
 
     socket.on('join_mobile_room', (data) => {
         if (socket.mobileRoom !== null){
@@ -51,24 +50,5 @@ io.on('connection', function (socket) {
         socket.mobileRoom = data.mobileId
 
         console.log(socket.id + ' joined mobile room : ', data.mobileId)
-    })
-
-    socket.on('start_camera', () => {
-        console.log('start_camera')
-        socket.emit('started_camera')
-        socket.in(socket.mobileRoom).emit('started_camera')
-    })
-
-    socket.on('camera_effect', (effect) => {
-        console.log(effect)
-        socket.to(socket.mobileRoom).emit('camera_effect', effect)
-    })
-    socket.on('device_orientation', (orientation) => {
-        console.log(orientation)
-        socket.to(socket.mobileRoom).emit('device_orientation', orientation)
-    })
-    socket.on('screen_orientation', (screenOrientation) => {
-        console.log(screenOrientation)
-        socket.to(socket.mobileRoom).emit('screen_orientation', screenOrientation)
     })
 });
