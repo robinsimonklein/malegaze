@@ -1,6 +1,6 @@
 # Male Gaze
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/c40231ef-2a8d-488f-bdb8-0cefcd55602e/deploy-status)](https://app.netlify.com/sites/malegaze-prototype/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/752f1a75-cedf-4203-8126-17cc6a19ca09/deploy-status)](https://app.netlify.com/sites/malegaze/deploys)
 
 Comment peut-on faire prendre conscience de l’**impact** qu’a le **male gaze** dans notre perception des **femmes** au quotidien, au travers du **cinéma** ?
 
