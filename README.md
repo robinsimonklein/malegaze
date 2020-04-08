@@ -129,10 +129,14 @@ HTTPS=true
 - Enjoy ! 🎉
 
 ## Production
+
 How to deploy on production ?
-###Client : Netlify
+
+### Client : Netlify
+
 Merge the `master` branch on `production`, the deploy is automatic.
-###Server : Heroku
+
+### Server : Heroku
 On your machine, run this command in `master` branch.
 ```bash
 git subtree push --prefix server heroku master

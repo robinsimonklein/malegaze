@@ -1,7 +1,11 @@
 <template>
     <div class="home">
-        <h1>Male Gaze</h1>
-        <MobileConnectionSetup/>
+        <template v-if="!started">
+            <MobileConnectionSetup v-on:ready="start"/>
+        </template>
+        <template v-else>
+            <h2>L'expérience peut démarrer...</h2>
+        </template>
     </div>
 </template>
 
@@ -15,5 +19,20 @@
         components: {
             MobileConnectionSetup
         },
+        data() {
+            return {
+                started: false
+            }
+        },
+        methods: {
+            start() {
+                this.started = true
+            }
+        }
     }
 </script>
+<style lang="scss" scoped>
+    .home {
+        min-height: 100vh
+    }
+</style>

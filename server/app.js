@@ -52,9 +52,14 @@ io.on('connection', function (socket) {
         console.log(socket.id + ' joined mobile room :', mobileId)
     })
 
-    socket.on('start', () => {
-        console.log('start')
-        socket.emit('started')
-        socket.in(socket.mobileRoom).emit('started')
+    socket.on('mobile_calibrate', () => {
+        console.log('mobile_calibrate')
+        socket.emit('mobile_calibrate')
+        socket.in(socket.mobileRoom).emit('mobile_calibrate')
+    })
+    socket.on('mobile_ready', () => {
+        console.log('mobile_ready')
+        socket.emit('mobile_ready')
+        socket.in(socket.mobileRoom).emit('mobile_ready')
     })
 });
