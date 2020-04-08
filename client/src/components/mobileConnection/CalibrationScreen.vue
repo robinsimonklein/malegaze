@@ -1,0 +1,18 @@
+<template>
+    <div class="calibration-screen">
+        <img class="calibration-screen__target" src="@/assets/svg/calibration-shape.svg" />
+        <p class="calibration-screen__text">Visez l'écran avec votre téléphone.</p>
+    </div>
+</template>
+
+<script>
+    export default {
+        name: "CalibrationScreen"
+    }
+</script>
+
+<style scoped>
+    p {
+        margin-top: 1rem;
+    }
+</style>

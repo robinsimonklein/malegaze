@@ -1,24 +1,41 @@
 <template>
     <div class="mobile-connection-setup">
-        <QRCode v-if="mobileUrl" :url="mobileUrl" />
-        <a v-if="mobileUrl" :href="mobileUrl" target="_blank">{{ mobileUrl }}</a>
+        <h1>Male Gaze</h1>
+        <template v-if="mode==='connection'">
+            <h2>Scannez ce QR Code avec votre mobile.</h2>
+            <QRCode v-if="mobileUrl" :url="mobileUrl" />
+            <a v-if="mobileUrl" :href="mobileUrl" target="_blank">{{ mobileUrl }}</a>
+        </template>
+        <template v-else-if="mode==='calibration'">
+            <CalibrationScreen />
+        </template>
     </div>
 </template>
 
 <script>
     import QRCode from "./QRCode";
+    import CalibrationScreen from "./CalibrationScreen";
 
     export default {
         name: "MobileConnectionSetup",
-        components: {QRCode},
+        components: {CalibrationScreen, QRCode},
+        data() {
+            return {
+                mode: 'connection'
+            }
+        },
         computed: {
             mobileUrl() {
                 return this.$store.getters['mobile/mobileUrl']
             }
         },
         sockets: {
-            started() {
-                alert('started')
+            mobile_calibrate() {
+                this.mode = 'calibration'
+            },
+            mobile_ready() {
+                // /!\ Custom event emit, not socket
+                this.$emit('ready')
             }
         },
         beforeCreate() {
@@ -29,3 +46,17 @@
         }
     }
 </script>
+
+<style lang="scss" scoped>
+    .mobile-connection-setup {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+
+        h1 {
+            margin-bottom: 2rem;
+        }
+    }
+</style>
