@@ -11,7 +11,14 @@
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
+    .calibration-screen {
+        &__target {
+            height: 40vh
+        }
+    }
+
     p {
         margin-top: 1rem;
     }
