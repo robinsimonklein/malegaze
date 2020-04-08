@@ -21,8 +21,8 @@
             QRCode.toCanvas(canvas, this.url, {
                 width: 250,
                 color: {
-                    dark: '#ffffff',
-                    light: '#000000',
+                    dark: '#000000',
+                    light: '#ffffff',
                 }
             }, (error) => {
                 if (error) console.error(error)
