@@ -19,7 +19,11 @@
             let canvas = document.getElementById('qrcode-canvas')
 
             QRCode.toCanvas(canvas, this.url, {
-                width: 300,
+                width: 250,
+                color: {
+                    dark: '#ffffff',
+                    light: '#000000',
+                }
             }, (error) => {
                 if (error) console.error(error)
                 console.log('QR Code created !');
