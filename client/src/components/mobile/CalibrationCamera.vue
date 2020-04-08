@@ -40,6 +40,9 @@
                         console.error("Oops. Something is broken.", error);
                     });
             },
+            stopCamera() {
+                this.track.stop()
+            },
             motionRequest() {
                 return new Promise((resolve, reject) => {
                     if (typeof DeviceOrientationEvent.requestPermission === 'function' ) {
@@ -67,6 +70,9 @@
                 if(this.calibrationSuccess){
                     this.motionRequest()
                         .then(() => {
+                            // Stop the camera
+                            this.stopCamera()
+
                             // /!\ Custom event listened in parent component, not socket !
                             this.$emit('finish')
                         })
