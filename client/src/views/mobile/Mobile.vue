@@ -21,7 +21,7 @@
 </template>
 
 <script>
-    import CalibrationCamera from "../../components/mobile/CalibrationCamera";
+    import CalibrationCamera from "../../components/mobile/calibration/CalibrationCamera";
     export default {
         name: "Mobile",
         components: {CalibrationCamera},
@@ -85,7 +85,7 @@
         created() {
             this.$store.commit('mobile/setMobileId', this.mobileId)
             this.$socket.emit('join_mobile_room', this.mobileId)
-        }
+        },
     }
 </script>
 
