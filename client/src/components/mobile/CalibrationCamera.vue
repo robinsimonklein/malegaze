@@ -86,14 +86,15 @@
             calibrationSuccess() {
                 const nbCyan = this.trackedColors.filter(tracked => tracked.color === 'cyan').length
                 const nbMagenta = this.trackedColors.filter(tracked => tracked.color === 'magenta').length
+                const nbYellow = this.trackedColors.filter(tracked => tracked.color === 'yellow').length
 
-                return nbMagenta === 2 && nbCyan === 2
+                return nbMagenta >= 1 && nbCyan >= 1 && nbYellow >= 2
             }
         },
         mounted() {
             this.startCamera()
 
-            var colors = new window.tracking.ColorTracker(['magenta', 'cyan'], 10);
+            var colors = new window.tracking.ColorTracker(['magenta', 'yellow', 'cyan']);
 
             colors.on('track', (event) => {
                 if (event.data.length === 0) {

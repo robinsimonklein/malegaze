@@ -1,6 +1,6 @@
 <template>
     <div class="calibration-screen">
-        <img class="calibration-screen__target" src="@/assets/svg/calibration-shape.svg" />
+        <img class="calibration-screen__target" src="@/assets/svg/calibration-target.svg" />
         <p class="calibration-screen__text">Visez l'écran avec votre téléphone.</p>
     </div>
 </template>
