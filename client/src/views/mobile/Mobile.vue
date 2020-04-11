@@ -76,10 +76,10 @@
                 this.emitOrientation();
             },
             emitOrientation() {
-                this.$socket.emit('device_orientation', this.orientation)
+                this.$socket.emit('mobile_orientation', this.orientation)
             },
             emitScreenOrientation() {
-                this.$socket.emit('screen_orientation', this.screenOrientation)
+                this.$socket.emit('mobile_screen_orientation', this.screenOrientation)
             },
         },
         created() {
