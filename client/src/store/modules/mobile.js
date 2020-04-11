@@ -4,6 +4,7 @@ export const mobile = {
     namespaced: true,
     state: {
         mobileId: null,
+        orientation: {}
     },
     getters: {
         mobileUrl: (state) => {
@@ -16,8 +17,14 @@ export const mobile = {
         },
         setMobileId(state, mobileId) {
             state.mobileId = mobileId
-        }
+        },
+        setOrientation(state, orientation) {
+            state.orientation = orientation
+        },
     },
     actions: {
+        SOCKET_mobile_orientation({commit}, orientation) {
+            commit('setOrientation', orientation)
+        }
     },
 }

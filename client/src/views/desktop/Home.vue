@@ -5,6 +5,11 @@
         </template>
         <template v-else>
             <h2>L'expérience peut démarrer...</h2>
+            <ul>
+                <li>alpha: {{ orientation.alpha }}</li>
+                <li>beta: {{ orientation.beta }}</li>
+                <li>gamma: {{ orientation.gamma }}</li>
+            </ul>
         </template>
     </div>
 </template>
@@ -13,6 +18,7 @@
     // @ is an alias to /src
 
     import MobileConnectionSetup from "../../components/mobileConnection/MobileConnectionSetup";
+    import { mapState } from 'vuex'
 
     export default {
         name: 'Home',
@@ -23,6 +29,9 @@
             return {
                 started: false
             }
+        },
+        computed: {
+            ...mapState('mobile', ['orientation'])
         },
         methods: {
             start() {

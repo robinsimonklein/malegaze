@@ -68,7 +68,7 @@ io.on('connection', function (socket) {
     // Mobile orientations & controls
     socket.on('mobile_orientation', (orientaiton) => {
         console.log(orientaiton)
-        socket.in(socket.mobileRoom).emit('mobile_orientation')
+        socket.in(socket.mobileRoom).emit('mobile_orientation', orientaiton)
     })
 
 });
