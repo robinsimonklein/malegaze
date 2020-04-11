@@ -12,7 +12,7 @@
 <script>
     // @ is an alias to /src
 
-    import MobileConnectionSetup from "../components/mobileConnection/MobileConnectionSetup";
+    import MobileConnectionSetup from "../../components/mobileConnection/MobileConnectionSetup";
 
     export default {
         name: 'Home',
