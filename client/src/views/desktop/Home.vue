@@ -9,6 +9,7 @@
                 <li>alpha: {{ orientation.alpha }}</li>
                 <li>beta: {{ orientation.beta }}</li>
                 <li>gamma: {{ orientation.gamma }}</li>
+                <li>screen: {{ screenOrientation }}</li>
             </ul>
         </template>
     </div>
@@ -31,7 +32,7 @@
             }
         },
         computed: {
-            ...mapState('mobile', ['orientation'])
+            ...mapState('mobile', ['orientation', 'screenOrientation'])
         },
         methods: {
             start() {

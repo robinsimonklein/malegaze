@@ -4,7 +4,8 @@ export const mobile = {
     namespaced: true,
     state: {
         mobileId: null,
-        orientation: {}
+        orientation: {},
+        screenOrientation: 0
     },
     getters: {
         mobileUrl: (state) => {
@@ -21,10 +22,16 @@ export const mobile = {
         setOrientation(state, orientation) {
             state.orientation = orientation
         },
+        setScreenOrientation(state, screenOrientation) {
+            state.screenOrientation = screenOrientation
+        },
     },
     actions: {
         SOCKET_mobile_orientation({commit}, orientation) {
             commit('setOrientation', orientation)
+        },
+        SOCKET_mobile_screen_orientation({commit}, screenOrientation) {
+            commit('setScreenOrientation', screenOrientation)
         }
     },
 }
