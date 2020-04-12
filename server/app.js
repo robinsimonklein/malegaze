@@ -42,6 +42,7 @@ consola.success({
 io.on('connection', function (socket) {
     console.log('new connexion', socket.id)
 
+    // Mobile room
     socket.on('join_mobile_room', (mobileId) => {
         if (socket.mobileRoom !== null){
             socket.leave(socket.mobileRoom)
@@ -52,6 +53,7 @@ io.on('connection', function (socket) {
         console.log(socket.id + ' joined mobile room :', mobileId)
     })
 
+    // Mobile setup
     socket.on('mobile_calibrate', () => {
         console.log('mobile_calibrate')
         socket.emit('mobile_calibrate')
@@ -62,4 +64,15 @@ io.on('connection', function (socket) {
         socket.emit('mobile_ready')
         socket.in(socket.mobileRoom).emit('mobile_ready')
     })
+
+    // Mobile orientation & controls
+    socket.on('mobile_orientation', (orientaiton) => {
+        console.log(orientaiton)
+        socket.in(socket.mobileRoom).emit('mobile_orientation', orientaiton)
+    })
+    socket.on('mobile_screen_orientation', (screenOrientation) => {
+        console.log(screenOrientation)
+        socket.in(socket.mobileRoom).emit('mobile_screen_orientation', screenOrientation)
+    })
+
 });

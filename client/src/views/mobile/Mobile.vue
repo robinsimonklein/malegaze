@@ -4,7 +4,7 @@
             <p>ID : {{ this.mobileId }}</p>
             <button @click="startCalibration">Commencer</button>
         </template>
-        <template v-else-if="mode === 'calibrate'">
+        <template v-else-if="mode === 'calibration'">
             <CalibrationCamera v-on:finish="finishCalibration"/>
         </template>
         <template v-else-if="mode === 'ready'">
@@ -44,7 +44,7 @@
         },
         sockets: {
             mobile_calibrate() {
-                this.mode = 'calibrate'
+                this.mode = 'calibration'
             },
             mobile_ready() {
                 this.listenOrientation()
@@ -76,10 +76,10 @@
                 this.emitOrientation();
             },
             emitOrientation() {
-                this.$socket.emit('device_orientation', this.orientation)
+                this.$socket.emit('mobile_orientation', this.orientation)
             },
             emitScreenOrientation() {
-                this.$socket.emit('screen_orientation', this.screenOrientation)
+                this.$socket.emit('mobile_screen_orientation', this.screenOrientation)
             },
         },
         created() {

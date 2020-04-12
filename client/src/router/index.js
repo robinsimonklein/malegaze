@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Home from '../views/desktop/Home.vue'
 import Mobile from "../views/mobile/Mobile";
 import MobileHome from "../views/mobile/MobileHome";
 
