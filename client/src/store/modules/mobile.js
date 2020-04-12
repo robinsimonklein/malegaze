@@ -4,6 +4,7 @@ export const mobile = {
     namespaced: true,
     state: {
         mobileId: null,
+        orientationPermission: false,
         orientation: {},
         screenOrientation: 0
     },
@@ -18,6 +19,9 @@ export const mobile = {
         },
         setMobileId(state, mobileId) {
             state.mobileId = mobileId
+        },
+        setOrientationPermission(state, value) {
+            state.orientationPermission = value
         },
         setOrientation(state, orientation) {
             state.orientation = orientation

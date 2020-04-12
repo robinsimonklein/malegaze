@@ -39,10 +39,20 @@
             }
         },
         beforeCreate() {
-            this.$store.commit('mobile/generateMobileId')
+            if(process.env.VUE_APP_SKIP_MOBILE_SETUP === "true" && process.env.NODE_ENV === 'development'){
+                this.$store.commit('mobile/setMobileId', '_dev')
+            }else {
+                this.$store.commit('mobile/generateMobileId')
+            }
         },
         beforeMount() {
             this.$socket.emit('join_mobile_room', this.$store.state.mobile.mobileId)
+        },
+        mounted() {
+            // Skip the setup and go start directly if SKIP_MOBILE_SETUP is true
+            if(process.env.VUE_APP_SKIP_MOBILE_SETUP === "true" && process.env.NODE_ENV === 'development'){
+                this.$emit('ready')
+            }
         }
     }
 </script>
