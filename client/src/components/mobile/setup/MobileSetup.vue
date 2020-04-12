@@ -10,7 +10,7 @@
 </template>
 
 <script>
-    import CalibrationCamera from "../../components/mobile/calibration/CalibrationCamera";
+    import CalibrationCamera from "./CalibrationCamera";
 
     export default {
         name: "MobileSetup",

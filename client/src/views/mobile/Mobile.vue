@@ -10,8 +10,8 @@
 </template>
 
 <script>
-    import MobileSetup from "../../components/mobile/MobileSetup";
-    import MobileOrientation from "../../components/mobile/MobileOrientation";
+    import MobileSetup from "../../components/mobile/setup/MobileSetup";
+    import MobileOrientation from "../../components/mobile/orientation/MobileOrientation";
     export default {
         name: "Mobile",
         components: {MobileOrientation, MobileSetup},
