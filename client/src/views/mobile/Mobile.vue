@@ -1,13 +1,8 @@
 <template>
     <div class="mobile">
-        <template v-if="mode === 'connection'">
-            <p>ID : {{ this.mobileId }}</p>
-            <button @click="startCalibration">Commencer</button>
-        </template>
-        <template v-else-if="mode === 'calibration'">
-            <CalibrationCamera v-on:finish="finishCalibration"/>
-        </template>
-        <template v-else-if="mode === 'ready'">
+        <p class="mobile__debug">ID : {{ this.mobileId }}</p>
+        <MobileSetup v-if="setupMode !== 'ready'" :mode="setupMode"/>
+        <template v-if="setupMode === 'ready'">
             <h1>Mobile Ready !</h1>
             <p>Orientation permission : {{ orientationPermission }}</p>
             <ul>
@@ -21,13 +16,13 @@
 </template>
 
 <script>
-    import CalibrationCamera from "../../components/mobile/calibration/CalibrationCamera";
+    import MobileSetup from "../../components/mobile/MobileSetup";
     export default {
         name: "Mobile",
-        components: {CalibrationCamera},
+        components: {MobileSetup},
         data() {
             return {
-                mode: 'connection',
+                setupMode: 'connection',
                 orientation: {
                     alpha: 0,
                     beta: 0,
@@ -44,21 +39,14 @@
         },
         sockets: {
             mobile_calibrate() {
-                this.mode = 'calibration'
+                this.setupMode = 'calibration'
             },
             mobile_ready() {
                 this.listenOrientation()
-                this.mode = 'ready'
+                this.setupMode = 'ready'
             }
         },
         methods: {
-            startCalibration(){
-                this.$socket.emit('mobile_calibrate')
-            },
-            finishCalibration() {
-                this.$socket.emit('mobile_ready')
-            },
-
             // Device orientation events
             listenOrientation() {
                 this.orientationPermission = true
@@ -83,7 +71,10 @@
             },
         },
         created() {
+            // Get the mobile ID in route
             this.$store.commit('mobile/setMobileId', this.mobileId)
+
+            // Join the mobile room
             this.$socket.emit('join_mobile_room', this.mobileId)
         },
     }
@@ -96,6 +87,15 @@
         align-items: center;
         justify-content: center;
         min-height: 100vh;
+
+        &__debug {
+            position: fixed;
+            z-index: 500;
+            top: 0;
+            left: 0;
+            background: rgba(black, .5);
+            color: white;
+        }
 
         button {
             background: white;
