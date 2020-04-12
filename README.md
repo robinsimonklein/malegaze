@@ -23,7 +23,19 @@ Voir les prototypes ici : [https://malegaze-prototype.netlify.com](https://maleg
 ## Installation & setup
 
 ### Client
-Go to `client` folder and run these commands :
+_**Warning:** All of these instructions need to be made in the `client` folder !_
+
+#### Setup the environment variables
+1. Copy the `.env.example` file in a new `.env` file.
+2. Complete with the ip address of your desktop on your local network (or the alias you want to use to connect with your phone).
+
+```dotenv
+# For mobile connexion
+VUE_APP_PUBLIC_HOST=yourlocalip
+
+# Server
+VUE_APP_SERVER_HOST=yourlocalip
+```
 
 #### Install dependencies
 ```
@@ -43,7 +55,15 @@ yarn build
 (Full documentation for client : [here](./client/README.md))
 
 ### Server
-Go to `server` folder and run these commands :
+_**Warning:** All of these instructions need to be made in the `server` folder !_
+
+#### Setup the environment variables
+1. Copy the `.env.example` file in a new `.env` file.
+2. Complete with the ip address of your desktop on your local network (or the alias you want to use to connect with your phone).
+```dotenv
+PUBLIC_HOST=yourlocalip
+```
+
 #### Install dependencies
 ```
 yarn install
@@ -131,12 +151,12 @@ HTTPS=true
 
 How to deploy on production ?
 
-###Client : Netlify
+### Client : Netlify
 
 
 Merge the `master` branch on `production`, the deploy is automatic.
 
-###Server : Heroku
+### Server : Heroku
 
 On your machine, run this command in `master` branch.
 ```bash

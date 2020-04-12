@@ -1,40 +1,24 @@
 <template>
     <div class="mobile">
-        <template v-if="mode === 'connection'">
-            <p>ID : {{ this.mobileId }}</p>
-            <button @click="startCalibration">Commencer</button>
-        </template>
-        <template v-else-if="mode === 'calibrate'">
-            <CalibrationCamera v-on:finish="finishCalibration"/>
-        </template>
-        <template v-else-if="mode === 'ready'">
-            <h1>Mobile Ready !</h1>
-            <p>Orientation permission : {{ orientationPermission }}</p>
-            <ul>
-                <li>Alpha : {{ orientation.alpha }}</li>
-                <li>Beta : {{ orientation.beta }}</li>
-                <li>Gamma : {{ orientation.gamma }}</li>
-                <li>Screen orient. : {{ screenOrientation }}</li>
-            </ul>
-        </template>
+        <p v-if="debug" class="mobile__debug">ID : {{ this.mobileId }}</p>
+
+        <MobileSetup v-if="setupMode !== 'ready'" :mode="setupMode"/>
+
+        <!-- Track the mobile orientation -->
+        <MobileOrientation v-if="setupMode === 'ready'" :debug="true" />
     </div>
 </template>
 
 <script>
-    import CalibrationCamera from "../../components/mobile/CalibrationCamera";
+    import MobileSetup from "../../components/mobile/setup/MobileSetup";
+    import MobileOrientation from "../../components/mobile/orientation/MobileOrientation";
     export default {
         name: "Mobile",
-        components: {CalibrationCamera},
+        components: {MobileOrientation, MobileSetup},
         data() {
             return {
-                mode: 'connection',
-                orientation: {
-                    alpha: 0,
-                    beta: 0,
-                    gamma: 0,
-                },
-                screenOrientation: 0,
-                orientationPermission: false
+                debug: false,
+                setupMode: 'connection',
             }
         },
         computed: {
@@ -44,47 +28,24 @@
         },
         sockets: {
             mobile_calibrate() {
-                this.mode = 'calibrate'
+                this.setupMode = 'calibration'
             },
             mobile_ready() {
-                this.listenOrientation()
-                this.mode = 'ready'
+                this.setupMode = 'ready'
             }
         },
-        methods: {
-            startCalibration(){
-                this.$socket.emit('mobile_calibrate')
-            },
-            finishCalibration() {
-                this.$socket.emit('mobile_ready')
-            },
-
-            // Device orientation events
-            listenOrientation() {
-                this.orientationPermission = true
-                window.addEventListener( 'orientationchange', this.onScreenOrientationChangeEvent, false );
-                window.addEventListener( 'deviceorientation', this.onDeviceOrientationChangeEvent, false );
-            },
-            onScreenOrientationChangeEvent() {
-                this.screenOrientation = window.orientation || 0
-                this.emitScreenOrientation()
-            },
-            onDeviceOrientationChangeEvent(e) {
-                this.orientation.alpha = e.alpha;
-                this.orientation.beta = e.beta;
-                this.orientation.gamma = e.gamma;
-                this.emitOrientation();
-            },
-            emitOrientation() {
-                this.$socket.emit('device_orientation', this.orientation)
-            },
-            emitScreenOrientation() {
-                this.$socket.emit('screen_orientation', this.screenOrientation)
-            },
-        },
         created() {
+            // Get the mobile ID in route
             this.$store.commit('mobile/setMobileId', this.mobileId)
+
+            // Join the mobile room
             this.$socket.emit('join_mobile_room', this.mobileId)
+        },
+        beforeMount() {
+            // Skip setup if dev mode
+            if(this.mobileId === '_dev'){
+                this.setupMode = 'ready'
+            }
         }
     }
 </script>
@@ -96,6 +57,15 @@
         align-items: center;
         justify-content: center;
         min-height: 100vh;
+
+        &__debug {
+            position: fixed;
+            z-index: 500;
+            top: 0;
+            left: 0;
+            background: rgba(black, .5);
+            color: white;
+        }
 
         button {
             background: white;
