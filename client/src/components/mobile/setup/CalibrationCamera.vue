@@ -1,7 +1,12 @@
 <template>
     <div class="calibration-camera">
         <div class="calibration-camera__overlay" :class="{'visible' : calibrationSuccess}">
-            <button class="calibration-camera__button" @click="calibrate" type="button">Continuer</button>
+            <OrientationPermissionButton
+                    class="calibration-camera__button"
+                    v-on:success="onOrientationRequestSuccess"
+                    v-on:fail="onOrientationRequestFail"
+                    text="Continuer"
+            />
         </div>
         <!-- Camera view -->
         <video id="calibration-camera__view" class="calibration-camera__view" ref="cameraView" autoplay playsinline></video>
@@ -11,9 +16,11 @@
 
 <script>
     import 'tracking'
+    import OrientationPermissionButton from "./OrientationPermissionButton";
 
     export default {
         name: "CalibrationCamera",
+        components: {OrientationPermissionButton},
         data() {
             return {
                 trackedColors: [],
@@ -43,43 +50,13 @@
             stopCamera() {
                 this.track.stop()
             },
-            motionRequest() {
-                return new Promise((resolve, reject) => {
-                    if (typeof DeviceOrientationEvent.requestPermission === 'function' ) {
-                        // iOS 13+
-
-                        DeviceOrientationEvent.requestPermission().then( ( response ) => {
-
-                            if ( response == 'granted' ) {
-                                resolve(response)
-                            }
-
-                        } ).catch( function ( error ) {
-                            console.error( 'THREE.DeviceOrientationControls: Unable to use DeviceOrientation API:', error );
-                            reject(error)
-                        } );
-
-                    } else {
-                        // Other devices
-                        resolve()
-                    }
-                })
-
+            onOrientationRequestSuccess() {
+                this.stopCamera()
+                // /!\ Custom event listened in parent component, not socket !
+                this.$emit('finish')
             },
-            calibrate() {
-                if(this.calibrationSuccess){
-                    this.motionRequest()
-                        .then(() => {
-                            // Stop the camera
-                            this.stopCamera()
-
-                            // /!\ Custom event listened in parent component, not socket !
-                            this.$emit('finish')
-                        })
-                        .catch((error) => {
-                            console.error(error)
-                        })
-                }
+            onOrientationRequestFail(error) {
+                console.error(error)
             }
         },
         computed: {
