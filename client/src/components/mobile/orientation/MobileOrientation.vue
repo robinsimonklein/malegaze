@@ -11,6 +11,8 @@
 </template>
 
 <script>
+    import {mapState} from "vuex";
+
     export default {
         name: "MobileOrientation",
         props: {
@@ -21,7 +23,6 @@
         },
         data() {
             return {
-                orientationPermission: false,
                 orientation: {
                     alpha: 0,
                     beta: 0,
@@ -29,6 +30,9 @@
                 },
                 screenOrientation: 0,
             }
+        },
+        computed: {
+            ...mapState('mobile', ['orientationPermission'])
         },
         methods: {
             // Device orientation events
