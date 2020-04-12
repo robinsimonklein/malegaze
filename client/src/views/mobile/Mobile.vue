@@ -18,7 +18,7 @@
         data() {
             return {
                 debug: false,
-                setupMode: 'ready',
+                setupMode: 'connection',
             }
         },
         computed: {
@@ -41,6 +41,12 @@
             // Join the mobile room
             this.$socket.emit('join_mobile_room', this.mobileId)
         },
+        beforeMount() {
+            // Skip setup if dev mode
+            if(this.mobileId === '_dev'){
+                this.setupMode = 'ready'
+            }
+        }
     }
 </script>
 
