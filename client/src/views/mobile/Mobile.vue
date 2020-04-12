@@ -1,35 +1,24 @@
 <template>
     <div class="mobile">
-        <p class="mobile__debug">ID : {{ this.mobileId }}</p>
+        <p v-if="debug" class="mobile__debug">ID : {{ this.mobileId }}</p>
+
         <MobileSetup v-if="setupMode !== 'ready'" :mode="setupMode"/>
-        <template v-if="setupMode === 'ready'">
-            <h1>Mobile Ready !</h1>
-            <p>Orientation permission : {{ orientationPermission }}</p>
-            <ul>
-                <li>Alpha : {{ orientation.alpha }}</li>
-                <li>Beta : {{ orientation.beta }}</li>
-                <li>Gamma : {{ orientation.gamma }}</li>
-                <li>Screen orient. : {{ screenOrientation }}</li>
-            </ul>
-        </template>
+
+        <!-- Track the mobile orientation -->
+        <MobileOrientation v-if="setupMode === 'ready'" debug="false" />
     </div>
 </template>
 
 <script>
     import MobileSetup from "../../components/mobile/MobileSetup";
+    import MobileOrientation from "../../components/mobile/MobileOrientation";
     export default {
         name: "Mobile",
-        components: {MobileSetup},
+        components: {MobileOrientation, MobileSetup},
         data() {
             return {
+                debug: false,
                 setupMode: 'connection',
-                orientation: {
-                    alpha: 0,
-                    beta: 0,
-                    gamma: 0,
-                },
-                screenOrientation: 0,
-                orientationPermission: false
             }
         },
         computed: {
@@ -42,33 +31,8 @@
                 this.setupMode = 'calibration'
             },
             mobile_ready() {
-                this.listenOrientation()
                 this.setupMode = 'ready'
             }
-        },
-        methods: {
-            // Device orientation events
-            listenOrientation() {
-                this.orientationPermission = true
-                window.addEventListener( 'orientationchange', this.onScreenOrientationChangeEvent, false );
-                window.addEventListener( 'deviceorientation', this.onDeviceOrientationChangeEvent, false );
-            },
-            onScreenOrientationChangeEvent() {
-                this.screenOrientation = window.orientation || 0
-                this.emitScreenOrientation()
-            },
-            onDeviceOrientationChangeEvent(e) {
-                this.orientation.alpha = e.alpha;
-                this.orientation.beta = e.beta;
-                this.orientation.gamma = e.gamma;
-                this.emitOrientation();
-            },
-            emitOrientation() {
-                this.$socket.emit('mobile_orientation', this.orientation)
-            },
-            emitScreenOrientation() {
-                this.$socket.emit('mobile_screen_orientation', this.screenOrientation)
-            },
         },
         created() {
             // Get the mobile ID in route
