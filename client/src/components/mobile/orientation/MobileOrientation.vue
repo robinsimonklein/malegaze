@@ -1,20 +1,28 @@
 <template>
-    <div v-if="debug" class="mobile-orientation">
-        <p>Orientation permission : {{ orientationPermission }}</p>
-        <ul>
-            <li>Alpha : {{ orientation.alpha }}</li>
-            <li>Beta : {{ orientation.beta }}</li>
-            <li>Gamma : {{ orientation.gamma }}</li>
-            <li>Screen orient. : {{ screenOrientation }}</li>
-        </ul>
+    <div v-if="debug || !orientationPermission" class="mobile-orientation">
+        <div v-if="debug" class="mobile-orientation__debug">
+            <p>Orientation permission : {{ orientationPermission }}</p>
+            <ul>
+                <li>Alpha : {{ orientation.alpha }}</li>
+                <li>Beta : {{ orientation.beta }}</li>
+                <li>Gamma : {{ orientation.gamma }}</li>
+                <li>Screen orient. : {{ screenOrientation }}</li>
+            </ul>
+        </div>
+        <div v-if="!orientationPermission" class="mobile-orientation__permission">
+            <h2>Accès à l'orientation nécessaire</h2>
+            <OrientationPermissionButton v-on:success="listenOrientation" text="Autoriser" />
+        </div>
     </div>
 </template>
 
 <script>
     import {mapState} from "vuex";
+    import OrientationPermissionButton from "../setup/OrientationPermissionButton";
 
     export default {
         name: "MobileOrientation",
+        components: {OrientationPermissionButton},
         props: {
             debug: {
                 type: Boolean,
@@ -37,7 +45,6 @@
         methods: {
             // Device orientation events
             listenOrientation() {
-                this.orientationPermission = true
                 window.addEventListener( 'orientationchange', this.onScreenOrientationChangeEvent, false );
                 window.addEventListener( 'deviceorientation', this.onDeviceOrientationChangeEvent, false );
             },
@@ -59,11 +66,39 @@
             },
         },
         created() {
-            this.listenOrientation()
+
+            // Check if orientation permission is already granted for iOS 13+
+            if (typeof DeviceOrientationEvent.requestPermission === 'function' ) {
+                // iOS 13+
+                DeviceOrientationEvent.requestPermission().then( ( response ) => {
+
+                    if ( response === 'granted' ) {
+                        this.$store.commit('mobile/setOrientationPermission', true)
+                        this.listenOrientation()
+                    }
+
+                } )
+            } else {
+                if(this.orientationPermission) {
+                    this.listenOrientation()
+                }
+            }
         }
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.mobile-orientation {
+    &__debug {
 
+    }
+
+    button {
+        background: white;
+        color: black;
+        padding: 1rem;
+        border-radius: 1rem;
+        border: none
+    }
+}
 </style>

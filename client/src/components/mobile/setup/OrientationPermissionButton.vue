@@ -4,7 +4,7 @@
 
 <script>
     export default {
-        name: "RequestOrientationBtn",
+        name: "OrientationPermissionButton",
         props: {
             text: {
                 type: String,

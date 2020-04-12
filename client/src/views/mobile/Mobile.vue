@@ -5,7 +5,7 @@
         <MobileSetup v-if="setupMode !== 'ready'" :mode="setupMode"/>
 
         <!-- Track the mobile orientation -->
-        <MobileOrientation v-if="setupMode === 'ready'" debug="false" />
+        <MobileOrientation v-if="setupMode === 'ready'" :debug="true" />
     </div>
 </template>
 
@@ -18,7 +18,7 @@
         data() {
             return {
                 debug: false,
-                setupMode: 'connection',
+                setupMode: 'ready',
             }
         },
         computed: {
