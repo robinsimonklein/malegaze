@@ -18,7 +18,7 @@
 <script>
     // @ is an alias to /src
 
-    import MobileConnectionSetup from "../../components/mobileConnection/MobileConnectionSetup";
+    import MobileConnectionSetup from "../../components/desktop/mobileConnection/MobileConnectionSetup";
     import { mapState } from 'vuex'
 
     export default {
