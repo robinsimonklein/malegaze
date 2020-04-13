@@ -15,6 +15,7 @@
 <script>
     import QRCode from "./QRCode";
     import CalibrationScreen from "./CalibrationScreen";
+    import appStates from "../../../js/appStates";
 
     export default {
         name: "MobileConnectionSetup",
@@ -34,8 +35,12 @@
                 this.mode = 'calibration'
             },
             mobile_ready() {
-                // /!\ Custom event emit, not socket
-                this.$emit('ready')
+                this.next()
+            }
+        },
+        methods: {
+            next() {
+                this.$socket.emit('state_request', appStates.SCENE1)
             }
         },
         beforeCreate() {

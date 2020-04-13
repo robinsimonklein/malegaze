@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import {app} from './modules/app'
 import {mobile} from './modules/mobile'
 
 Vue.use(Vuex)
@@ -10,16 +11,8 @@ export default new Vuex.Store({
     // strict mode in the dev environment.
     strict: process.env.NODE_ENV !== 'production',
 
-    state: {
-
-    },
-    mutations: {
-
-    },
-    actions: {
-
-    },
     modules: {
+        app,
         mobile
     }
 })

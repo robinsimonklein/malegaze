@@ -1,30 +1,14 @@
 <template>
     <div class="home">
-        <template v-if="!started">
-            <MobileConnectionSetup v-on:ready="start"/>
-        </template>
-        <template v-else>
-            <Scene />
+        <component :is="currentComponent" />
+        <!--<Scene /> -->
 
-            <!--
-            <h2>L'expérience peut démarrer...</h2>
-            <ul>
-                <li>alpha: {{ orientation.alpha }}</li>
-                <li>beta: {{ orientation.beta }}</li>
-                <li>gamma: {{ orientation.gamma }}</li>
-                <li>screen: {{ screenOrientation }}</li>
-            </ul>
-
-            -->
-        </template>
     </div>
 </template>
 
 <script>
-    // @ is an alias to /src
-
-    import MobileConnectionSetup from "../../components/desktop/mobileConnection/MobileConnectionSetup";
     import { mapState } from 'vuex'
+    import MobileConnectionSetup from "../../components/desktop/mobileConnection/MobileConnectionSetup";
     import Scene from "../../components/desktop/Scene";
 
     export default {
@@ -39,13 +23,31 @@
             }
         },
         computed: {
-            ...mapState('mobile', ['orientation', 'screenOrientation'])
+            ...mapState('mobile', ['orientation', 'screenOrientation']),
+            currentComponent() {
+                switch(this.$store.state.app.appState) {
+                    case "setup":
+                        return "MobileConnectionSetup"
+                    case "intro":
+                        return "DesktopIntro"
+                    case "storyboard":
+                        return "DesktopStoryboard"
+                    case "scene1":
+                    case "scene2":
+                    case "scene3":
+                        return "Scene"
+                    case "end":
+                        return "DesktopEnd"
+                    default:
+                        return null
+                }
+            }
         },
         methods: {
             start() {
                 this.started = true
             }
-        }
+        },
     }
 </script>
 <style lang="scss" scoped>
