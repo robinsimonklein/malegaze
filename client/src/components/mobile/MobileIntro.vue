@@ -1,7 +1,7 @@
 <template>
     <div class="mobile-intro">
         <h1> Mobile Intro </h1>
-        <button @click="next">Next</button>
+        <button @click="next" class="btn">Next</button>
     </div>
 </template>
 

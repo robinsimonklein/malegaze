@@ -1,7 +1,7 @@
 <template>
     <div class="mobile-scene-3">
         <h1>Mobile Scène 3</h1>
-        <button @click="next">Next</button>
+        <button @click="next" class="btn">Next</button>
     </div>
 </template>
 
