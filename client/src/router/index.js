@@ -1,21 +1,21 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/desktop/Home.vue'
+import Desktop from '../views/desktop/Desktop.vue'
 import Mobile from "../views/mobile/Mobile";
-import MobileHome from "../views/mobile/MobileHome";
+import MobileIndex from "../views/mobile/MobileIndex";
 
 Vue.use(VueRouter)
 
 const routes = [
     {
         path: '/',
-        name: 'Home',
-        component: Home
+        name: 'Desktop',
+        component: Desktop
     },
     {
         path: '/mobile',
-        name: 'MobileHome',
-        component: MobileHome,
+        name: 'MobileIndex',
+        component: MobileIndex,
     },
     {
         path: '/mobile/:mobileId',
