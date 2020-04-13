@@ -15,11 +15,6 @@
             Scene,
             MobileConnectionSetup
         },
-        data() {
-            return {
-                started: false
-            }
-        },
         computed: {
             ...mapState('mobile', ['orientation', 'screenOrientation']),
             currentComponent() {
@@ -39,11 +34,6 @@
                     default:
                         return null
                 }
-            }
-        },
-        methods: {
-            start() {
-                this.started = true
             }
         },
     }
