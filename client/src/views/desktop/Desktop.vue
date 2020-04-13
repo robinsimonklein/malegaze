@@ -1,5 +1,5 @@
 <template>
-    <div class="home">
+    <div class="desktop">
         <component :is="currentComponent" />
     </div>
 </template>
@@ -7,12 +7,12 @@
 <script>
     import { mapState } from 'vuex'
     import MobileConnectionSetup from "../../components/desktop/mobileConnection/MobileConnectionSetup";
-    import Scene from "../../components/desktop/Scene";
+    import DesktopScene from "../../components/desktop/DesktopScene";
 
     export default {
-        name: 'Home',
+        name: 'Desktop',
         components: {
-            Scene,
+            DesktopScene,
             MobileConnectionSetup
         },
         computed: {
@@ -28,7 +28,7 @@
                     case "scene1":
                     case "scene2":
                     case "scene3":
-                        return "Scene"
+                        return "DesktopScene"
                     case "end":
                         return "DesktopEnd"
                     default:
@@ -39,7 +39,7 @@
     }
 </script>
 <style lang="scss" scoped>
-    .home {
+    .desktop {
         min-height: 100vh
     }
 </style>

@@ -1,6 +1,6 @@
 <template>
-    <div class="mobile-home">
-        <h1>Mobile Home</h1>
+    <div class="mobile-index">
+        <h1>Mobile Index</h1>
 
         <p>Ouvrez <a :href="siteUrl">{{ siteUrl }}</a> sur votre ordinateur et scannez le QR Code qui s'affiche avec votre mobile.</p>
     </div>
@@ -8,7 +8,7 @@
 
 <script>
     export default {
-        name: "MobileHome",
+        name: "MobileIndex",
         data() {
             return {
                 siteUrl: null

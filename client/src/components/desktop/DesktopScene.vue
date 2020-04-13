@@ -6,7 +6,7 @@
     import threeEntryPoint from "../../js/three/threeEntryPoint";
 
     export default {
-        name: "Scene",
+        name: "DesktopScene",
         mounted() {
             threeEntryPoint(this.$refs.sceneContainer)
         }
