@@ -82,8 +82,9 @@ yarn start
 (Full documentation for server : [here](./server/README.md))
 
 ## 🔒 HTTPS Configuration for local development
+DeviceMotionEvent and Camera access needs HTTPS protocol on some devices(i.e. iOS devices).
 
-See documentation for HTTPS setup : [here](./HTTPS.md)
+See documentation for local HTTPS setup : [here](./HTTPS.md)
 
 ## Production
 
