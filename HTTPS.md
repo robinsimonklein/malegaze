@@ -46,7 +46,7 @@ yarn serve
 
 - Copy the `/cert` folder from `client` and past it in `server`
 
-⋅⋅⋅See [here](#client-1) how to create the certificate.
+⋅⋅⋅See [here](#client) how to create the certificate.
 
 - Add the *key* and *pem* in `app.js`
 ```js
