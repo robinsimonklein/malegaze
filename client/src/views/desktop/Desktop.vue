@@ -7,13 +7,19 @@
 <script>
     import { mapState } from 'vuex'
     import DesktopSetup from "../../components/desktop/DesktopSetup";
+    import DesktopIntro from "../../components/desktop/DesktopIntro";
+    import DesktopStoryboard from "../../components/desktop/DesktopStoryboard";
     import DesktopScene from "../../components/desktop/DesktopScene";
+    import DesktopEnd from "../../components/desktop/DesktopEnd";
 
     export default {
         name: 'Desktop',
         components: {
             DesktopScene,
-            DesktopSetup
+            DesktopIntro,
+            DesktopStoryboard,
+            DesktopSetup,
+            DesktopEnd
         },
         computed: {
             ...mapState('mobile', ['orientation', 'screenOrientation']),

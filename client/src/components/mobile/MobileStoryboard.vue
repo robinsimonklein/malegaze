@@ -1,6 +1,6 @@
 <template>
-    <div class="mobile-scene-1">
-        <h1>Mobile Scène 1</h1>
+    <div class="mobile-storyboard">
+        <h1>Mobile Storyboard</h1>
         <button @click="next">Next</button>
     </div>
 </template>
@@ -9,13 +9,12 @@
     import appStates from "../../js/appStates";
 
     export default {
-        name: "MobileScene1",
+        name: "MobileStoryboard",
         methods: {
             next() {
-                this.$socket.emit('state_request', appStates.SCENE2)
+                this.$socket.emit('state_request', appStates.SCENE1)
             }
         }
-
     }
 </script>
 
