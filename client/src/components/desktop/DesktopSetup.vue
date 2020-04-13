@@ -1,5 +1,5 @@
 <template>
-    <div class="mobile-connection-setup">
+    <div class="desktop-setup">
         <h1>Male Gaze</h1>
         <template v-if="mode==='connection'">
             <h2>Scannez ce QR Code avec votre mobile.</h2>
@@ -13,11 +13,12 @@
 </template>
 
 <script>
-    import QRCode from "./QRCode";
-    import CalibrationScreen from "./CalibrationScreen";
+    import QRCode from "./mobileConnection/QRCode";
+    import CalibrationScreen from "./mobileConnection/CalibrationScreen";
+    import appStates from "../../js/appStates";
 
     export default {
-        name: "MobileConnectionSetup",
+        name: "DesktopSetup",
         components: {CalibrationScreen, QRCode},
         data() {
             return {
@@ -34,31 +35,19 @@
                 this.mode = 'calibration'
             },
             mobile_ready() {
-                // /!\ Custom event emit, not socket
-                this.$emit('ready')
+                this.next()
             }
         },
-        beforeCreate() {
-            if(process.env.VUE_APP_SKIP_MOBILE_SETUP === "true" && process.env.NODE_ENV === 'development'){
-                this.$store.commit('mobile/setMobileId', '_dev')
-            }else {
-                this.$store.commit('mobile/generateMobileId')
+        methods: {
+            next() {
+                this.$socket.emit('state_request', appStates.INTRO)
             }
         },
-        beforeMount() {
-            this.$socket.emit('join_mobile_room', this.$store.state.mobile.mobileId)
-        },
-        mounted() {
-            // Skip the setup and go start directly if SKIP_MOBILE_SETUP is true
-            if(process.env.VUE_APP_SKIP_MOBILE_SETUP === "true" && process.env.NODE_ENV === 'development'){
-                this.$emit('ready')
-            }
-        }
     }
 </script>
 
 <style lang="scss" scoped>
-    .mobile-connection-setup {
+    .desktop-setup {
         display: flex;
         flex-direction: column;
         justify-content: center;

@@ -10,15 +10,22 @@
 </template>
 
 <script>
-    import CalibrationCamera from "./CalibrationCamera";
+    import CalibrationCamera from "./setup/CalibrationCamera";
 
     export default {
         name: "MobileSetup",
         components: {CalibrationCamera},
-        props: {
-            mode: {
-                type: String,
-                default: 'connection'
+        data() {
+            return {
+                mode: 'connection'
+            }
+        },
+        sockets: {
+            mobile_calibrate() {
+                this.mode = 'calibration'
+            },
+            mobile_ready() {
+                this.mode = 'ready'
             }
         },
         methods: {
