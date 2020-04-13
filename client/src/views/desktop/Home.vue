@@ -4,6 +4,9 @@
             <MobileConnectionSetup v-on:ready="start"/>
         </template>
         <template v-else>
+            <Scene />
+
+            <!--
             <h2>L'expérience peut démarrer...</h2>
             <ul>
                 <li>alpha: {{ orientation.alpha }}</li>
@@ -11,6 +14,8 @@
                 <li>gamma: {{ orientation.gamma }}</li>
                 <li>screen: {{ screenOrientation }}</li>
             </ul>
+
+            -->
         </template>
     </div>
 </template>
@@ -20,10 +25,12 @@
 
     import MobileConnectionSetup from "../../components/desktop/mobileConnection/MobileConnectionSetup";
     import { mapState } from 'vuex'
+    import Scene from "../../components/desktop/Scene";
 
     export default {
         name: 'Home',
         components: {
+            Scene,
             MobileConnectionSetup
         },
         data() {

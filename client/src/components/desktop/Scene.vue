@@ -1,18 +1,21 @@
 <template>
-    <canvas id="scene-canvas" ref="scene-canvas"></canvas>
+    <div id="scene-container" class="scene-container" ref="sceneContainer"></div>
 </template>
 
 <script>
-    import SceneManager from '@/js/three/SceneManager'
+    import threeEntryPoint from "../../js/three/threeEntryPoint";
 
     export default {
         name: "Scene",
         mounted() {
-            console.log(SceneManager)
+            threeEntryPoint(this.$refs.sceneContainer)
         }
     }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.scene-container {
+    width: 100vw;
+    height: 100vh;
+}
 </style>
