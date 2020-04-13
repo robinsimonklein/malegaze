@@ -1,4 +1,6 @@
 import * as THREE from 'three'
+import GeneralLights from "./lights/GeneralLights";
+import SceneSubject from "./SceneSubject";
 
 class SceneManager {
     canvas;
@@ -7,7 +9,6 @@ class SceneManager {
         height: 0
     }
 
-    scene;
     camera;
     renderer;
     sceneSubjects;
@@ -15,11 +16,7 @@ class SceneManager {
     clock = new THREE.Clock()
 
     constructor(canvas) {
-        this.clock = new THREE.Clock();
-
-
         this.canvas = canvas
-
         // Set screenDimensions with canvas dimensions
         this.screenDimensions.width = canvas.width
         this.screenDimensions.height = canvas.height
@@ -27,8 +24,7 @@ class SceneManager {
         this.scene = this.buildScene()
         this.renderer = this.buildRenderer(this.screenDimensions)
         this.camera = this.buildCamera(this.screenDimensions)
-
-        this.initialized = true
+        this.sceneSubjects = this.createSceneSubjects(this.scene);
     }
 
     buildScene() {
@@ -62,16 +58,18 @@ class SceneManager {
 
     createSceneSubjects(scene) {
         const sceneSubjects = [
-            // new GeneralLights(scene),
-            // new SceneSubject(scene)
+            new GeneralLights(scene),
+            new SceneSubject(scene)
         ];
 
         return sceneSubjects;
     }
 
     update() {
-        // const elapsedTime =  this.clock.getElapsedTime();
+        const elapsedTime =  this.clock.getElapsedTime();
 
+        for(let i=0; i<this.sceneSubjects.length; i++)
+            this.sceneSubjects[i].update(elapsedTime);
 
         this.renderer.render(this.scene, this.camera);
     }
