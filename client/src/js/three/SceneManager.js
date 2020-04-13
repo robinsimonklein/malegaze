@@ -75,6 +75,17 @@ class SceneManager {
 
         this.renderer.render(this.scene, this.camera);
     }
+    onWindowResize() {
+        const { width, height } = this.canvas;
+
+        this.screenDimensions.width = width;
+        this.screenDimensions.height = height;
+
+        this.camera.aspect = width / height;
+        this.camera.updateProjectionMatrix();
+
+        this.renderer.setSize(width, height);
+    }
 }
 
 export default SceneManager
