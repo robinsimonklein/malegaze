@@ -6,21 +6,21 @@
 
 <script>
     import { mapState } from 'vuex'
-    import MobileConnectionSetup from "../../components/desktop/mobileConnection/MobileConnectionSetup";
+    import DesktopSetup from "../../components/desktop/DesktopSetup";
     import DesktopScene from "../../components/desktop/DesktopScene";
 
     export default {
         name: 'Desktop',
         components: {
             DesktopScene,
-            MobileConnectionSetup
+            DesktopSetup
         },
         computed: {
             ...mapState('mobile', ['orientation', 'screenOrientation']),
             currentComponent() {
                 switch(this.$store.state.app.appState) {
                     case "setup":
-                        return "MobileConnectionSetup"
+                        return "DesktopSetup"
                     case "intro":
                         return "DesktopIntro"
                     case "storyboard":

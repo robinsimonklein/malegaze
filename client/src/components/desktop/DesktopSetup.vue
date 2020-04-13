@@ -1,5 +1,5 @@
 <template>
-    <div class="mobile-connection-setup">
+    <div class="desktop-setup">
         <h1>Male Gaze</h1>
         <template v-if="mode==='connection'">
             <h2>Scannez ce QR Code avec votre mobile.</h2>
@@ -13,12 +13,12 @@
 </template>
 
 <script>
-    import QRCode from "./QRCode";
-    import CalibrationScreen from "./CalibrationScreen";
-    import appStates from "../../../js/appStates";
+    import QRCode from "./mobileConnection/QRCode";
+    import CalibrationScreen from "./mobileConnection/CalibrationScreen";
+    import appStates from "../../js/appStates";
 
     export default {
-        name: "MobileConnectionSetup",
+        name: "DesktopSetup",
         components: {CalibrationScreen, QRCode},
         data() {
             return {
@@ -63,7 +63,7 @@
 </script>
 
 <style lang="scss" scoped>
-    .mobile-connection-setup {
+    .desktop-setup {
         display: flex;
         flex-direction: column;
         justify-content: center;
