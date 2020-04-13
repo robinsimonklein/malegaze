@@ -56,7 +56,7 @@
         mounted() {
             // Skip the setup and go start directly if SKIP_MOBILE_SETUP is true
             if(process.env.VUE_APP_SKIP_MOBILE_SETUP === "true" && process.env.NODE_ENV === 'development'){
-                this.$emit('ready')
+                this.next()
             }
         }
     }

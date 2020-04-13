@@ -2,36 +2,53 @@
     <div class="mobile">
         <p v-if="debug" class="mobile__debug">ID : {{ this.mobileId }}</p>
 
-        <MobileSetup v-if="setupMode !== 'ready'" :mode="setupMode"/>
+        <component :is="currentComponent" />
 
         <!-- Track the mobile orientation -->
-        <MobileOrientation v-if="setupMode === 'ready'" :debug="true" />
+        <!-- <MobileOrientation v-if="setupMode === 'ready'" :debug="true" /> -->
     </div>
 </template>
 
 <script>
-    import MobileSetup from "../../components/mobile/setup/MobileSetup";
+    import MobileSetup from "../../components/mobile/MobileSetup";
+    import MobileScene1 from "../../components/mobile/MobileScene1";
     import MobileOrientation from "../../components/mobile/orientation/MobileOrientation";
+
     export default {
         name: "Mobile",
-        components: {MobileOrientation, MobileSetup},
+        components: {
+            MobileOrientation,
+            MobileSetup,
+            MobileScene1
+        },
         data() {
             return {
-                debug: false,
-                setupMode: 'connection',
+                debug: true,
             }
         },
         computed: {
             mobileId() {
                 return this.$route.params.mobileId
-            }
-        },
-        sockets: {
-            mobile_calibrate() {
-                this.setupMode = 'calibration'
             },
-            mobile_ready() {
-                this.setupMode = 'ready'
+            currentComponent() {
+                switch(this.$store.state.app.appState) {
+                    case "setup":
+                        return "MobileSetup"
+                    case "intro":
+                        return "MobileIntro"
+                    case "storyboard":
+                        return "MobileStoryboard"
+                    case "scene1":
+                        return "MobileScene1"
+                    case "scene2":
+                        return "MobileScene2"
+                    case "scene3":
+                        return "MobileScene3"
+                    case "end":
+                        return "DesktopEnd"
+                    default:
+                        return null
+                }
             }
         },
         created() {
@@ -41,12 +58,6 @@
             // Join the mobile room
             this.$socket.emit('join_mobile_room', this.mobileId)
         },
-        beforeMount() {
-            // Skip setup if dev mode
-            if(this.mobileId === '_dev'){
-                this.setupMode = 'ready'
-            }
-        }
     }
 </script>
 
@@ -56,7 +67,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        min-height: 100vh;
+        height: 100vh;
 
         &__debug {
             position: fixed;

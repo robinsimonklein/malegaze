@@ -3,7 +3,7 @@ import appStates from "../../js/appStates";
 export const app = {
     namespaced: true,
     state: {
-        appState: appStates.SETUP,
+        appState: process.env.VUE_APP_SKIP_SETUP === "true" ? appStates.INTRO : appStates.SETUP
     },
     getters: {
         appStatesList() {
