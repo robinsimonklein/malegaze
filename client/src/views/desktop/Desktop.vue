@@ -42,6 +42,16 @@
                 }
             }
         },
+        beforeCreate() {
+            if(process.env.VUE_APP_SKIP_MOBILE_SETUP === "true" && process.env.NODE_ENV === 'development'){
+                this.$store.commit('mobile/setMobileId', '_dev')
+            }else {
+                this.$store.commit('mobile/generateMobileId')
+            }
+        },
+        beforeMount() {
+            this.$socket.emit('join_mobile_room', this.$store.state.mobile.mobileId)
+        },
     }
 </script>
 <style lang="scss" scoped>
