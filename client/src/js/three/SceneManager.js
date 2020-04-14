@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import GeneralLights from './lights/GeneralLights';
 import SceneSubject from './SceneSubject';
+import Scene1 from "./scenes/Scene1";
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 class SceneManager {
     canvas;
@@ -12,7 +14,7 @@ class SceneManager {
     camera;
     renderer;
     sceneSubjects;
-
+    orbitControls;
     clock = new THREE.Clock();
 
     constructor(canvas) {
@@ -23,8 +25,12 @@ class SceneManager {
 
         this.scene = this.buildScene();
         this.renderer = this.buildRenderer(this.screenDimensions);
+
         this.camera = this.buildCamera(this.screenDimensions);
         this.sceneSubjects = this.createSceneSubjects(this.scene);
+
+        this.orbitControls = this.buildOrbit();
+
     }
 
     buildScene() {
@@ -50,15 +56,26 @@ class SceneManager {
         const aspectRatio = width / height;
         const fieldOfView = 60;
         const nearPlane = 1;
-        const farPlane = 100;
+        const farPlane = 3000;
 
         return new THREE.PerspectiveCamera(fieldOfView, aspectRatio, nearPlane, farPlane);
     }
 
+    buildOrbit() {
+        let orbitControl = new OrbitControls( this.camera, this.renderer.domElement );
+        orbitControl.target.set(0,0,0);
+        this.camera.position.set(0,100, -500);
+        orbitControl.update();
+        
+        return orbitControl;
+    }
+
+
     createSceneSubjects(scene) {
         return [
-            new GeneralLights(scene),
-            new SceneSubject(scene)
+           /* new GeneralLights(scene),
+            new SceneSubject(scene),*/
+            new Scene1(scene)
         ];
     }
 
@@ -68,6 +85,7 @@ class SceneManager {
         for (let i = 0; i < this.sceneSubjects.length; i++)
             this.sceneSubjects[i].update(elapsedTime);
 
+        this.orbitControls.update();
         this.renderer.render(this.scene, this.camera);
     }
 
