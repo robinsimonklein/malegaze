@@ -18,6 +18,7 @@
     import MobileScene3 from "../../components/mobile/MobileScene3";
     import MobileEnd from "../../components/mobile/MobileEnd";
     import MobileOrientation from "../../components/mobile/orientation/MobileOrientation";
+    import appStates from "../../js/appStates";
 
     export default {
         name: "Mobile",
@@ -42,19 +43,19 @@
             },
             currentComponent() {
                 switch(this.$store.state.app.appState) {
-                    case "setup":
+                    case appStates.SETUP:
                         return "MobileSetup"
-                    case "intro":
+                    case appStates.INTRO:
                         return "MobileIntro"
-                    case "storyboard":
+                    case appStates.STORYBOARD:
                         return "MobileStoryboard"
-                    case "scene1":
+                    case appStates.SCENE1:
                         return "MobileScene1"
-                    case "scene2":
+                    case appStates.SCENE2:
                         return "MobileScene2"
-                    case "scene3":
+                    case appStates.SCENE3:
                         return "MobileScene3"
-                    case "end":
+                    case appStates.END:
                         return "MobileEnd"
                     default:
                         return null
