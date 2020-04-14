@@ -20,9 +20,9 @@ export default (container) => {
 
     function resizeCanvas() {
         canvas.style.width = '100%';
-        canvas.style.height= '100%';
+        canvas.style.height = '100%';
 
-        canvas.width  = canvas.offsetWidth;
+        canvas.width = canvas.offsetWidth;
         canvas.height = canvas.offsetHeight;
 
         sceneManager.onWindowResize()
