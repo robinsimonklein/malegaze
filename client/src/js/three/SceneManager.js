@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 //import MobileOrientationControls from "./utils/MobileOrientationControls";
-//import Scene1 from "./scenes/Scene1";
-import Scene2 from "./scenes/Scene2";
+import Scene1 from "./scenes/Scene1";
+//import Scene2 from "./scenes/Scene2";
 
 class SceneManager {
     canvas;
@@ -30,8 +30,8 @@ class SceneManager {
         this.camera = this.buildCamera(this.screenDimensions);
         this.sceneSubjects = this.createSceneSubjects(this.scene);
 
-       /* this.mobileControls = new MobileOrientationControls(this.camera)
-        this.mobileControls.update()*/
+        /* this.mobileControls = new MobileOrientationControls(this.camera)
+        this.mobileControls.update() */
 
        this.orbitControls = this.buildOrbit();
 
@@ -80,7 +80,7 @@ class SceneManager {
 
     createSceneSubjects(scene) {
         return [
-            new Scene2(scene)
+            new Scene1(scene)
         ];
     }
 

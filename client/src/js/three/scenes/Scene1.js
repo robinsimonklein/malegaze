@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import store from '../../../store'
+import appStates from "../../appStates";
 
 class Scene1 {
 
@@ -10,6 +12,11 @@ class Scene1 {
         this.buildLight();
         this.buildLoader();
 
+        window.addEventListener('keypress', (e) => {
+            if(e.which === 32){
+                this.nextScene()
+            }
+        })
     }
 
     buildLight() {
@@ -38,6 +45,10 @@ class Scene1 {
             self.scene.add(object.scene);
         });
 
+    }
+
+    nextScene() {
+        store.dispatch('app/requestState', appStates.SCENE2)
     }
 
     update() {
