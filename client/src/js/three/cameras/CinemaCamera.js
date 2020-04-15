@@ -35,8 +35,8 @@ class CinemaCamera {
 
     build(aspectRatio, fov, near, far) {
         let camera = new CinematicCamera( fov, aspectRatio, near, far );
-        // camera.position.set(this.position.x, this.position.y, this.position.z)
-        // camera.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z)
+        camera.position.set(this.position.x, this.position.y, this.position.z)
+        camera.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z)
 
         return camera
     }
