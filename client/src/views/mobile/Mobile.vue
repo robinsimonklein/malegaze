@@ -3,9 +3,6 @@
         <p v-if="debug" class="mobile__debug">ID : {{ this.mobileId }}</p>
 
         <component :is="currentComponent" />
-
-        <!-- Track the mobile orientation -->
-        <!-- <MobileOrientation v-if="setupMode === 'ready'" :debug="true" /> -->
     </div>
 </template>
 
@@ -17,7 +14,6 @@
     import MobileScene2 from "../../components/mobile/MobileScene2";
     import MobileScene3 from "../../components/mobile/MobileScene3";
     import MobileEnd from "../../components/mobile/MobileEnd";
-    import MobileOrientation from "../../components/mobile/orientation/MobileOrientation";
     import appStates from "../../js/appStates";
 
     export default {
@@ -29,8 +25,7 @@
             MobileScene1,
             MobileScene2,
             MobileScene3,
-            MobileEnd,
-            MobileOrientation
+            MobileEnd
         },
         data() {
             return {

@@ -48,6 +48,10 @@
                 window.addEventListener( 'orientationchange', this.onScreenOrientationChangeEvent, false );
                 window.addEventListener( 'deviceorientation', this.onDeviceOrientationChangeEvent, false );
             },
+            ignoreOrientation() {
+                window.removeEventListener( 'orientationchange', this.onScreenOrientationChangeEvent, false );
+                window.removeEventListener( 'deviceorientation', this.onDeviceOrientationChangeEvent, false );
+            },
             onScreenOrientationChangeEvent() {
                 this.screenOrientation = window.orientation || 0
                 this.emitScreenOrientation()
@@ -83,6 +87,10 @@
                     this.listenOrientation()
                 }
             }
+        },
+        beforeDestroy() {
+            // Unsuscribe
+            this.ignoreOrientation()
         }
     }
 </script>
