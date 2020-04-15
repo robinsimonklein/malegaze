@@ -11,6 +11,7 @@
     import DesktopStoryboard from "../../components/desktop/DesktopStoryboard";
     import DesktopScene from "../../components/desktop/DesktopScene";
     import DesktopEnd from "../../components/desktop/DesktopEnd";
+    import appStates from "../../js/appStates";
 
     export default {
         name: 'Desktop',
@@ -25,17 +26,17 @@
             ...mapState('mobile', ['orientation', 'screenOrientation']),
             currentComponent() {
                 switch(this.$store.state.app.appState) {
-                    case "setup":
+                    case appStates.SETUP:
                         return "DesktopSetup"
-                    case "intro":
+                    case appStates.INTRO:
                         return "DesktopIntro"
-                    case "storyboard":
+                    case appStates.STORYBOARD:
                         return "DesktopStoryboard"
-                    case "scene1":
-                    case "scene2":
-                    case "scene3":
+                    case appStates.SCENE1:
+                    case appStates.SCENE2:
+                    case appStates.SCENE3:
                         return "DesktopScene"
-                    case "end":
+                    case appStates.END:
                         return "DesktopEnd"
                     default:
                         return null

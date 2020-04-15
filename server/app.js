@@ -10,8 +10,8 @@ let server;
 const port = process.env.PORT ? process.env.PORT : 3000
 if(process.env.HTTPS === "true" && process.env.NODE_ENV === 'development'){
     server = https.createServer({
-        key: fs.readFileSync(`${__dirname}/cert/robin.local+3-key.pem`, 'utf8'),
-        cert: fs.readFileSync(`${__dirname}/cert/robin.local+3.pem`, 'utf8')
+        key: fs.readFileSync(`${__dirname}/cert/${process.env.KEY_PEM}`, 'utf8'),
+        cert: fs.readFileSync(`${__dirname}/cert/${process.env.PEM}`, 'utf8')
     }, app)
 }else{
     server = http.createServer(app)
