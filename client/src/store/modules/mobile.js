@@ -10,6 +10,7 @@ export const mobile = {
     },
     getters: {
         mobileUrl: (state) => {
+            // Bon c'est dégueu mais jpp donc on verra plus tard hein
             return state.mobileId !== null ? (process.env.VUE_APP_HTTPS === "true" ? 'https://' : 'http://') + process.env.VUE_APP_PUBLIC_HOST + (process.env.VUE_APP_PUBLIC_PORT ? ':' + process.env.VUE_APP_PUBLIC_PORT : '') + '/mobile/' + state.mobileId : null
         }
     },

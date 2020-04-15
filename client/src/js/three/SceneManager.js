@@ -1,8 +1,10 @@
 import * as THREE from 'three';
+import store from '../../store'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-//import MobileOrientationControls from "./utils/MobileOrientationControls";
 import Scene1 from "./scenes/Scene1";
-//import Scene2 from "./scenes/Scene2";
+import Scene2 from "./scenes/Scene2";
+import Scene3 from "./scenes/Scene3";
+import appStates from "../appStates";
 
 class SceneManager {
     canvas;
@@ -14,7 +16,6 @@ class SceneManager {
     camera;
     renderer;
     sceneSubjects;
-    mobileControls;
     orbitControls;
     clock = new THREE.Clock();
 
@@ -30,10 +31,7 @@ class SceneManager {
         this.camera = this.buildCamera(this.screenDimensions);
         this.sceneSubjects = this.createSceneSubjects(this.scene);
 
-        /* this.mobileControls = new MobileOrientationControls(this.camera)
-        this.mobileControls.update() */
-
-       this.orbitControls = this.buildOrbit();
+        this.orbitControls = this.buildOrbit();
 
     }
 
@@ -42,6 +40,15 @@ class SceneManager {
         scene.background = new THREE.Color("#099");
 
         return scene;
+    }
+
+    clearScene(scene) {
+        return new Promise((resolve) => {
+            while(scene.children.length > 0){
+                scene.remove(scene.children[0]);
+            }
+            resolve();
+        })
     }
 
     buildRenderer({width, height}) {
@@ -79,9 +86,16 @@ class SceneManager {
 
 
     createSceneSubjects(scene) {
-        return [
-            new Scene1(scene)
-        ];
+        switch (store.state.app.appState) {
+            case appStates.SCENE1:
+                return [new Scene1(scene)]
+            case appStates.SCENE2:
+                return [new Scene2(scene)]
+            case appStates.SCENE3:
+                return [new Scene3(scene)]
+            default:
+                return []
+        }
     }
 
     update() {
