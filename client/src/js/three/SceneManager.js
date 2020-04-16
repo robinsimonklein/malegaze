@@ -1,7 +1,5 @@
 import * as THREE from 'three';
 import store from '../../store'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import MobileOrientationControls from "./utils/MobileOrientationControls";
 import Scene1 from './scenes/Scene1';
 import Scene2 from './scenes/Scene2';
 import Scene3 from './scenes/Scene3';
@@ -14,15 +12,13 @@ class SceneManager {
         height: 0
     };
 
-    camera;
     renderer;
     sceneSubjects;
-    mobileControls;
-    orbitControls;
     clock = new THREE.Clock();
 
     constructor(canvas) {
         this.canvas = canvas;
+
         // Set screenDimensions with canvas dimensions
         this.screenDimensions.width = canvas.width;
         this.screenDimensions.height = canvas.height;
@@ -30,13 +26,8 @@ class SceneManager {
         this.scene = this.buildScene();
         this.renderer = this.buildRenderer(this.screenDimensions);
 
-        this.camera = this.buildCamera(this.screenDimensions);
         this.sceneSubjects = this.createSceneSubjects(this.scene);
 
-        this.mobileControls = new MobileOrientationControls(this.camera)
-        this.mobileControls.update()
-
-        this.orbitControls = this.buildOrbit();
     }
 
     buildScene() {
@@ -69,6 +60,8 @@ class SceneManager {
         return renderer;
     }
 
+    /*
+
     buildCamera({width, height}) {
         const aspectRatio = width / height;
         const fieldOfView = 60;
@@ -80,25 +73,16 @@ class SceneManager {
         return camera;
     }
 
-
-    buildOrbit() {
-        const orbitControl = new OrbitControls(this.camera, this.renderer.domElement);
-        orbitControl.target.set(0, 0, 0);
-        this.camera.position.set(0, 100, -600);
-        orbitControl.update();
-
-        return orbitControl;
-    }
-
+     */
 
     createSceneSubjects(scene) {
         switch (store.state.app.appState) {
             case appStates.SCENE1:
-                return [new Scene1(scene)];
+                return [new Scene1(scene, this.screenDimensions)];
             case appStates.SCENE2:
-                return [new Scene2(scene)];
+                return [new Scene2(scene, this.screenDimensions, this.canvas)]; // bon à voir pour le canvas...
             case appStates.SCENE3:
-                return [new Scene3(scene)];
+                return [new Scene3(scene, this.screenDimensions, this.canvas)]; // bon à voir pour le canvas...
             default:
                 return [];
         }
@@ -111,9 +95,7 @@ class SceneManager {
             this.sceneSubjects[i].update(elapsedTime);
         }
 
-        this.mobileControls.update();
-        this.orbitControls.update();
-        this.renderer.render(this.scene, this.camera);
+        this.renderer.render(this.scene, this.sceneSubjects[0].camera);
     }
 
     onWindowResize() {
@@ -122,8 +104,9 @@ class SceneManager {
         this.screenDimensions.width = width;
         this.screenDimensions.height = height;
 
-        this.camera.aspect = width / height;
-        this.camera.updateProjectionMatrix();
+        for (let i = 0; i < this.sceneSubjects.length; i++) {
+            this.sceneSubjects[i].onWindowResize({width, height});
+        }
 
         this.renderer.setSize(width, height);
     }
