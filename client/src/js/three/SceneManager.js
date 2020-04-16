@@ -1,9 +1,11 @@
 import * as THREE from 'three';
+import store from '../../store'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import MobileOrientationControls from "./utils/MobileOrientationControls";
-// import Scene1 from "./scenes/Scene1";
-// import Scene2 from "./scenes/Scene2";
-import Scene3 from "./scenes/Scene3";
+import Scene1 from './scenes/Scene1';
+import Scene2 from './scenes/Scene2';
+import Scene3 from './scenes/Scene3';
+import appStates from '../appStates';
 
 class SceneManager {
     canvas;
@@ -34,8 +36,7 @@ class SceneManager {
         this.mobileControls = new MobileOrientationControls(this.camera)
         this.mobileControls.update()
 
-        // this.orbitControls = this.buildOrbit();
-
+        this.orbitControls = this.buildOrbit();
     }
 
     buildScene() {
@@ -43,6 +44,17 @@ class SceneManager {
         scene.background = new THREE.Color("#099");
 
         return scene;
+    }
+
+    clearScene() {
+        this.scene = this.buildScene();
+        this.sceneSubjects = this.createSceneSubjects(this.scene);
+    }
+
+    nextScene() { // TODO: Set camera position based on scene
+        for (let i = 0; i < this.sceneSubjects.length; i++) {
+            this.sceneSubjects[i].nextScene();
+        }
     }
 
     buildRenderer({width, height}) {
@@ -63,16 +75,16 @@ class SceneManager {
         const nearPlane = 1;
         const farPlane = 3000;
 
-        let camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio, nearPlane, farPlane);
-        camera.position.set(-20,200, 520);
+        const camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio, nearPlane, farPlane);
+        camera.position.set(-20, 200, 520);
         return camera;
     }
 
 
     buildOrbit() {
-        let orbitControl = new OrbitControls( this.camera, this.renderer.domElement );
-        orbitControl.target.set(0,0,0);
-        this.camera.position.set(0,100, -600);
+        const orbitControl = new OrbitControls(this.camera, this.renderer.domElement);
+        orbitControl.target.set(0, 0, 0);
+        this.camera.position.set(0, 100, -600);
         orbitControl.update();
 
         return orbitControl;
@@ -80,19 +92,27 @@ class SceneManager {
 
 
     createSceneSubjects(scene) {
-        return [
-            new Scene3(scene)
-        ];
+        switch (store.state.app.appState) {
+            case appStates.SCENE1:
+                return [new Scene1(scene)];
+            case appStates.SCENE2:
+                return [new Scene2(scene)];
+            case appStates.SCENE3:
+                return [new Scene3(scene)];
+            default:
+                return [];
+        }
     }
 
     update() {
         const elapsedTime = this.clock.getElapsedTime();
 
-        for (let i = 0; i < this.sceneSubjects.length; i++)
+        for (let i = 0; i < this.sceneSubjects.length; i++) {
             this.sceneSubjects[i].update(elapsedTime);
+        }
 
-        //this.mobileControls.update();
         this.mobileControls.update();
+        this.orbitControls.update();
         this.renderer.render(this.scene, this.camera);
     }
 

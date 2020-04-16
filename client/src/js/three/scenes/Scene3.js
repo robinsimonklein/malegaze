@@ -1,19 +1,19 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import store from '../../../store';
+import appStates from '../../appStates';
 
 class Scene3 {
     scene;
-    constructor(scene) {
 
+    constructor(scene) {
         this.scene = scene;
         this.buildLight();
         this.buildLoader();
-
     }
 
     buildLight() {
-
-        let spotLight = new THREE.SpotLight( 0xff3bfc );
+        const spotLight = new THREE.SpotLight(0xff3bfc);
         spotLight.position.set(0, 100, -550);
 
         spotLight.castShadow = true;
@@ -28,13 +28,12 @@ class Scene3 {
     }
 
     buildLoader() {
-
-        let loader = new GLTFLoader();
-        let self = this;
+        const loader = new GLTFLoader();
+        const self = this;
         loader.load('models/glb/MaleGaze_SCENES032.glb', function (object) {
 
             object.scene.traverse(function (child) {
-                if (child.isMesh){
+                if (child.isMesh) {
                     // child.material.envMap = envMap;
                     child.castShadow = true;
                     child.receiveShadow = true;
@@ -45,6 +44,10 @@ class Scene3 {
             self.scene.add(object.scene);
         });
 
+    }
+
+    nextScene() {
+        store.dispatch('app/requestState', appStates.SCENE1);
     }
 
     update() {

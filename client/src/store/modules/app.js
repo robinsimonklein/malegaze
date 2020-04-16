@@ -1,4 +1,4 @@
-import appStates from "../../js/appStates";
+import appStates from '../../js/appStates';
 
 export const app = {
     namespaced: true,
@@ -18,6 +18,11 @@ export const app = {
     actions: {
         SOCKET_state_dispatch({commit}, value) {
             commit('setAppState', value)
+        },
+
+        requestState({commit}, value) { // eslint-disable-line
+            console.log('dispatch', value)
+            this._vm.$socket.emit('state_request', value)
         }
     },
 }

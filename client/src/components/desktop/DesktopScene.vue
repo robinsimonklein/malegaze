@@ -3,12 +3,12 @@
 </template>
 
 <script>
-    import threeEntryPoint from "../../js/three/threeEntryPoint";
+    import threeEntryPoint from '../../js/three/threeEntryPoint';
 
     export default {
-        name: "DesktopScene",
+        name: 'DesktopScene',
         mounted() {
-            threeEntryPoint(this.$refs.sceneContainer)
+            threeEntryPoint(this.$refs.sceneContainer);
         }
     }
 </script>
@@ -17,5 +17,6 @@
 .scene-container {
     width: 100vw;
     height: 100vh;
+    overflow: hidden;
 }
-</style>
+</style>s
