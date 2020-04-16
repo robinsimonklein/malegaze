@@ -60,20 +60,6 @@ class SceneManager {
         return renderer;
     }
 
-    /*
-
-    buildCamera({width, height}) {
-        const aspectRatio = width / height;
-        const fieldOfView = 60;
-        const nearPlane = 1;
-        const farPlane = 3000;
-
-        const camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio, nearPlane, farPlane);
-        camera.position.set(-20, 200, 520);
-        return camera;
-    }
-
-     */
 
     createSceneSubjects(scene) {
         switch (store.state.app.appState) {
@@ -95,7 +81,13 @@ class SceneManager {
             this.sceneSubjects[i].update(elapsedTime);
         }
 
-        this.renderer.render(this.scene, this.sceneSubjects[0].camera);
+        // TODO: Améliorer, potentiellement passer le render dans les scenes
+        if ( this.sceneSubjects[0].camera.postprocessing.enabled ) {
+            this.sceneSubjects[0].camera.renderCinematic( this.scene, this.renderer );
+        } else {
+            this.renderer.render(this.scene, this.sceneSubjects[0].camera);
+        }
+
     }
 
     onWindowResize() {

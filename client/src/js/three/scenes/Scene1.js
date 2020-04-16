@@ -3,10 +3,12 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import store from '../../../store'
 import appStates from '../../appStates';
 import MobileOrientationControls from "../utils/MobileOrientationControls";
+import CinemaCamera from "../cameras/CinemaCamera";
 
 class Scene1 {
     scene;
     camera;
+    cinemaCamera;
     screenDimensions;
     mobileControls;
 
@@ -19,6 +21,7 @@ class Scene1 {
         this.camera = this.buildCamera()
 
         this.mobileControls = new MobileOrientationControls(this.camera)
+        this.mobileControls.alphaOffset = Math.PI
         this.mobileControls.update()
     }
 
@@ -50,12 +53,14 @@ class Scene1 {
 
     buildCamera() {
         const aspectRatio = this.screenDimensions.width / this.screenDimensions.height ;
-        const fov = 60;
+        const fov = 1;
         const near = 1;
         const far = 3000;
 
-        const camera = new THREE.PerspectiveCamera(fov, aspectRatio, near, far);
-        camera.position.set(-20, 200, 520);
+        this.cinemaCamera = new CinemaCamera(fov, aspectRatio, near, far);
+        this.cinemaCamera.focusDistance = 530
+        const camera = this.cinemaCamera.getCamera();
+        camera.position.set(0, 120, -520);
         return camera;
     }
 
@@ -65,6 +70,7 @@ class Scene1 {
     }
 
     update() {
+        this.cinemaCamera.update()
         this.mobileControls.update()
     }
 

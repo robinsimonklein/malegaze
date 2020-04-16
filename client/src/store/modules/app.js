@@ -3,7 +3,7 @@ import appStates from '../../js/appStates';
 export const app = {
     namespaced: true,
     state: {
-        appState: process.env.VUE_APP_SKIP_MOBILE_SETUP === "true" ? appStates.SCENE2 : appStates.SETUP
+        appState: process.env.VUE_APP_SKIP_MOBILE_SETUP === "true" ? appStates.SCENE1 : appStates.SETUP
     },
     getters: {
         appStatesList() {

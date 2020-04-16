@@ -17,12 +17,12 @@ class CinemaCamera {
     focusDistance = 30
 
     effectController = {
-        focalLength: 15,
-        fstop: 2.8,
-        maxblur: 1.5,
+        focalLength: 25,
+        fstop: 20,
+        maxblur: 1,
         showFocus: false,
-        focalDepth: 3,
-        depthBlur: true,
+        focalDepth: 1,
+        depthBlur: false,
     }
 
     constructor(fov, aspectRatio, near, far) {
@@ -59,7 +59,6 @@ class CinemaCamera {
     }
 
     update() {
-
         this.camera.focusAt( this.focusDistance );
     }
 }
