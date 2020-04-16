@@ -34,13 +34,15 @@ class SceneManager {
         this.orbitControls = this.buildOrbit();
     }
 
-    nextScene() {
-        console.log('from ' + store.state.app.appState);
+    clearScene() {
+        this.scene = this.buildScene();
+        this.sceneSubjects = this.createSceneSubjects(this.scene);
+    }
+
+    nextScene() { // TODO: Set camera position based on scene
         for (let i = 0; i < this.sceneSubjects.length; i++) {
             this.sceneSubjects[i].nextScene();
         }
-
-        console.log('to ' + store.state.app.appState);
     }
 
     buildScene() {
@@ -48,15 +50,6 @@ class SceneManager {
         scene.background = new THREE.Color("#099");
 
         return scene;
-    }
-
-    clearScene(scene) {
-        return new Promise((resolve) => {
-            while (scene.children.length > 0) {
-                scene.remove(scene.children[0]);
-            }
-            resolve();
-        })
     }
 
     buildRenderer({width, height}) {
@@ -78,13 +71,13 @@ class SceneManager {
         const farPlane = 3000;
 
         const camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio, nearPlane, farPlane);
-        camera.position.set(-20, 200, 520); // TODO: Set camera position based on scene
+        camera.position.set(-20, 200, 520);
         return camera;
     }
 
 
     buildOrbit() {
-        let orbitControl = new OrbitControls(this.camera, this.renderer.domElement);
+        const orbitControl = new OrbitControls(this.camera, this.renderer.domElement);
         orbitControl.target.set(0, 0, 0);
         this.camera.position.set(0, 100, -600);
         orbitControl.update();

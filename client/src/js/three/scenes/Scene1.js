@@ -38,7 +38,6 @@ class Scene1 {
     }
 
     nextScene() {
-        console.log('calling for scene 2');
         store.dispatch('app/requestState', appStates.SCENE2);
     }
 

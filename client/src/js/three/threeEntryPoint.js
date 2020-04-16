@@ -1,4 +1,5 @@
 import SceneManager from './SceneManager';
+import store from '../../store';
 
 export default (container) => {
     const canvas = createCanvas(document, container);
@@ -15,8 +16,9 @@ export default (container) => {
 
     function bindEventListeners() {
         window.onresize = resizeCanvas;
-        window.addEventListener('keypress', () => sceneManager.nextScene())
         resizeCanvas();
+        window.addEventListener('keypress', () => sceneManager.nextScene());
+        store.watch((state) => state.app.appState, () => sceneManager.clearScene());
     }
 
     function resizeCanvas() {
