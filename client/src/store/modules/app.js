@@ -1,4 +1,4 @@
-import appStates from "../../js/appStates";
+import appStates from '../../js/appStates';
 
 export const app = {
     namespaced: true,

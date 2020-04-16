@@ -15,6 +15,7 @@ export default (container) => {
 
     function bindEventListeners() {
         window.onresize = resizeCanvas;
+        window.addEventListener('keypress', () => sceneManager.nextScene())
         resizeCanvas();
     }
 
@@ -25,7 +26,7 @@ export default (container) => {
         canvas.width = canvas.offsetWidth;
         canvas.height = canvas.offsetHeight;
 
-        sceneManager.onWindowResize()
+        sceneManager.onWindowResize();
     }
 
     function render() {
