@@ -21,7 +21,7 @@ class Scene1 {
         this.camera = this.buildCamera()
 
         this.mobileControls = new MobileOrientationControls(this.camera)
-        this.mobileControls.alphaOffset = Math.PI
+        this.mobileControls.alphaOffset = Math.PI // 180° rotation by default
         this.mobileControls.update()
     }
 
