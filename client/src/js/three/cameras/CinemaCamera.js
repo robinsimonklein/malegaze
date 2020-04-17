@@ -17,15 +17,15 @@ class CinemaCamera {
     focusDistance = 30
 
     effectController = {
-        focalLength: 35,
-        fstop: 2.8,
-        maxblur: 1.5,
+        focalLength: 25,
+        fstop: 20,
+        maxblur: 1,
         showFocus: false,
-        focalDepth: 3,
-        depthBlur: true,
+        focalDepth: 1,
+        depthBlur: false,
     }
 
-    constructor(aspectRatio, fov, near, far) {
+    constructor(fov, aspectRatio, near, far) {
         this.aspectRatio = aspectRatio
         this.camera = this.build(aspectRatio, fov, near, far)
 
@@ -33,7 +33,7 @@ class CinemaCamera {
         this.update()
     }
 
-    build(aspectRatio, fov, near, far) {
+    build(fov, aspectRatio, near, far) {
         let camera = new CinematicCamera( fov, aspectRatio, near, far );
         camera.position.set(this.position.x, this.position.y, this.position.z)
         camera.rotation.set(this.rotation.x, this.rotation.y, this.rotation.z)
@@ -59,7 +59,6 @@ class CinemaCamera {
     }
 
     update() {
-
         this.camera.focusAt( this.focusDistance );
     }
 }

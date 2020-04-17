@@ -16,8 +16,6 @@ import store from './../../../store/index'
 
 class MobileOrientationControls {
 
-    scope = this;
-
     object;
 
     deviceOrientation = {};
@@ -31,7 +29,7 @@ class MobileOrientationControls {
     }
 
     setScreenOrientation(screenOrientation) {
-        this.scope.screenOrientation = screenOrientation || 0;
+        this.screenOrientation = screenOrientation || 0;
     }
 
     getDeviceOrientation() {
@@ -66,7 +64,7 @@ class MobileOrientationControls {
         this.deviceOrientation = this.getDeviceOrientation()
         this.screenOrientation = this.getScreenOrientation()
 
-        var alpha = this.deviceOrientation.alpha ? MathUtils.degToRad(this.deviceOrientation.alpha) + this.scope.alphaOffset : 0; // Z
+        var alpha = this.deviceOrientation.alpha ? MathUtils.degToRad(this.deviceOrientation.alpha) + this.alphaOffset : 0; // Z
 
         var beta = this.deviceOrientation.beta ? MathUtils.degToRad(this.deviceOrientation.beta) : 0; // X'
 
@@ -74,7 +72,7 @@ class MobileOrientationControls {
 
         var orient = this.screenOrientation ? MathUtils.degToRad(this.screenOrientation) : 0; // O
 
-        this.setObjectQuaternion(this.scope.object.quaternion, alpha, beta, gamma, orient);
+        this.setObjectQuaternion(this.object.quaternion, alpha, beta, gamma, orient);
     }
 }
 

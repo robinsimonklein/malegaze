@@ -2,16 +2,28 @@ import * as THREE from 'three';
 import { Reflector } from 'three/examples/jsm/objects/Reflector';
 import store from '../../../store';
 import appStates from '../../appStates';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 class Scene2 {
 
     scene;
+    camera;
+    screenDimensions;
+    controls;
 
-    constructor(scene) {
+    constructor(scene, screenDimensions, canvas) {
         this.scene = scene;
 
         this.buildPlane();
         this.buildMirror();
+
+        this.screenDimensions = screenDimensions
+
+        this.camera = this.buildCamera(screenDimensions)
+
+
+        this.controls = new OrbitControls(this.camera, canvas) // Bon.. Euh... c'est relou de passer le canvas à voir si y a mieux
+        this.controls.update()
     }
 
     buildPlane() {
@@ -41,12 +53,28 @@ class Scene2 {
         this.scene.add(mirror);
     }
 
-    update() {
+    buildCamera({width, height}) {
+        const aspectRatio = width / height;
+        const fieldOfView = 60;
+        const nearPlane = 1;
+        const farPlane = 3000;
 
+        const camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio, nearPlane, farPlane);
+        camera.position.set(-20, 200, 520);
+        return camera;
     }
 
     nextScene() {
         store.dispatch('app/requestState', appStates.SCENE3);
+    }
+
+    update() {
+        this.controls.update()
+    }
+
+    onWindowResize({width, height}) {
+        this.camera.aspect = width / height;
+        this.camera.updateProjectionMatrix();
     }
 
 }

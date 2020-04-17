@@ -2,14 +2,25 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import store from '../../../store';
 import appStates from '../../appStates';
+import MobileOrientationControls from "../utils/MobileOrientationControls";
 
 class Scene3 {
     scene;
+    camera;
+    screenDimensions;
+    mobileControls;
 
-    constructor(scene) {
+    constructor(scene, screenDimensions) {
         this.scene = scene;
         this.buildLight();
         this.buildLoader();
+
+        this.screenDimensions = screenDimensions
+
+        this.camera = this.buildCamera(screenDimensions)
+
+        this.mobileControls = new MobileOrientationControls(this.camera)
+        this.mobileControls.update()
     }
 
     buildLight() {
@@ -43,7 +54,16 @@ class Scene3 {
             self.scene.position.z = -20;
             self.scene.add(object.scene);
         });
+    }
+    buildCamera({width, height}) {
+        const aspectRatio = width / height;
+        const fieldOfView = 60;
+        const nearPlane = 1;
+        const farPlane = 3000;
 
+        const camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio, nearPlane, farPlane);
+        camera.position.set(-20, 200, 520);
+        return camera;
     }
 
     nextScene() {
@@ -51,7 +71,12 @@ class Scene3 {
     }
 
     update() {
+        this.mobileControls.update()
+    }
 
+    onWindowResize({width, height}) {
+        this.camera.aspect = width / height;
+        this.camera.updateProjectionMatrix();
     }
 }
 
