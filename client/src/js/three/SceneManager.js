@@ -32,7 +32,7 @@ class SceneManager {
 
     buildScene() {
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color("#099");
+        scene.background = new THREE.Color("#1d1428");
 
         return scene;
     }
@@ -82,7 +82,7 @@ class SceneManager {
         }
 
         // TODO: Améliorer, potentiellement passer le render dans les scenes
-        if ( this.sceneSubjects[0].camera.postprocessing.enabled ) {
+        if ( this.sceneSubjects[0].camera.postprocessing && this.sceneSubjects[0].camera.postprocessing.enabled ) {
             this.sceneSubjects[0].camera.renderCinematic( this.scene, this.renderer );
         } else {
             this.renderer.render(this.scene, this.sceneSubjects[0].camera);

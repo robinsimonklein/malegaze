@@ -16,8 +16,8 @@ class CinemaCamera {
 
     focusDistance = 30
 
-    effectController = {
-        focalLength: 25,
+    settings = {
+        focalLength: 24,
         fstop: 20,
         maxblur: 1,
         showFocus: false,
@@ -46,20 +46,21 @@ class CinemaCamera {
     }
 
     matChanger() {
-        for ( var e in this.effectController ) {
+        for ( var e in this.settings ) {
             if ( e in this.camera.postprocessing.bokeh_uniforms ) {
-                this.camera.postprocessing.bokeh_uniforms[ e ].value = this.effectController[e];
+                this.camera.postprocessing.bokeh_uniforms[ e ].value = this.settings[e];
             }
         }
 
         this.camera.postprocessing.bokeh_uniforms[ 'znear' ].value = this.camera.near;
         this.camera.postprocessing.bokeh_uniforms[ 'zfar' ].value = this.camera.far;
-        this.camera.setLens( this.effectController.focalLength, this.camera.frameHeight, this.effectController.fstop, this.camera.coc );
-        this.effectController[ 'focalDepth' ] = this.camera.postprocessing.bokeh_uniforms[ 'focalDepth' ].value;
+        this.camera.setLens( this.settings.focalLength, this.camera.frameHeight, this.settings.fstop, this.camera.coc );
+        this.settings[ 'focalDepth' ] = this.camera.postprocessing.bokeh_uniforms[ 'focalDepth' ].value;
     }
 
     update() {
         this.camera.focusAt( this.focusDistance );
+        this.matChanger()
     }
 }
 

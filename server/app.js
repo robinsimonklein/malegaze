@@ -74,6 +74,10 @@ io.on('connection', function (socket) {
         console.log(screenOrientation)
         socket.in(socket.mobileRoom).emit('mobile_screen_orientation', screenOrientation)
     })
+    socket.on('mobile_controls', (controls) => {
+        console.log(controls)
+        socket.in(socket.mobileRoom).emit('mobile_controls', controls)
+    })
 
     // App
     socket.on('state_request', (state) => {

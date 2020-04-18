@@ -3,6 +3,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import store from '../../../store'
 import appStates from '../../appStates';
 import MobileOrientationControls from "../utils/MobileOrientationControls";
+import MobileControls from "../utils/MobileControls";
 import CinemaCamera from "../cameras/CinemaCamera";
 
 class Scene1 {
@@ -10,6 +11,7 @@ class Scene1 {
     camera;
     cinemaCamera;
     screenDimensions;
+    orientationControls;
     mobileControls;
 
     constructor(scene, screenDimensions) {
@@ -20,9 +22,12 @@ class Scene1 {
 
         this.camera = this.buildCamera()
 
-        this.mobileControls = new MobileOrientationControls(this.camera)
-        this.mobileControls.alphaOffset = Math.PI // 180° rotation by default
-        this.mobileControls.update()
+        this.orientationControls = new MobileOrientationControls(this.camera)
+        this.orientationControls.alphaOffset = Math.PI // 180° rotation by default
+        this.orientationControls.update()
+
+        this.mobileControls = new MobileControls(this.cinemaCamera)
+        this.mobileControls.update(['focalLength'])
     }
 
     buildLight() {
@@ -36,7 +41,7 @@ class Scene1 {
     buildLoader() {
         const loader = new GLTFLoader();
         const self = this;
-        loader.load('models/glb/Scene-01-cellule.gltf', function (object) {
+        loader.load('models/glb/scene-01.gltf', function (object) {
 
             /* object.scene.traverse(function (child) {
                   if (child.isMesh){
@@ -71,7 +76,8 @@ class Scene1 {
 
     update() {
         this.cinemaCamera.update()
-        this.mobileControls.update()
+        this.orientationControls.update()
+        this.mobileControls.update(['focalLength'])
     }
 
     onWindowResize({width, height}) {
