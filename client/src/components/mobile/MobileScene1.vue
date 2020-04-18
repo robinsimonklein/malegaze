@@ -35,10 +35,6 @@
         width: 100vw;
         height: 100vh;
 
-        &__zoom {
-
-        }
-
         &__infos {
             position: absolute;
             top: .5rem;
