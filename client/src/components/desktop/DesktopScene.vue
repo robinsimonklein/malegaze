@@ -1,6 +1,6 @@
 <template>
     <div id="scene-container" class="scene-container" ref="sceneContainer">
-        <CameraOverlay />
+        <CameraOverlay v-if="appState === 'scene1'" />
     </div>
 </template>
 
