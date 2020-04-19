@@ -18,10 +18,10 @@ class CinemaCamera {
 
     settings = {
         focalLength: 24,
-        fstop: 20,
+        fstop: 8,
         maxblur: 1,
         showFocus: false,
-        focalDepth: 1,
+        focalDepth: 3,
         depthBlur: false,
     }
 
@@ -54,13 +54,15 @@ class CinemaCamera {
 
         this.camera.postprocessing.bokeh_uniforms[ 'znear' ].value = this.camera.near;
         this.camera.postprocessing.bokeh_uniforms[ 'zfar' ].value = this.camera.far;
-        this.camera.setLens( this.settings.focalLength, this.camera.frameHeight, this.settings.fstop, this.camera.coc );
+        this.camera.setFocalLength( this.settings.focalLength);
         this.settings[ 'focalDepth' ] = this.camera.postprocessing.bokeh_uniforms[ 'focalDepth' ].value;
     }
 
     update() {
         this.camera.focusAt( this.focusDistance );
-        this.matChanger()
+        // this.matChanger()
+
+        this.camera.setFocalLength( this.settings.focalLength);
     }
 }
 

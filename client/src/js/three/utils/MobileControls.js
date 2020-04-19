@@ -8,7 +8,6 @@ class MobileOrientationControls {
 
     constructor(object) {
         this.object = object
-        console.log(object)
     }
 
     getMobileControls() {
