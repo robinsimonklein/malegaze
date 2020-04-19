@@ -2,9 +2,9 @@ import * as THREE from 'three';
 import { Reflector } from 'three/examples/jsm/objects/Reflector';
 import store from '../../../store';
 import appStates from '../../appStates';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
+import MobileOrientationControls from '../utils/MobileOrientationControls';
 
 class Scene2 {
 
@@ -38,10 +38,10 @@ class Scene2 {
 
         this.raycaster = new THREE.Raycaster();
 
-        this.controls = new OrbitControls(this.camera, canvas); // Bon.. Euh... c'est relou de passer le canvas à voir si y a mieux
+        this.controls = new MobileOrientationControls(this.camera);
         this.controls.update();
 
-        window.addEventListener('click', () => {this.shootEye(event)});
+        window.addEventListener('click', () => {this.shootEye()});
 
         setTimeout(() => {
             this.eyeAttraction();
@@ -63,7 +63,7 @@ class Scene2 {
 
             object.scene.traverse(function (child) {
                 if(child.name === 'ACTRICE') {
-                    console.log(child);
+
                     self.woman = child;
                 }
             });
@@ -114,17 +114,16 @@ class Scene2 {
 
     }
 
-    shootEye(event) {
+    shootEye() {
         if(!this.isFinished) {
-            console.log("click");
-            let mouse = new THREE.Vector2();
-            mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-            mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-            this.raycaster.setFromCamera(mouse, this.camera);
+            // let mouse = new THREE.Vector2();
+            // mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+            // mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+            this.raycaster.setFromCamera({x: 0.0, y: 0.0}, this.camera);
             let intersects = this.raycaster.intersectObjects(this.scene.children);
 
             if (intersects.length > 0) {
-                console.log("aie");
                 this.numberEyes++;
                 this.buildEyes();
             }
@@ -143,21 +142,20 @@ class Scene2 {
         for (var i = 0; i < this.numberEyes; i ++ ) {
 
             x = positions[index];
-            positions[index] = x + (this.woman.position.x - x) * 0.008;
+            positions[index] = x + (this.woman.position.x - x) * 0.001;
 
             index++;
             y = positions[index];
-            positions[index] = y + (this.woman.position.y - y) * 0.008;
+            positions[index] = y + (this.woman.position.y - y) * 0.001;
 
             index++;
             z = positions[index];
-            positions[index] = z + (this.woman.position.z - z) * 0.008;
+            positions[index] = z + (this.woman.position.z - z) * 0.001;
 
-            console.log(x, y, z);
             if (x > 0 && x < 30 && y > 0 && y < 95 && z < 240) {
-                console.log("hit");
                 this.isFinished = true;
                cancelAnimationFrame(particleFrame);
+               this.nextScene()
             }
 
         }
