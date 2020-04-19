@@ -6,9 +6,6 @@ import MobileOrientationControls from "../utils/MobileOrientationControls";
 import MobileControls from "../utils/MobileControls";
 import CinemaCamera from "../cameras/CinemaCamera";
 
-import Stats from 'three/examples/jsm/libs/stats.module.js';
-import {GUI} from 'three/examples/jsm/libs/dat.gui.module.js';
-
 class Scene1 {
     scene;
 
@@ -16,13 +13,11 @@ class Scene1 {
     cameras = [];
     cinemaCameras = [];
     orientationControls = []
-    cameraHelpers = [];
+    // cameraHelpers = [];
     screenDimensions;
     mobileControls;
 
-    stats;
     params;
-    gui;
 
     constructor(scene, screenDimensions) {
         this.scene = scene;
@@ -31,23 +26,14 @@ class Scene1 {
         this.screenDimensions = screenDimensions
 
         this.buildCameras()
-        this.buildCamerasHelpers()
+        // this.buildCamerasHelpers()
 
         this.mobileControls = new MobileControls(this.cinemaCameras[this.currentCamera])
         this.mobileControls.update(['focalLength'])
 
-        this.stats = new Stats();
-        document.body.appendChild( this.stats.dom );
-
         this.params = {
             focus: 530,
         };
-
-        this.gui = new GUI()
-
-        this.gui.add(this.params, 'focus', 300, 600).onChange(() => {
-            this.cinemaCameras[0].focusDistance = this.params.focus
-        })
     }
 
     buildLight() {
@@ -55,14 +41,10 @@ class Scene1 {
         light2.position.set(0, 200, -700);
         light2.castShadow = true;
         this.scene.add(light2);
-        var dirHelper = new THREE.DirectionalLightHelper(light2, 50);
-        this.scene.add(dirHelper);
 
         const ambient = new THREE.HemisphereLight(0xffb8c6, 0x080820);
         ambient.position.set(0, 300, 0)
         this.scene.add(ambient);
-        var ambiantHelper = new THREE.HemisphereLightHelper(ambient, 50);
-        this.scene.add(ambiantHelper);
     }
 
     buildLoader() {
@@ -150,9 +132,8 @@ class Scene1 {
     update() {
         this.cinemaCameras[this.currentCamera].update()
         this.orientationControls[this.currentCamera].update()
-        this.cameraHelpers[this.currentCamera].update()
         this.mobileControls.update(['focalLength'])
-        this.stats.update();
+        // this.cameraHelpers[this.currentCamera].update()
     }
 
     onWindowResize({width, height}) {

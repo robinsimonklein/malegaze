@@ -20,7 +20,7 @@ class CinemaCamera {
         focalLength: 24,
         fstop: 8,
         maxblur: 1,
-        showFocus: true,
+        showFocus: false,
         focalDepth: 3,
         depthBlur: false,
     }
