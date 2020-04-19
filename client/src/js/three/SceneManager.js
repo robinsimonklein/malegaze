@@ -7,6 +7,8 @@ import appStates from '../appStates';
 import {PerspectiveCamera} from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
+import Stats from 'three/examples/jsm/libs/stats.module.js';
+
 class SceneManager {
     canvas;
     screenDimensions = {
@@ -18,7 +20,9 @@ class SceneManager {
     sceneSubjects;
 
     camera;
+
     controls;
+    stats;
 
     clock = new THREE.Clock();
 
@@ -38,6 +42,10 @@ class SceneManager {
         this.camera.position.set(1000, 3000, 2000)
         this.camera.lookAt(0, 0, 0)
         this.controls.update()
+
+        // Initiate stats
+        this.stats = new Stats();
+        document.body.appendChild( this.stats.dom );
 
         this.sceneSubjects = this.createSceneSubjects(this.scene);
     }
@@ -94,6 +102,7 @@ class SceneManager {
         }
 
         this.controls.update()
+        this.stats.update();
 
 
 
