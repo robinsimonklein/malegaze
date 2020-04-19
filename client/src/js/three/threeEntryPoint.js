@@ -3,7 +3,9 @@ import store from '../../store';
 
 export default (container) => {
     const canvas = createCanvas(document, container);
-    const sceneManager = new SceneManager(canvas);
+    const video = document.querySelector('video');
+    const videoHasPlayed = false;
+    const sceneManager = new SceneManager(canvas, video);
 
     bindEventListeners();
     render();
@@ -17,7 +19,15 @@ export default (container) => {
     function bindEventListeners() {
         window.onresize = resizeCanvas;
         resizeCanvas();
-        window.addEventListener('keypress', () => sceneManager.nextScene());
+        window.addEventListener('keypress', () => { // TODO: Charger la vidéo ailleurs
+            sceneManager.nextScene();
+            if (!videoHasPlayed) {
+                video.play().then(() => {
+                    self.videoHasPlayed = true;
+                    video.pause()
+                });
+            }
+        });
         store.watch((state) => state.app.appState, () => sceneManager.clearScene());
     }
 

@@ -15,18 +15,21 @@ class SceneManager {
     };
 
     renderer;
+    video;
     sceneSubjects;
 
     stats;
 
     clock = new THREE.Clock();
 
-    constructor(canvas) {
+    constructor(canvas, video) {
         this.canvas = canvas;
 
         // Set screenDimensions with canvas dimensions
         this.screenDimensions.width = canvas.width;
         this.screenDimensions.height = canvas.height;
+
+        this.video = video;
 
         this.scene = this.buildScene();
         this.renderer = this.buildRenderer(this.screenDimensions);
@@ -34,9 +37,10 @@ class SceneManager {
 
         // Initiate stats
         this.stats = new Stats();
-        document.body.appendChild( this.stats.dom );
+        document.body.appendChild(this.stats.dom);
 
         this.sceneSubjects = this.createSceneSubjects(this.scene);
+
     }
 
     buildScene() {
@@ -51,7 +55,7 @@ class SceneManager {
         this.sceneSubjects = this.createSceneSubjects(this.scene);
     }
 
-    nextScene() { // TODO: Set camera position based on scene
+    nextScene() {
         for (let i = 0; i < this.sceneSubjects.length; i++) {
             this.sceneSubjects[i].nextScene();
         }
@@ -77,7 +81,7 @@ class SceneManager {
             case appStates.SCENE2:
                 return [new Scene2(scene, this.screenDimensions, this.canvas)]; // bon à voir pour le canvas...
             case appStates.SCENE3:
-                return [new Scene3(scene, this.screenDimensions, this.canvas)]; // bon à voir pour le canvas...
+                return [new Scene3(scene, this.screenDimensions, this.canvas, this.video)]; // bon à voir pour le canvas...
             default:
                 return [];
         }
@@ -93,18 +97,17 @@ class SceneManager {
         this.stats.update();
 
 
-
         // TODO: Améliorer, potentiellement passer le renderer et/ou les THREE.scene dans les scenes
-        if(this.sceneSubjects[0].cameras){;
+        if (this.sceneSubjects[0].cameras) {
             let currentCamera = this.sceneSubjects[0].currentCamera
 
-            if ( this.sceneSubjects[0].cameras[currentCamera].postprocessing && this.sceneSubjects[0].cameras[currentCamera].postprocessing.enabled ) {
-                this.sceneSubjects[0].cameras[currentCamera].renderCinematic( this.scene, this.renderer );
+            if (this.sceneSubjects[0].cameras[currentCamera].postprocessing && this.sceneSubjects[0].cameras[currentCamera].postprocessing.enabled) {
+                this.sceneSubjects[0].cameras[currentCamera].renderCinematic(this.scene, this.renderer);
             } else {
                 this.renderer.render(this.scene, this.sceneSubjects[0].cameras[currentCamera]);
             }
 
-        }else {
+        } else {
             this.renderer.render(this.scene, this.sceneSubjects[0].camera);
         }
 
