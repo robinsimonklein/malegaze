@@ -1,18 +1,28 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import store from '../../../store'
 import appStates from '../../appStates';
 import MobileOrientationControls from "../utils/MobileOrientationControls";
 import MobileControls from "../utils/MobileControls";
 import CinemaCamera from "../cameras/CinemaCamera";
 
+import Stats from 'three/examples/jsm/libs/stats.module.js';
+import {GUI} from 'three/examples/jsm/libs/dat.gui.module.js';
+
 class Scene1 {
     scene;
-    camera;
-    cinemaCamera;
+
+    currentCamera = 0;
+    cameras = [];
+    cinemaCameras = [];
+    orientationControls = []
+    cameraHelpers = [];
     screenDimensions;
-    orientationControls;
     mobileControls;
+
+    stats;
+    params;
+    gui;
 
     constructor(scene, screenDimensions) {
         this.scene = scene;
@@ -20,53 +30,116 @@ class Scene1 {
         this.buildLoader();
         this.screenDimensions = screenDimensions
 
-        this.camera = this.buildCamera()
+        this.buildCameras()
+        this.buildCamerasHelpers()
 
-        this.orientationControls = new MobileOrientationControls(this.camera)
-        this.orientationControls.alphaOffset = Math.PI // 180° rotation by default
-        this.orientationControls.update()
-
-        this.mobileControls = new MobileControls(this.cinemaCamera)
+        this.mobileControls = new MobileControls(this.cinemaCameras[this.currentCamera])
         this.mobileControls.update(['focalLength'])
+
+        this.stats = new Stats();
+        document.body.appendChild( this.stats.dom );
+
+        this.params = {
+            focus: 530,
+        };
+
+        this.gui = new GUI()
+
+        this.gui.add(this.params, 'focus', 300, 600).onChange(() => {
+            this.cinemaCameras[0].focusDistance = this.params.focus
+        })
     }
 
     buildLight() {
-        const light2 = new THREE.DirectionalLight(0xffffff, 1);
-        light2.position.set(0, 20, 50);
+        const light2 = new THREE.DirectionalLight(0xff4444, 1);
+        light2.position.set(0, 200, -700);
+        light2.castShadow = true;
         this.scene.add(light2);
+        var dirHelper = new THREE.DirectionalLightHelper(light2, 50);
+        this.scene.add(dirHelper);
+
         const ambient = new THREE.HemisphereLight(0xffb8c6, 0x080820);
+        ambient.position.set(0, 300, 0)
         this.scene.add(ambient);
+        var ambiantHelper = new THREE.HemisphereLightHelper(ambient, 50);
+        this.scene.add(ambiantHelper);
     }
 
     buildLoader() {
         const loader = new GLTFLoader();
-        const self = this;
-        loader.load('models/glb/scene-01.gltf', function (object) {
 
-            /* object.scene.traverse(function (child) {
-                  if (child.isMesh){
-                      // child.material.envMap = envMap;
-                      child.castShadow = true;
-                      child.receiveShadow = true;
-                  }
-              }); */
+        loader.load('models/glb/scene-01.glb',
+            (object) => {
 
-            self.scene.add(object.scene);
-        });
+                object.scene.traverse((child) => {
+
+
+                    if (child.isMesh) {
+
+                        // child.material.envMap = envMap;
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+                    }
+                });
+
+                this.scene.add(object.scene);
+            },
+            (xhr) => {
+                console.log(Math.round(xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+            (error) => {
+                console.log('An error happened', error);
+            }
+        );
 
     }
 
-    buildCamera() {
-        const aspectRatio = this.screenDimensions.width / this.screenDimensions.height ;
+    buildCameras() {
+        const aspectRatio = this.screenDimensions.width / this.screenDimensions.height;
         const fov = 1;
         const near = 1;
-        const far = 3000;
+        const far = 1500;
 
-        this.cinemaCamera = new CinemaCamera(fov, aspectRatio, near, far);
-        this.cinemaCamera.focusDistance = 530
-        const camera = this.cinemaCamera.getCamera();
-        camera.position.set(0, 120, -520);
-        return camera;
+        // First camera
+        this.cinemaCameras[0] = new CinemaCamera(fov, aspectRatio, near, far);
+        this.cinemaCameras[0].focusDistance = 530
+        this.cameras[0] = this.cinemaCameras[0].getCamera();
+        this.cameras[0].position.set(-50, 150, -300);
+        this.scene.add(this.cameras[0])
+
+        this.orientationControls[0] = new MobileOrientationControls(this.cameras[0])
+        this.orientationControls[0].alphaOffset = Math.PI // 180° rotation by default
+        this.orientationControls[0].update()
+
+        // Second camera
+        this.cinemaCameras[1] = new CinemaCamera(fov, aspectRatio, near, far);
+        this.cinemaCameras[1].focusDistance = 30
+        this.cameras[1] = this.cinemaCameras[1].getCamera();
+        this.cameras[1].position.set(-70, 150, 170);
+        this.scene.add(this.cameras[1])
+
+        this.orientationControls[1] = new MobileOrientationControls(this.cameras[1])
+        this.orientationControls[1].alphaOffset = 0// 0° rotation by default
+        this.orientationControls[1].update()
+
+        // Third camera
+        this.cinemaCameras[2] = new CinemaCamera(fov, aspectRatio, near, far);
+        this.cinemaCameras[2].focusDistance = 530
+        this.cameras[2] = this.cinemaCameras[2].getCamera();
+        this.cameras[2].position.set(0, 50, 700);
+        this.scene.add(this.cameras[2])
+
+        this.orientationControls[2] = new MobileOrientationControls(this.cameras[2])
+        this.orientationControls[2].alphaOffset = 0 // 0° rotation by default
+        this.orientationControls[2].update()
+    }
+
+
+    buildCamerasHelpers() {
+        for (let i = 0; i < this.cameras.length; i++) {
+            this.cameraHelpers[i] = new THREE.CameraHelper(this.cameras[i]);
+            this.scene.add(this.cameraHelpers[i])
+        }
     }
 
 
@@ -75,14 +148,16 @@ class Scene1 {
     }
 
     update() {
-        this.cinemaCamera.update()
-        this.orientationControls.update()
+        this.cinemaCameras[this.currentCamera].update()
+        this.orientationControls[this.currentCamera].update()
+        this.cameraHelpers[this.currentCamera].update()
         this.mobileControls.update(['focalLength'])
+        this.stats.update();
     }
 
     onWindowResize({width, height}) {
-        this.camera.aspect = width / height;
-        this.camera.updateProjectionMatrix();
+        this.cameras[this.currentCamera].aspect = width / height;
+        this.cameras[this.currentCamera].updateProjectionMatrix();
     }
 
 }

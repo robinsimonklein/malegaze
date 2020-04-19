@@ -4,6 +4,8 @@ import Scene1 from './scenes/Scene1';
 import Scene2 from './scenes/Scene2';
 import Scene3 from './scenes/Scene3';
 import appStates from '../appStates';
+import {PerspectiveCamera} from "three";
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
 class SceneManager {
     canvas;
@@ -14,6 +16,10 @@ class SceneManager {
 
     renderer;
     sceneSubjects;
+
+    camera;
+    controls;
+
     clock = new THREE.Clock();
 
     constructor(canvas) {
@@ -23,11 +29,17 @@ class SceneManager {
         this.screenDimensions.width = canvas.width;
         this.screenDimensions.height = canvas.height;
 
+        this.camera = new PerspectiveCamera(30, canvas.width / canvas.height, 1, 10000)
+
         this.scene = this.buildScene();
         this.renderer = this.buildRenderer(this.screenDimensions);
 
-        this.sceneSubjects = this.createSceneSubjects(this.scene);
+        this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+        this.camera.position.set(1000, 3000, 2000)
+        this.camera.lookAt(0, 0, 0)
+        this.controls.update()
 
+        this.sceneSubjects = this.createSceneSubjects(this.scene);
     }
 
     buildScene() {
@@ -81,12 +93,20 @@ class SceneManager {
             this.sceneSubjects[i].update(elapsedTime);
         }
 
+        this.controls.update()
+
+
+
         // TODO: Améliorer, potentiellement passer le render dans les scenes
-        if ( this.sceneSubjects[0].camera.postprocessing && this.sceneSubjects[0].camera.postprocessing.enabled ) {
-            this.sceneSubjects[0].camera.renderCinematic( this.scene, this.renderer );
+        if ( this.sceneSubjects[0].cameras[0].postprocessing && this.sceneSubjects[0].cameras[0].postprocessing.enabled ) {
+            this.sceneSubjects[0].cameras[0].renderCinematic( this.scene, this.renderer );
         } else {
-            this.renderer.render(this.scene, this.sceneSubjects[0].camera);
+            this.renderer.render(this.scene, this.sceneSubjects[0].cameras[0]);
         }
+
+
+
+        // this.renderer.render(this.scene, this.camera);
 
     }
 
