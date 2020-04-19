@@ -5,6 +5,8 @@ import Scene2 from './scenes/Scene2';
 import Scene3 from './scenes/Scene3';
 import appStates from '../appStates';
 
+import Stats from 'three/examples/jsm/libs/stats.module.js';
+
 class SceneManager {
     canvas;
     screenDimensions = {
@@ -15,6 +17,9 @@ class SceneManager {
     renderer;
     video;
     sceneSubjects;
+
+    stats;
+
     clock = new THREE.Clock();
 
     constructor(canvas, video) {
@@ -29,7 +34,13 @@ class SceneManager {
         this.scene = this.buildScene();
         this.renderer = this.buildRenderer(this.screenDimensions);
 
+
+        // Initiate stats
+        this.stats = new Stats();
+        document.body.appendChild(this.stats.dom);
+
         this.sceneSubjects = this.createSceneSubjects(this.scene);
+
     }
 
     buildScene() {
@@ -83,12 +94,23 @@ class SceneManager {
             this.sceneSubjects[i].update(elapsedTime);
         }
 
-        // TODO: Améliorer, potentiellement passer le render dans les scenes
-        if (this.sceneSubjects[0].camera.postprocessing && this.sceneSubjects[0].camera.postprocessing.enabled) {
-            this.sceneSubjects[0].camera.renderCinematic(this.scene, this.renderer);
+        this.stats.update();
+
+
+        // TODO: Améliorer, potentiellement passer le renderer et/ou les THREE.scene dans les scenes
+        if (this.sceneSubjects[0].cameras) {
+            let currentCamera = this.sceneSubjects[0].currentCamera
+
+            if (this.sceneSubjects[0].cameras[currentCamera].postprocessing && this.sceneSubjects[0].cameras[currentCamera].postprocessing.enabled) {
+                this.sceneSubjects[0].cameras[currentCamera].renderCinematic(this.scene, this.renderer);
+            } else {
+                this.renderer.render(this.scene, this.sceneSubjects[0].cameras[currentCamera]);
+            }
+
         } else {
             this.renderer.render(this.scene, this.sceneSubjects[0].camera);
         }
+
     }
 
     onWindowResize() {

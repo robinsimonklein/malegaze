@@ -44,8 +44,8 @@
         &::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 1rem;
-            height: 2.2rem;
+            width: 2.5rem;
+            height: 5rem;
             background: #fff;
             border-radius: .1rem;
             cursor: pointer;
@@ -53,8 +53,8 @@
         }
 
         &::-moz-range-thumb {
-            width: 1rem;
-            height: 2.2rem;
+            width: 2.5rem;
+            height: 5rem;
             background: #fff;
             border-radius: .1rem;
             cursor: pointer;
