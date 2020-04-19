@@ -1,19 +1,25 @@
 <template>
     <div id="scene-container" class="scene-container" ref="sceneContainer">
         <CameraOverlay v-if="appState === 'scene1'" />
+        <video autoplay>
+            <source src="/video/cinema-vid.mp4" type="video/mp4">
+        </video>
+
     </div>
 </template>
 
 <script>
     import threeEntryPoint from '../../js/three/threeEntryPoint';
     import CameraOverlay from "./scene1/CameraOverlay";
+    import appStates from "../../js/appStates";
 
     export default {
         name: 'DesktopScene',
         components: {CameraOverlay},
         computed: {
             appState() {
-                return this.$store.state.app.appState
+                // return this.$store.state.app.appState
+                return appStates.SCENE1
             }
         },
         mounted() {
@@ -28,4 +34,8 @@
     height: 100vh;
     overflow: hidden;
 }
-</style>s
+
+    video {
+        display: none;
+    }
+</style>

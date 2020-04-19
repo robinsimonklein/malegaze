@@ -13,21 +13,23 @@ class SceneManager {
     };
 
     renderer;
+    video;
     sceneSubjects;
     clock = new THREE.Clock();
 
-    constructor(canvas) {
+    constructor(canvas, video) {
         this.canvas = canvas;
 
         // Set screenDimensions with canvas dimensions
         this.screenDimensions.width = canvas.width;
         this.screenDimensions.height = canvas.height;
 
+        this.video = video;
+
         this.scene = this.buildScene();
         this.renderer = this.buildRenderer(this.screenDimensions);
 
         this.sceneSubjects = this.createSceneSubjects(this.scene);
-
     }
 
     buildScene() {
@@ -42,7 +44,7 @@ class SceneManager {
         this.sceneSubjects = this.createSceneSubjects(this.scene);
     }
 
-    nextScene() { // TODO: Set camera position based on scene
+    nextScene() {
         for (let i = 0; i < this.sceneSubjects.length; i++) {
             this.sceneSubjects[i].nextScene();
         }
@@ -68,7 +70,7 @@ class SceneManager {
             case appStates.SCENE2:
                 return [new Scene2(scene, this.screenDimensions, this.canvas)]; // bon à voir pour le canvas...
             case appStates.SCENE3:
-                return [new Scene3(scene, this.screenDimensions, this.canvas)]; // bon à voir pour le canvas...
+                return [new Scene3(scene, this.screenDimensions, this.canvas, this.video)]; // bon à voir pour le canvas...
             default:
                 return [];
         }
@@ -82,12 +84,11 @@ class SceneManager {
         }
 
         // TODO: Améliorer, potentiellement passer le render dans les scenes
-        if ( this.sceneSubjects[0].camera.postprocessing && this.sceneSubjects[0].camera.postprocessing.enabled ) {
-            this.sceneSubjects[0].camera.renderCinematic( this.scene, this.renderer );
+        if (this.sceneSubjects[0].camera.postprocessing && this.sceneSubjects[0].camera.postprocessing.enabled) {
+            this.sceneSubjects[0].camera.renderCinematic(this.scene, this.renderer);
         } else {
             this.renderer.render(this.scene, this.sceneSubjects[0].camera);
         }
-
     }
 
     onWindowResize() {
