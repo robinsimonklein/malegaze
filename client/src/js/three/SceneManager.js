@@ -107,15 +107,19 @@ class SceneManager {
 
 
         // TODO: Améliorer, potentiellement passer le render dans les scenes
-        if ( this.sceneSubjects[0].cameras[0].postprocessing && this.sceneSubjects[0].cameras[0].postprocessing.enabled ) {
-            this.sceneSubjects[0].cameras[0].renderCinematic( this.scene, this.renderer );
-        } else {
-            this.renderer.render(this.scene, this.sceneSubjects[0].cameras[0]);
+
+        if(this.sceneSubjects[0].cameras){;
+            let currentCamera = this.sceneSubjects[0].currentCamera
+
+            if ( this.sceneSubjects[0].cameras[currentCamera].postprocessing && this.sceneSubjects[0].cameras[currentCamera].postprocessing.enabled ) {
+                this.sceneSubjects[0].cameras[currentCamera].renderCinematic( this.scene, this.renderer );
+            } else {
+                this.renderer.render(this.scene, this.sceneSubjects[0].cameras[currentCamera]);
+            }
+
+        }else {
+            this.renderer.render(this.scene, this.sceneSubjects[0].camera);
         }
-
-
-
-        // this.renderer.render(this.scene, this.camera);
 
     }
 
