@@ -27,6 +27,13 @@
             this.$refs.player.addEventListener('ended', () => {
                 this.$store.dispatch('app/requestState', appStates.SCENE1)
             })
+
+            try {
+                this.$refs.player.play()
+            }
+            catch (e) {
+                console.log(e)
+            }
         }
     }
 </script>
