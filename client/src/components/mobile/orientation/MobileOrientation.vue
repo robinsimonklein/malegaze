@@ -10,8 +10,10 @@
             </ul>
         </div>
         <div v-if="!orientationPermission" class="mobile-orientation__permission">
-            <h2>Accès à l'orientation nécessaire</h2>
-            <OrientationPermissionButton v-on:success="listenOrientation" text="Autoriser" />
+            <Popup>
+                <h2>Accès à l'orientation nécessaire</h2>
+                <OrientationPermissionButton v-on:success="listenOrientation" text="Autoriser" />
+            </Popup>
         </div>
     </div>
 </template>
@@ -19,10 +21,11 @@
 <script>
     import {mapState} from "vuex";
     import OrientationPermissionButton from "../setup/OrientationPermissionButton";
+    import Popup from "../../Popup";
 
     export default {
         name: "MobileOrientation",
-        components: {OrientationPermissionButton},
+        components: {Popup, OrientationPermissionButton},
         props: {
             debug: {
                 type: Boolean,

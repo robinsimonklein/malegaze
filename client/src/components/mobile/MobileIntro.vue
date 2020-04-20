@@ -12,7 +12,7 @@
         name: "MobileIntro",
         methods: {
             next() {
-                this.$socket.emit('state_request', appStates.STORYBOARD)
+                this.$socket.emit('state_request', appStates.SCENE1)
             }
         }
     }

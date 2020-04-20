@@ -9,7 +9,6 @@
 <script>
     import MobileSetup from "../../components/mobile/MobileSetup";
     import MobileIntro from "../../components/mobile/MobileIntro";
-    import MobileStoryboard from "../../components/mobile/MobileStoryboard";
     import MobileScene1 from "../../components/mobile/MobileScene1";
     import MobileScene2 from "../../components/mobile/MobileScene2";
     import MobileScene3 from "../../components/mobile/MobileScene3";
@@ -21,7 +20,6 @@
         components: {
             MobileSetup,
             MobileIntro,
-            MobileStoryboard,
             MobileScene1,
             MobileScene2,
             MobileScene3,
@@ -38,12 +36,11 @@
             },
             currentComponent() {
                 switch(this.$store.state.app.appState) {
+                    case appStates.INDEX:
                     case appStates.SETUP:
                         return "MobileSetup"
                     case appStates.INTRO:
                         return "MobileIntro"
-                    case appStates.STORYBOARD:
-                        return "MobileStoryboard"
                     case appStates.SCENE1:
                         return "MobileScene1"
                     case appStates.SCENE2:

@@ -6,9 +6,9 @@
 
 <script>
     import { mapState } from 'vuex'
+    import DesktopIndex from "../../components/desktop/DesktopIndex";
     import DesktopSetup from "../../components/desktop/DesktopSetup";
     import DesktopIntro from "../../components/desktop/DesktopIntro";
-    import DesktopStoryboard from "../../components/desktop/DesktopStoryboard";
     import DesktopScene from "../../components/desktop/DesktopScene";
     import DesktopEnd from "../../components/desktop/DesktopEnd";
     import appStates from "../../js/appStates";
@@ -16,9 +16,9 @@
     export default {
         name: 'Desktop',
         components: {
+            DesktopIndex,
             DesktopScene,
             DesktopIntro,
-            DesktopStoryboard,
             DesktopSetup,
             DesktopEnd
         },
@@ -26,12 +26,12 @@
             ...mapState('mobile', ['orientation', 'screenOrientation']),
             currentComponent() {
                 switch(this.$store.state.app.appState) {
+                    case appStates.INDEX:
+                        return "DesktopIndex"
                     case appStates.SETUP:
                         return "DesktopSetup"
                     case appStates.INTRO:
                         return "DesktopIntro"
-                    case appStates.STORYBOARD:
-                        return "DesktopStoryboard"
                     case appStates.SCENE1:
                     case appStates.SCENE2:
                     case appStates.SCENE3:
