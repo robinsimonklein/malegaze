@@ -1,8 +1,8 @@
 // appStates enum
 export default {
+    INDEX: 'index',
     SETUP: 'setup',
     INTRO: 'intro',
-    STORYBOARD: 'storyboard',
     SCENE1: 'scene1',
     SCENE2: 'scene2',
     SCENE3: 'scene3',

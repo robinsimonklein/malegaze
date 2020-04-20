@@ -14,8 +14,8 @@
 <style lang="scss" scoped>
 
     .calibration-screen {
-        background: white;
         &__target {
+            background-color: white;
             height: 40vh
         }
     }

@@ -38,12 +38,11 @@
             },
             currentComponent() {
                 switch(this.$store.state.app.appState) {
+                    case appStates.INDEX:
                     case appStates.SETUP:
                         return "MobileSetup"
                     case appStates.INTRO:
                         return "MobileIntro"
-                    case appStates.STORYBOARD:
-                        return "MobileStoryboard"
                     case appStates.SCENE1:
                         return "MobileScene1"
                     case appStates.SCENE2:
