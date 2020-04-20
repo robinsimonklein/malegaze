@@ -136,10 +136,15 @@ class Scene3 {
         this.scene.add(mesh);
 
         this.video.play();
+
+        // Listen when video has finished
+        this.video.addEventListener('ended', () => {
+            this.nextScene()
+        })
     }
 
     nextScene() {
-        store.dispatch('app/requestState', appStates.SCENE1);
+        store.dispatch('app/requestState', appStates.END);
     }
 
     update() {
