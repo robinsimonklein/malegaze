@@ -11,15 +11,13 @@
 <script>
     import threeEntryPoint from '../../js/three/threeEntryPoint';
     import CameraOverlay from "./scene1/CameraOverlay";
-    import appStates from "../../js/appStates";
 
     export default {
         name: 'DesktopScene',
         components: {CameraOverlay},
         computed: {
             appState() {
-                // return this.$store.state.app.appState
-                return appStates.SCENE1
+                return this.$store.state.app.appState
             }
         },
         mounted() {
