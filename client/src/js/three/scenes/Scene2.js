@@ -19,7 +19,7 @@ class Scene2 {
     isFinished = false;
     raycaster;
 
-    constructor(scene, screenDimensions, canvas) {
+    constructor(scene, screenDimensions) {
         this.scene = scene;
 
         this.stats = new Stats();
