@@ -22,7 +22,7 @@
         },
         mounted() {
             threeEntryPoint(this.$refs.sceneContainer);
-        }
+        },
     }
 </script>
 

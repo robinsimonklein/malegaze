@@ -1,11 +1,13 @@
 import SceneManager from './SceneManager';
 import store from '../../store';
+import appStates from "../appStates";
 
 export default (container) => {
     const canvas = createCanvas(document, container);
     const video = document.querySelector('video');
     const videoHasPlayed = false;
     const sceneManager = new SceneManager(canvas, video);
+    let renderAnimationFrame = null;
 
     bindEventListeners();
     render();
@@ -28,7 +30,15 @@ export default (container) => {
                 });
             }
         });
-        store.watch((state) => state.app.appState, () => sceneManager.clearScene());
+
+        // TODO : watch déprécié, changer de méthode
+        store.watch((state) => state.app.appState, (state) => {
+            if(state === appStates.SCENE1 || state === appStates.SCENE2 || state === appStates.SCENE3){
+                sceneManager.clearScene()
+                return
+            }
+            stop()
+        });
     }
 
     function resizeCanvas() {
@@ -42,7 +52,11 @@ export default (container) => {
     }
 
     function render() {
-        requestAnimationFrame(render);
+        renderAnimationFrame = requestAnimationFrame(render);
         sceneManager.update();
+    }
+
+    function stop() {
+        cancelAnimationFrame(renderAnimationFrame)
     }
 }
