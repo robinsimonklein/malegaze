@@ -5,7 +5,6 @@ import appStates from "../appStates";
 export default (container) => {
     const canvas = createCanvas(document, container);
     const video = document.querySelector('video');
-    const videoHasPlayed = false;
     const sceneManager = new SceneManager(canvas, video);
     let renderAnimationFrame = null;
 
@@ -21,15 +20,6 @@ export default (container) => {
     function bindEventListeners() {
         window.onresize = resizeCanvas;
         resizeCanvas();
-        window.addEventListener('keypress', () => { // TODO: Charger la vidéo ailleurs
-            sceneManager.nextScene();
-            if (!videoHasPlayed) {
-                video.play().then(() => {
-                    self.videoHasPlayed = true;
-                    video.pause()
-                });
-            }
-        });
 
         // TODO : watch déprécié, changer de méthode
         store.watch((state) => state.app.appState, (state) => {

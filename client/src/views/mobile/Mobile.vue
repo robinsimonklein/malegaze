@@ -9,7 +9,6 @@
 <script>
     import MobileSetup from "../../components/mobile/MobileSetup";
     import MobileIntro from "../../components/mobile/MobileIntro";
-    import MobileStoryboard from "../../components/mobile/MobileStoryboard";
     import MobileScene1 from "../../components/mobile/MobileScene1";
     import MobileScene2 from "../../components/mobile/MobileScene2";
     import MobileScene3 from "../../components/mobile/MobileScene3";
@@ -21,7 +20,6 @@
         components: {
             MobileSetup,
             MobileIntro,
-            MobileStoryboard,
             MobileScene1,
             MobileScene2,
             MobileScene3,

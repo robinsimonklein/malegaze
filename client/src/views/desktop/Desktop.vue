@@ -9,7 +9,6 @@
     import DesktopIndex from "../../components/desktop/DesktopIndex";
     import DesktopSetup from "../../components/desktop/DesktopSetup";
     import DesktopIntro from "../../components/desktop/DesktopIntro";
-    import DesktopStoryboard from "../../components/desktop/DesktopStoryboard";
     import DesktopScene from "../../components/desktop/DesktopScene";
     import DesktopEnd from "../../components/desktop/DesktopEnd";
     import appStates from "../../js/appStates";
@@ -20,7 +19,6 @@
             DesktopIndex,
             DesktopScene,
             DesktopIntro,
-            DesktopStoryboard,
             DesktopSetup,
             DesktopEnd
         },
