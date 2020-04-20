@@ -26,7 +26,6 @@
                 }
             }, (error) => {
                 if (error) console.error(error)
-                console.log('QR Code created !');
             })
         }
     }
