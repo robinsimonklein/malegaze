@@ -102,9 +102,11 @@ class Scene1 {
 
         // -------------------
         // Third camera
-        let camera3 = this.cameraManager.createCamera(cameraTypes.CINEMATIC, {fov, aspectRatio, near, far});
-        camera3.settings.focusDistance = 470
-        camera3.camera.position.set(0, 50, 700)
+        this.cinemaCameras[2] = new CinemaCamera(fov, aspectRatio, near, far);
+        this.cinemaCameras[2].focusDistance = 470
+        this.cameras[2] = this.cinemaCameras[2].getCamera();
+        this.cameras[2].position.set(0, 50, 700);
+        this.scene.add(this.cameras[2])
 
         // Set orientationControls for first camera
         this.orientationControls[2] = new MobileOrientationControls(camera3.camera)
