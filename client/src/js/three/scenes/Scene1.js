@@ -2,18 +2,21 @@ import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import store from '../../../store'
 import appStates from '../../appStates';
-import MobileControls from "../controls/MobileControls";
-import CameraManager from "../camera/CameraManager";
-import cameraTypes from "../camera/cameraTypes";
-import MobileOrientationControls from "../controls/MobileOrientationControls";
+import MobileOrientationControls from "../utils/MobileOrientationControls";
+import MobileControls from "../utils/MobileControls";
+import CinemaCamera from "../cameras/CinemaCamera";
+import CameraOverlayManager from "../overlays/CameraOverlayManager"
 
 class Scene1 {
     scene;
+    model;
 
     cameraManager;
     orientationControls = []
     mobileControls;
     screenDimensions;
+
+    raycaster;
 
     constructor(scene, screenDimensions) {
         this.scene = scene;
@@ -27,6 +30,10 @@ class Scene1 {
 
         this.mobileControls = new MobileControls(this.cameraManager.cameraObject)
         this.mobileControls.update(['focalLength'])
+
+        this.raycaster = new THREE.Raycaster()
+
+        this.scene.fog = new THREE.Fog(0xff4444, 300, 1000);
 
     }
 
@@ -58,6 +65,7 @@ class Scene1 {
                     }
                 });
 
+                this.model = object.scene
                 this.scene.add(object.scene);
             },
             (xhr) => {
@@ -113,6 +121,29 @@ class Scene1 {
         this.orientationControls[2].update()
     }
 
+    buildCamerasHelpers() {
+        for (let i = 0; i < this.cameras.length; i++) {
+            this.cameraHelpers[i] = new THREE.CameraHelper(this.cameras[i]);
+            this.scene.add(this.cameraHelpers[i])
+        }
+    }
+
+    raycasterIntersects() {
+        this.raycaster.setFromCamera({x: 0, y: 0}, this.cameras[this.currentCamera])
+
+        let intersects = this.raycaster.intersectObjects(this.model.children);
+
+
+        for (let i = 0; i < intersects.length; i++) {
+            if (intersects[i].object.name === "ACTRICE"){
+                if (CameraOverlayManager.progress < 1) CameraOverlayManager.progress += 0.005
+                return
+            }
+        }
+
+        CameraOverlayManager.progress = 0;
+    }
+
     nextScene() {
         store.dispatch('app/requestState', appStates.ACTRESS);
     }
@@ -122,6 +153,12 @@ class Scene1 {
         this.cameraManager.update()
         if(this.orientationControls.length > 0) this.orientationControls[0].update()
         this.mobileControls.update(['focalLength'])
+        // this.cameraHelpers[this.currentCamera].update()
+
+        if (this.model) {
+            this.raycasterIntersects()
+        }
+
     }
 
     onWindowResize({width, height}) {
