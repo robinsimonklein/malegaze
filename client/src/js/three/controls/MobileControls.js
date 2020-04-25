@@ -1,6 +1,6 @@
 import store from './../../../store/index'
 
-class MobileOrientationControls {
+class MobileControls {
 
     object;
 
@@ -24,4 +24,4 @@ class MobileOrientationControls {
     }
 }
 
-export default MobileOrientationControls;
+export default MobileControls;
