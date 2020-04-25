@@ -6,6 +6,7 @@ import Scene3 from './scenes/Scene3';
 import appStates from '../appStates';
 
 import Stats from 'three/examples/jsm/libs/stats.module.js';
+import cameraTypes from "./camera/cameraTypes";
 
 class SceneManager {
     canvas;
@@ -90,25 +91,20 @@ class SceneManager {
     update() {
         const elapsedTime = this.clock.getElapsedTime();
 
+        // Cancel rendering if scenery isn't ready
+        // if(!this.sceneSubjects[0].ready) return
+
         for (let i = 0; i < this.sceneSubjects.length; i++) {
             this.sceneSubjects[i].update(elapsedTime);
         }
 
         this.stats.update();
 
-
-        // TODO: Améliorer, potentiellement passer le renderer et/ou les THREE.scene dans les scenes
-        if (this.sceneSubjects[0].cameras) {
-            let currentCamera = this.sceneSubjects[0].currentCamera
-
-            if (this.sceneSubjects[0].cameras[currentCamera].postprocessing && this.sceneSubjects[0].cameras[currentCamera].postprocessing.enabled) {
-                this.sceneSubjects[0].cameras[currentCamera].renderCinematic(this.scene, this.renderer);
-            } else {
-                this.renderer.render(this.scene, this.sceneSubjects[0].cameras[currentCamera]);
-            }
-
-        } else {
-            this.renderer.render(this.scene, this.sceneSubjects[0].camera);
+        // Render depending to the camera type
+        if(this.sceneSubjects[0].cameraManager.cameraObject.type === cameraTypes.CINEMATIC){
+            this.sceneSubjects[0].cameraManager.camera.renderCinematic(this.scene, this.renderer);
+        }else{
+            this.renderer.render(this.scene, this.sceneSubjects[0].cameraManager.camera);
         }
 
     }
