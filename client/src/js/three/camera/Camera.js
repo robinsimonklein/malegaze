@@ -1,5 +1,5 @@
 import { CinematicCamera } from 'three/examples/jsm/cameras/CinematicCamera.js';
-import { PerspectiveCamera } from "three";
+import { PerspectiveCamera, CameraHelper } from "three";
 import cameraTypes from "./cameraTypes";
 
 
@@ -22,6 +22,7 @@ class Camera {
         focalDepth: 3,
         depthBlur: false,
     }
+    helper = null
 
     /**
      *
@@ -29,12 +30,14 @@ class Camera {
      * @param {{fov, aspectRatio, near, far}} properties
      * @param {{x: Number, y: Number, z: Number}} initialPosition
      * @param {*} settings
+     * @param {Boolean} helper
      */
     constructor({
         type,
         properties,
         initialPosition,
-        settings
+        settings,
+        debug = false
     }) {
         // Build the camera depending of the type
         switch (type) {
@@ -62,10 +65,18 @@ class Camera {
         this.setCameraPosition(initialPosition ?? this.initialPosition)
         // Update the camera settings
         if(settings) this.updateCameraSettings(settings)
+        // Build helper if debug enabled
+        if(debug) this.buildHelper()
 
         if (this.type === cameraTypes.CINEMATIC) this.matChanger()
         this.update()
     }
+
+    // -- GETTERS
+
+    // ...
+
+    // -- METHODS
 
     /**
      * Set the camera position
@@ -91,6 +102,13 @@ class Camera {
         }
     }
 
+    /**
+     * Build helper
+     */
+    buildHelper() {
+        this.helper = new CameraHelper(this.camera);
+    }
+
     matChanger() {
         for ( let e in this.settings ) {
             if ( e in this.camera.postprocessing.bokeh_uniforms ) {
@@ -105,6 +123,15 @@ class Camera {
     }
 
     /**
+     * Add elements to scene
+     * @param scene
+     */
+    addToScene(scene){
+        scene.add(this.camera)
+        if(this.helper) scene.add(this.helper)
+    }
+
+    /**
      * Update loop
      */
     update() {
@@ -114,7 +141,6 @@ class Camera {
             this.camera.focusAt( this.settings.focusDistance );
             // this.matChanger()
         }
-
     }
 }
 

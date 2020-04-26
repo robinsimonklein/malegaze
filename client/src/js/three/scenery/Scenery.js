@@ -8,28 +8,33 @@ class Scenery {
     cameraManager;
     modelManager;
 
+    /**
+     * Create a new Scenery
+     * @param {String} name
+     * @param {[Camera]} cameras
+     * @param {controlsTypes} controls
+     */
     constructor({
-        name,
+        name= "undefined",
         cameras,
+        controls = null
         // lights,
         // models,
 
     }) {
         this.name = name
 
-        this.buildCameras(cameras)
+        this.buildCameras(cameras, controls)
+        this.buildModels()
     }
 
     /**
-     *
-     * @param [] cameras
+     * Build cameras
+     * @param {[Camera]} cameras
+     * @param {controlsTypes} controls
      */
-    buildCameras(cameras) {
-        this.cameraManager = new CameraManager()
-
-        cameras.map((camera) => {
-            this.cameraManager.addCamera(camera)
-        })
+    buildCameras(cameras, controls) {
+        this.cameraManager = new CameraManager({cameras, controls})
     }
 
     buildModels() {
@@ -37,10 +42,19 @@ class Scenery {
     }
 
     /**
+     * Add elements to scene
+     * @param scene
+     */
+    addToScene(scene) {
+        // Add cameras to scene
+        this.cameraManager.addToScene(scene)
+    }
+
+    /**
      * Update loop
      */
     update() {
-
+        this.cameraManager.update()
     }
 }
 export default Scenery

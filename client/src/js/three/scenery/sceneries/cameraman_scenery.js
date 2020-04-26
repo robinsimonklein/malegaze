@@ -1,6 +1,7 @@
 import Scenery from "../Scenery";
 import Camera from "../../camera/Camera";
 import cameraTypes from "../../camera/cameraTypes";
+import controlsTypes from "../../controls/controlsTypes";
 
 export default new Scenery({
     name: 'cameraman_scenery',
@@ -11,7 +12,8 @@ export default new Scenery({
             initialPosition: {x: 10, y: 10, z: 10},
             settings: {
                 focusDistance: 300
-            }
+            },
+            debug: true
         }),
         new Camera({
             type: cameraTypes.CINEMATIC,
@@ -29,5 +31,6 @@ export default new Scenery({
                 focusDistance: 300
             }
         }),
-    ]
+    ],
+    controls: controlsTypes.MOBILE
 })

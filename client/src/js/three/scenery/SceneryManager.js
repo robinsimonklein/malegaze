@@ -11,6 +11,8 @@ class SceneryManager{
         this.buildSceneries(sceneries)
     }
 
+    // --- GETTERS
+
     /**
      * Returns the current scenery
      * @returns {Scenery}
@@ -19,10 +21,20 @@ class SceneryManager{
         return this.sceneries[this.currentScenery]
     }
 
+    // --- METHODS
+
     buildSceneries(sceneries) {
-        sceneries.map((scenery) => {
+        sceneries.forEach((scenery) => {
             this.sceneries.push(scenery)
         })
+    }
+
+    /**
+     * Add scenery to scene
+     * @param {Scenery} scenery
+     */
+    addSceneryToScene(scenery = this.scenery) {
+        scenery.addToScene(this.scene)
     }
 
     /**
@@ -30,6 +42,10 @@ class SceneryManager{
      */
     update() {
         this.scenery.update()
+    }
+
+    onWindowResize({width, height}) {
+
     }
 
 }

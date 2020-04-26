@@ -1,37 +1,31 @@
-import * as THREE from "three";
-import Camera from "./Camera";
+import MobileOrientationControls from "../controls/MobileOrientationControls";
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import controlsTypes from "../controls/controlsTypes";
 
 class CameraManager {
-    scene;
-
     // Cameras
     cameraObjects = [];
     currentCamera = 0;
 
-    // Helpers
-    helpersEnabled = false;
-    cameraHelpers = [];
+    // Controls
+    controls;
 
-    constructor(scene) {
-        this.scene = scene
 
-        if (this.helpersEnabled) this.buildCameraHelpers()
-        this.update()
+    constructor({cameras, controls = null}) {
+        console.log(this)
+        // Add cameras
+        if(cameras){
+            cameras.forEach((camera) => {
+                this.addCamera(camera)
+            })
+        }
+
+        if(controls) this.buildControls(controls)
+        // this.update()
     }
 
     // -- SETTERS
 
-    /**
-     * Enable / Disable helpers
-     * @param {Boolean} value
-     */
-    set helpers(value) {
-        if(value === true){
-            // Build the helpers if not yet built
-            if(this.cameraHelpers.length <= 0) this.buildCameraHelpers()
-        }
-        this.helpersEnabled = value
-    }
 
     // -- GETTERS
 
@@ -49,6 +43,14 @@ class CameraManager {
      */
     get camera() {
         return this.cameraObjects[this.currentCamera].camera
+    }
+
+    /**
+     * Returns the current camera helper (three.js camera)
+     * @returns {*}
+     */
+    get helper() {
+        return this.cameraObjects[this.currentCamera].helper
     }
 
     /**
@@ -71,33 +73,39 @@ class CameraManager {
      */
     addCamera(camera){
         this.cameraObjects.push(camera)
-        // this.scene.add(camera.camera)
 
         // Return the index of the camera
         return this.cameraObjects.length - 1 >= 0 ? this.cameraObjects.length - 1 : 0
     }
 
-    createCamera(type, {fov, aspectRatio, near, far}){
-        try {
-            let camera = new Camera(type, {fov, aspectRatio, near, far })
-            let index = this.addCamera(camera)
+    changeCamera(cameraIndex){
+        this.currentCamera = cameraIndex
+    }
 
-            // Return the created cameraObject
-            return this.cameraObjects[index]
-        }
-        catch (error) {
-            console.error(error)
+    /**
+     * Build controls for current camera
+     * @param {controlsTypes} type
+     */
+    buildControls(type){
+        switch (type){
+            case controlsTypes.MOBILE:
+                this.controls = new MobileOrientationControls(this.camera)
+                break;
+            case controlsTypes.ORBIT:
+            default:
+                this.controls = new OrbitControls(this.camera)
+                break;
         }
     }
 
     /**
-     * Build CameraHelper for all cameras
+     * Add elements to scene
+     * @param scene
      */
-    buildCameraHelpers() {
-        for (let i = 0; i < this.cameraObjects.length; i++) {
-            this.cameraHelpers[i] = new THREE.CameraHelper(this.cameraObjects[i].camera);
-            this.scene.add(this.cameraHelpers[i])
-        }
+    addToScene(scene) {
+        this.cameraObjects.forEach((cameraObject) => {
+            cameraObject.addToScene(scene)
+        })
     }
 
     /**
@@ -105,6 +113,7 @@ class CameraManager {
      */
     update() {
         if(this.cameraObject) this.cameraObject.update()
+        if(this.controls) this.controls.update()
     }
 
     /**

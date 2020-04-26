@@ -49,7 +49,6 @@ class SceneManager {
         document.body.appendChild(this.stats.dom);
 
         // this.sceneSubjects = this.createSceneSubjects(this.scene);
-
     }
 
     /**
@@ -71,12 +70,6 @@ class SceneManager {
 
         // FIXME On garde ça ici ?
         this.sceneSubjects = this.createSceneSubjects(this.scene);
-    }
-
-    nextScene() {
-        for (let i = 0; i < this.sceneSubjects.length; i++) {
-            this.sceneSubjects[i].nextScene();
-        }
     }
 
     /**
@@ -107,6 +100,8 @@ class SceneManager {
 
         this.sceneryManager = new SceneryManager(sceneries, this.scene)
 
+        // Add current scenery to scene
+        this.sceneryManager.addSceneryToScene()
     }
 
     createSceneSubjects(scene) {
@@ -135,7 +130,6 @@ class SceneManager {
         this.sceneryManager.update()
 
         // Render depending to the camera type
-
         if(this.sceneryManager.scenery.cameraManager.cameraObject.type === cameraTypes.CINEMATIC){
             this.sceneryManager.scenery.cameraManager.camera.renderCinematic(this.scene, this.renderer);
         }else{
@@ -153,11 +147,7 @@ class SceneManager {
         this.screenDimensions.width = width;
         this.screenDimensions.height = height;
 
-        /*
-        for (let i = 0; i < this.sceneSubjects.length; i++) {
-            this.sceneSubjects[i].onWindowResize({width, height});
-        }
-         */
+        this.sceneryManager.onWindowResize({width, height})
         this.renderer.setSize(width, height);
     }
 }
