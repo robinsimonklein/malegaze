@@ -9,7 +9,7 @@
 </template>
 
 <script>
-    import threeEntryPoint from '../../js/three/threeEntryPoint';
+    import ThreeEntryPoint from '../../js/three/ThreeEntryPoint';
     import CameraOverlay from "./scene1/CameraOverlay";
 
     export default {
@@ -21,7 +21,7 @@
             }
         },
         mounted() {
-            threeEntryPoint(this.$refs.sceneContainer);
+            ThreeEntryPoint.init(this.$refs.sceneContainer)
         },
     }
 </script>
