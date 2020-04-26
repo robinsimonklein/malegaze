@@ -51,6 +51,18 @@ class CameraManager {
         return this.cameraObjects[this.currentCamera].camera
     }
 
+    /**
+     * Returns all the cameras (three.js camera)
+     * @returns {*}
+     */
+    get cameras() {
+        let cameras = []
+        this.cameraObjects.map((cameraObject) => {
+            this.cameras.push(cameraObject.camera)
+        })
+        return cameras
+    }
+
     // -- METHODS
 
     /**
@@ -59,7 +71,7 @@ class CameraManager {
      */
     addCamera(camera){
         this.cameraObjects.push(camera)
-        this.scene.add(camera.camera)
+        // this.scene.add(camera.camera)
 
         // Return the index of the camera
         return this.cameraObjects.length - 1 >= 0 ? this.cameraObjects.length - 1 : 0

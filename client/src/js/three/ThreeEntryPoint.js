@@ -8,22 +8,18 @@ class ThreeEntryPoint {
     renderAnimation;
 
     constructor() {
-        this.preload()
+
     }
 
     init(container) {
         this.createCanvas(document, container)
-        this.sceneManager = new SceneManager(this.canvas, null)
+        this.sceneManager = new SceneManager(this.canvas)
 
         // Bind all the events
         this.bindEventListeners()
 
         // Start rendering
         this.start()
-    }
-
-    preload() {
-        
     }
 
     /**
@@ -37,6 +33,9 @@ class ThreeEntryPoint {
         this.canvas = canvas
     }
 
+    /**
+     * Bind all the needed events
+     */
     bindEventListeners() {
         // Resize event
         window.addEventListener('resize', () => {
@@ -55,6 +54,9 @@ class ThreeEntryPoint {
         });
     }
 
+    /**
+     * Resize canvas
+     */
     resizeCanvas() {
         this.canvas.style.width = '100%';
         this.canvas.style.height = '100%';
@@ -65,6 +67,9 @@ class ThreeEntryPoint {
         this.sceneManager.onWindowResize();
     }
 
+    /**
+     * Render loop
+     */
     render() {
         this.renderAnimation= requestAnimationFrame(this.render.bind(this));
         this.sceneManager.update()
@@ -85,5 +90,6 @@ class ThreeEntryPoint {
     }
 }
 
+// Make singleton
 const instance = new ThreeEntryPoint()
 export default instance

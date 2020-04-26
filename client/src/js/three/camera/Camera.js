@@ -6,36 +6,89 @@ import cameraTypes from "./cameraTypes";
 class Camera {
     camera;
     type;
-    fov = 1;
-    aspectRatio = window.innerWidth / window.innerHeight;
-    near = 1;
-    far = 1500;
-
+    initialPosition = {x: 0, y: 0, z: 0}
+    properties = {
+        fov: 1,
+        aspectRatio: window.innerWidth / window.innerHeight,
+        near: 1,
+        far: 1500
+    }
     settings = {
         focusDistance: 0,
         focalLength: 24,
-        fstop: 8,
+        fstop: 4,
         maxblur: 1,
         showFocus: false,
         focalDepth: 3,
         depthBlur: false,
     }
 
-
-    constructor(type) {
+    /**
+     *
+     * @param {cameraTypes} type
+     * @param {{fov, aspectRatio, near, far}} properties
+     * @param {{x: Number, y: Number, z: Number}} initialPosition
+     * @param {*} settings
+     */
+    constructor({
+        type,
+        properties,
+        initialPosition,
+        settings
+    }) {
+        // Build the camera depending of the type
         switch (type) {
             case cameraTypes.CINEMATIC :
                 this.type = type
-                this.camera = new CinematicCamera(this.fov, this.aspectRatio, this.near, this.far)
+                this.camera = new CinematicCamera(
+                    properties.fov ?? this.properties.fov,
+                    properties.aspectRatio ?? this.properties.aspectRatio,
+                    properties.near ?? this.properties.near,
+                    properties.far ?? this.properties.far
+                )
                 break;
             case cameraTypes.PERSPECTIVE :
             default :
                 this.type = cameraTypes.PERSPECTIVE
-                this.camera = new PerspectiveCamera(this.fov, this.aspectRatio, this.near, this.far)
+                this.camera = new PerspectiveCamera(
+                    properties.fov ?? this.properties.fov,
+                    properties.aspectRatio ?? this.properties.aspectRatio,
+                    properties.near ?? this.properties.near,
+                    properties.far ?? this.properties.far,
+                )
         }
+
+        // Set the camera position at initial position
+        this.setCameraPosition(initialPosition ?? this.initialPosition)
+        // Update the camera settings
+        if(settings) this.updateCameraSettings(settings)
 
         if (this.type === cameraTypes.CINEMATIC) this.matChanger()
         this.update()
+    }
+
+    /**
+     * Set the camera position
+     * @param {Number} x
+     * @param {Number} y
+     * @param {Number} z
+     */
+    setCameraPosition({x, y, z}) {
+        this.camera.position.x = x;
+        this.camera.position.y = y;
+        this.camera.position.z = z;
+    }
+
+    /**
+     * Update the camera settings
+     * @param settings
+     */
+    updateCameraSettings(settings){
+        for(let [key, value] of Object.entries(settings)) {
+            if(this.settings[key] !== null && this.settings[key] !== undefined){
+                this.settings[key] = value
+            }
+        }
     }
 
     matChanger() {
@@ -51,8 +104,11 @@ class Camera {
         this.settings[ 'focalDepth' ] = this.camera.postprocessing.bokeh_uniforms[ 'focalDepth' ].value;
     }
 
+    /**
+     * Update loop
+     */
     update() {
-        // FIXME Update matChanger only if focalLength changed
+        // FIXME Update matChanger only if focalLength has changed
         this.camera.setFocalLength( this.settings.focalLength);
         if (this.type === cameraTypes.CINEMATIC){
             this.camera.focusAt( this.settings.focusDistance );
