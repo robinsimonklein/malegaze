@@ -13,13 +13,12 @@ export const app = {
     mutations: {
         setAppState(state, value) {
             state.appState = value
-        }
+        },
     },
     actions: {
         SOCKET_state_dispatch({commit}, value) {
             commit('setAppState', value)
         },
-
         requestState({commit}, value) { // eslint-disable-line
             this._vm.$socket.emit('state_request', value)
         }

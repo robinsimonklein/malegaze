@@ -3,33 +3,39 @@ import ModelManager from "../model/ModelManager";
 
 class Scenery {
     name;
-    models;
 
     cameraManager;
     modelManager;
+    audioManager;
+    lightManager;
 
     /**
      * Create a new Scenery
      * @param {String} name
      * @param {[Camera]} cameras
      * @param {controlsTypes} controls
+     * @param {[Model]} models
+     * @param {Function} onCreated
      */
     constructor({
         name= "undefined",
         cameras,
-        controls = null
+        controls = null,
+        models,
         // lights,
-        // models,
+        onCreated = (self) => self
 
     }) {
         this.name = name
 
         this.buildCameras(cameras, controls)
-        this.buildModels()
+        this.buildModels(models)
+
+        if(onCreated !== undefined) onCreated(this)
     }
 
     /**
-     * Build cameras
+     * Build cameras and cameraManager
      * @param {[Camera]} cameras
      * @param {controlsTypes} controls
      */
@@ -37,8 +43,12 @@ class Scenery {
         this.cameraManager = new CameraManager({cameras, controls})
     }
 
-    buildModels() {
-        this.modelManager = new ModelManager()
+    /**
+     * Build models and modelManager
+     * @param models
+     */
+    buildModels(models) {
+        this.modelManager = new ModelManager({models})
     }
 
     /**
@@ -48,6 +58,8 @@ class Scenery {
     addToScene(scene) {
         // Add cameras to scene
         this.cameraManager.addToScene(scene)
+        // Add models to scene
+        this.modelManager.addToScene(scene)
     }
 
     /**

@@ -12,7 +12,6 @@ class CameraManager {
 
 
     constructor({cameras, controls = null}) {
-        console.log(this)
         // Add cameras
         if(cameras){
             cameras.forEach((camera) => {

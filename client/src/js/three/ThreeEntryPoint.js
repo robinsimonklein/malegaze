@@ -8,15 +8,18 @@ class ThreeEntryPoint {
     renderAnimation;
 
     constructor() {
-
+        this.createCanvas(document)
+        this.sceneManager = new SceneManager(this.canvas)
     }
 
     init(container) {
-        this.createCanvas(document, container)
-        this.sceneManager = new SceneManager(this.canvas)
 
+        container.appendChild(this.canvas)
         // Bind all the events
         this.bindEventListeners()
+
+        // Add current scenery to scene
+        this.sceneManager.sceneryManager.addSceneryToScene()
 
         // Start rendering
         this.start()
@@ -27,9 +30,8 @@ class ThreeEntryPoint {
      * @param document
      * @param container
      */
-    createCanvas(document, container){
+    createCanvas(document){
         const canvas = document.createElement('canvas')
-        container.appendChild(canvas)
         this.canvas = canvas
     }
 

@@ -48,7 +48,6 @@ class SceneManager {
         this.stats = new Stats();
         document.body.appendChild(this.stats.dom);
 
-        // this.sceneSubjects = this.createSceneSubjects(this.scene);
     }
 
     /**
@@ -99,9 +98,6 @@ class SceneManager {
         sceneries.push(spectator_scenery)
 
         this.sceneryManager = new SceneryManager(sceneries, this.scene)
-
-        // Add current scenery to scene
-        this.sceneryManager.addSceneryToScene()
     }
 
     createSceneSubjects(scene) {

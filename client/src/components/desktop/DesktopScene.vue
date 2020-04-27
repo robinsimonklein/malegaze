@@ -27,11 +27,11 @@
 </script>
 
 <style lang="scss" scoped>
-.scene-container {
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-}
+    .scene-container {
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+    }
 
     video {
         display: none;

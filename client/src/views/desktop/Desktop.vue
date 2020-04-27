@@ -1,10 +1,16 @@
 <template>
     <div class="desktop">
-        <component :is="currentComponent" />
+        <template v-if="loading">
+            <DesktopLoader />
+        </template>
+        <template v-else>
+            <component :is="currentComponent" />
+        </template>
     </div>
 </template>
 
 <script>
+    import LoaderManager from '@/js/three/loader/LoaderManager'
     import { mapState } from 'vuex'
     import DesktopIndex from "../../components/desktop/DesktopIndex";
     import DesktopSetup from "../../components/desktop/DesktopSetup";
@@ -12,10 +18,12 @@
     import DesktopScene from "../../components/desktop/DesktopScene";
     import DesktopEnd from "../../components/desktop/DesktopEnd";
     import appStates from "../../js/appStates";
+    import DesktopLoader from "../../components/desktop/loader/DesktopLoader";
 
     export default {
         name: 'Desktop',
         components: {
+            DesktopLoader,
             DesktopIndex,
             DesktopScene,
             DesktopIntro,
@@ -23,6 +31,7 @@
             DesktopEnd
         },
         computed: {
+            ...mapState('desktop', ['loading']),
             ...mapState('mobile', ['orientation', 'screenOrientation']),
             currentComponent() {
                 switch(this.$store.state.app.appState) {
@@ -49,6 +58,9 @@
             }else {
                 this.$store.commit('mobile/generateMobileId')
             }
+
+            // Load models, audio, ...
+            LoaderManager.load()
         },
         beforeMount() {
             this.$socket.emit('join_mobile_room', this.$store.state.mobile.mobileId)
