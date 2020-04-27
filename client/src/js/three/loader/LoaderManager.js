@@ -5,9 +5,6 @@ import store from '../../../store';
 class LoaderManager {
     loadingManager;
 
-    totalToLoad = 0;
-    loaded = 0;
-
     constructor() {
         this.buildLoadingManager()
     }
@@ -25,7 +22,7 @@ class LoaderManager {
         }
 
         this.loadingManager.onError = (url) => {
-            console.log( 'There was an error loading ' + url );
+            console.error( 'There was an error loading ' + url );
         }
     }
 
@@ -34,12 +31,9 @@ class LoaderManager {
         console.log('🔴️ Start global loading')
 
         const sceneries = ThreeEntryPoint.sceneManager.sceneryManager.sceneries
-        sceneries.forEach(async (scenery) => {
+        sceneries.forEach((scenery) => {
             // Load models
-            await scenery.modelManager.loadModels((status) => {
-                console.log(scenery.name, Math.round((status.loaded / status.total) * 100))
-            })
-            console.log(scenery.name, scenery.modelManager.loadedModels)
+            scenery.modelManager.loadModels()
 
             // Load videos
 

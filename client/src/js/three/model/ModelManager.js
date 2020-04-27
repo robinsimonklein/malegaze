@@ -41,25 +41,22 @@ class ModelManager {
             this.loadersReady = true
         }
 
-        return new Promise((resolve, reject) => {
-            this.models.forEach((model) => {
-                switch (model.type) {
-                    case 'gltf':
-                    case 'glb':
-                        this.gltfLoader.load(
-                            model.path,
-                            (obj) => {
-                                this.loadedModels.push(obj)
-                                resolve()
-                            },
-                        )
-                        break;
-                    case 'fbx':
-                        break;
-                    default:
-                        break;
-                }
-            })
+        this.models.forEach((model) => {
+            switch (model.type) {
+                case 'gltf':
+                case 'glb':
+                    this.gltfLoader.load(
+                        model.path,
+                        (obj) => {
+                            this.loadedModels.push(obj)
+                        },
+                    )
+                    break;
+                case 'fbx':
+                    break;
+                default:
+                    break;
+            }
         })
 
     }
