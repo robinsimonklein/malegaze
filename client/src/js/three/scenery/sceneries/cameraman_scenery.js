@@ -1,8 +1,10 @@
 import Scenery from "../Scenery";
 import Camera from "../../camera/Camera";
 import Model from "../../model/Model";
+import Light from "../../light/Light";
 import cameraTypes from "../../camera/cameraTypes";
 import controlsTypes from "../../controls/controlsTypes";
+import * as THREE from "three";
 
 export default new Scenery({
     name: 'cameraman_scenery',
@@ -39,6 +41,21 @@ export default new Scenery({
             name: 'film_set',
             path: 'models/glb/scene-01.glb',
             type: 'gltf'
+        }),
+    ],
+    lights: [
+        new Light({
+            name: 'ambiant',
+            light: new THREE.HemisphereLight(0xffb8c6, 0x080820),
+            initialPosition: {x: 0, y: 300, z: 0},
+        }),
+        new Light({
+            name: 'spotlights',
+            light: new THREE.DirectionalLight(0xff4444, 1),
+            initialPosition: {x: 0, y: 200, z: -700},
+            properties: {
+                castShadow: true
+            }
         }),
     ],
     onCreated: () => {

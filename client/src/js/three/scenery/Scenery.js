@@ -1,5 +1,6 @@
 import CameraManager from "../camera/CameraManager";
 import ModelManager from "../model/ModelManager";
+import LightManager from "../light/LightManager";
 
 class Scenery {
     name;
@@ -15,6 +16,7 @@ class Scenery {
      * @param {[Camera]} cameras
      * @param {controlsTypes} controls
      * @param {[Model]} models
+     * @param {[Light]} lights
      * @param {Function} onCreated
      */
     constructor({
@@ -22,6 +24,7 @@ class Scenery {
         cameras,
         controls = null,
         models,
+        lights,
         // lights,
         onCreated = (self) => self
 
@@ -30,8 +33,11 @@ class Scenery {
 
         this.buildCameras(cameras, controls)
         this.buildModels(models)
+        this.buildLights(lights)
 
         if(onCreated !== undefined) onCreated(this)
+
+        console.log(this)
     }
 
     /**
@@ -52,6 +58,14 @@ class Scenery {
     }
 
     /**
+     * Build lights and lightManager
+     * @param {[Light]} lights
+     */
+    buildLights(lights) {
+        this.lightManager = new LightManager({lights})
+    }
+
+    /**
      * Add elements to scene
      * @param scene
      */
@@ -60,6 +74,8 @@ class Scenery {
         this.cameraManager.addToScene(scene)
         // Add models to scene
         this.modelManager.addToScene(scene)
+        // Add lights to scene
+        this.lightManager.addToScene(scene)
     }
 
     /**
