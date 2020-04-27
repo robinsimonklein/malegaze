@@ -11,11 +11,6 @@ class ModelManager {
     gltfLoader;
     fbxLoader;
 
-    status = {
-        total: 0,
-        loaded: 0
-    }
-
     constructor({models}) {
         if(models) {
             models.forEach((models) => {
