@@ -33,7 +33,7 @@ class ModelManager {
         this.fbxLoader = new FBXLoader(LoaderManager.loadingManager);
     }
 
-    loadModels(onProgress) {
+    loadModels() {
 
         // Build loader if not built yet
         if(!this.loadersReady) {
