@@ -26,6 +26,49 @@ class LightManager {
         return lights
     }
 
+    /**
+     * Get light object by index
+     * @param {Number} index
+     * @returns {Light}
+     */
+    getLightObjectByIndex(index) {
+        if(!(this.lightObjects.length > 0)) return null
+        return this.lightObjects[index] ?? null
+    }
+
+    /**
+     * Get THREE light by index
+     * @param {Number} index
+     * @returns {*}
+     */
+    getLightByIndex(index) {
+        return this.getLightObjectByIndex(index).light ?? null
+    }
+
+    /**
+     * Get light object by name
+     * @param {String} name
+     * @returns {Light}
+     */
+    getLightObjectByName(name) {
+        if(!(this.lightObjects.length > 0)) return null
+
+        let lightObject = this.lightObjects.find((lightObject) => {
+            return lightObject.name === name
+        })
+
+        return lightObject ?? null
+    }
+
+    /**
+     * Get THREE light by name
+     * @param {String} name
+     * @returns {*}
+     */
+    getLightByName(name) {
+        return this.getLightObjectByName(name).light ?? null
+    }
+
     // --- METHODS
 
     buildHelpers() {
