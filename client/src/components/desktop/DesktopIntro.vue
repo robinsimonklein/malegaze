@@ -25,7 +25,7 @@
         mounted() {
             // Commencer la vidéo si on arrive directement sur cette vue, provisoir.
             this.$refs.player.addEventListener('ended', () => {
-                this.$store.dispatch('app/requestState', appStates.SCENE1)
+                this.$store.dispatch('app/requestState', appStates.CAMERAMAN)
             })
 
             try {

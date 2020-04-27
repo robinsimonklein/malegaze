@@ -1,9 +1,4 @@
 import * as THREE from 'three';
-import store from '../../store'
-import Scene1 from './scenes/Scene1';
-import Scene2 from './scenes/Scene2';
-import Scene3 from './scenes/Scene3';
-import appStates from '../appStates';
 
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import cameraTypes from "./camera/cameraTypes";
@@ -20,8 +15,6 @@ class SceneManager {
         width: 0,
         height: 0
     };
-
-    video;
     sceneryManager;
     sceneSubjects;
 
@@ -36,18 +29,22 @@ class SceneManager {
         this.screenDimensions.width = canvas.width;
         this.screenDimensions.height = canvas.height;
 
-        this.video = null;
-
         this.scene = this.buildScene();
         this.renderer = this.buildRenderer(this.screenDimensions);
 
         // Initiate sceneries
         this.buildSceneries()
+    }
 
+    // --- METHODS
+
+    /**
+     * Initiate SceneManager
+     */
+    init() {
         // Initiate stats
         this.stats = new Stats();
         document.body.appendChild(this.stats.dom);
-
     }
 
     /**
@@ -68,7 +65,7 @@ class SceneManager {
         this.scene = this.buildScene();
 
         // FIXME On garde ça ici ?
-        this.sceneSubjects = this.createSceneSubjects(this.scene);
+        // this.sceneSubjects = this.createSceneSubjects(this.scene);
     }
 
     /**
@@ -97,19 +94,22 @@ class SceneManager {
         sceneries.push(actress_scenery)
         sceneries.push(spectator_scenery)
 
-        this.sceneryManager = new SceneryManager(sceneries, this.scene)
+        this.sceneryManager = new SceneryManager(sceneries)
     }
 
-    createSceneSubjects(scene) {
-        switch (store.state.app.appState) {
-            case appStates.SCENE1:
-                return [new Scene1(scene, this.screenDimensions)];
-            case appStates.SCENE2:
-                return [new Scene2(scene, this.screenDimensions, this.canvas)]; // bon à voir pour le canvas...
-            case appStates.SCENE3:
-                return [new Scene3(scene, this.screenDimensions, this.canvas, this.video)]; // bon à voir pour le canvas...
-            default:
-                return [];
+    /**
+     * Load scenery by name
+     * @param {String} name
+     */
+    loadSceneryByName(name){
+        // Remove all elements from scene
+        this.clearScene()
+        const sceneryIndex = this.sceneryManager.getSceneryIndexByName(name)
+        if(sceneryIndex !== null){
+            this.sceneryManager.setCurrentScenery(sceneryIndex)
+            this.sceneryManager.addSceneryToScene({scene: this.scene})
+        }else{
+            console.error('Cannot load scenery : ' + name)
         }
     }
 
@@ -117,10 +117,12 @@ class SceneManager {
      * Update loop
      */
     update() {
-        const elapsedTime = this.clock.getElapsedTime();
+        // const elapsedTime = this.clock.getElapsedTime();
 
         // Cancel rendering if scenery isn't ready
-        // if(!this.sceneryManager.scenery.cameraManager) return
+        if(!this.sceneryManager.scenery || !this.sceneryManager.scenery.cameraManager) {
+            return
+        }
 
         this.stats.update();
         this.sceneryManager.update()

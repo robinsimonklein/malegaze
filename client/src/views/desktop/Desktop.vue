@@ -41,9 +41,9 @@
                         return "DesktopSetup"
                     case appStates.INTRO:
                         return "DesktopIntro"
-                    case appStates.SCENE1:
-                    case appStates.SCENE2:
-                    case appStates.SCENE3:
+                    case appStates.CAMERAMAN:
+                    case appStates.ACTRESS:
+                    case appStates.SPECTATOR:
                         return "DesktopScene"
                     case appStates.END:
                         return "DesktopEnd"

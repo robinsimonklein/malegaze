@@ -12,6 +12,7 @@ class Scenery {
 
     onCreated;
     onLoaded;
+    onUpdate;
 
     /**
      * Create a new Scenery
@@ -22,6 +23,7 @@ class Scenery {
      * @param {[Light]} lights
      * @param {Function} onCreated
      * @param {Function} onLoaded
+     * @param {Function} onUpdate
      */
     constructor({
         name= "undefined",
@@ -30,7 +32,8 @@ class Scenery {
         models,
         lights,
         onCreated = (self) => self,
-        onLoaded = (self) => self
+        onLoaded = (self) => self,
+        onUpdate = (self) => self
 
     }) {
         this.name = name
@@ -44,6 +47,7 @@ class Scenery {
             this.onCreated(this)
         }
         if(onLoaded !== undefined) this.onLoaded = onLoaded
+        if(onUpdate !== undefined) this.onUpdate = onUpdate
     }
 
     /**
@@ -91,6 +95,8 @@ class Scenery {
      * Update loop
      */
     update() {
+        if(this.onUpdate) this.onUpdate(this)
+
         this.cameraManager.update()
     }
 }

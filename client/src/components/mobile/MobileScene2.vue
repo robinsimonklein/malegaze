@@ -17,7 +17,7 @@
         components: {MobileOrientation},
         methods: {
             next() {
-                this.$socket.emit('state_request', appStates.SCENE3)
+                this.$socket.emit('state_request', appStates.SPECTATOR)
             }
         }
 

@@ -20,7 +20,7 @@
         components: {ZoomSlider, MobileOrientation },
         methods: {
             next() {
-                this.$socket.emit('state_request', appStates.SCENE2)
+                this.$socket.emit('state_request', appStates.ACTRESS)
             }
         }
     }

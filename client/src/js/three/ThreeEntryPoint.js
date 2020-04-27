@@ -1,6 +1,4 @@
 import SceneManager from './SceneManager';
-import store from '../../store';
-import appStates from "../appStates";
 
 class ThreeEntryPoint {
     canvas;
@@ -12,14 +10,17 @@ class ThreeEntryPoint {
         this.sceneManager = new SceneManager(this.canvas)
     }
 
-    init(container) {
+    init(container, sceneryName) {
 
         container.appendChild(this.canvas)
         // Bind all the events
         this.bindEventListeners()
 
+        // Init sceneManager
+        this.sceneManager.init()
+
         // Add current scenery to scene
-        this.sceneManager.sceneryManager.addSceneryToScene()
+        this.sceneManager.loadSceneryByName(sceneryName)
 
         // Start rendering
         this.start()
@@ -44,16 +45,6 @@ class ThreeEntryPoint {
             this.resizeCanvas()
         })
         this.resizeCanvas()
-
-        // State changing event
-        // FIXME : watch déprécié, changer de méthode
-        store.watch((state) => state.app.appState, (state) => {
-            if(state === appStates.SCENE1 || state === appStates.SCENE2 || state === appStates.SCENE3){
-                this.sceneManager.clearScene()
-                return
-            }
-            this.stop()
-        });
     }
 
     /**
@@ -88,7 +79,8 @@ class ThreeEntryPoint {
      * Stop the rendering animation
      */
     stop() {
-        cancelAnimationFrame(this.renderAnimation)
+        if(this.renderAnimation) cancelAnimationFrame(this.renderAnimation)
+        this.renderAnimation = null
     }
 }
 

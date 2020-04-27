@@ -110,7 +110,7 @@ class Scene1 {
     }
 
     nextScene() {
-        store.dispatch('app/requestState', appStates.SCENE2);
+        store.dispatch('app/requestState', appStates.ACTRESS);
     }
 
     update() {

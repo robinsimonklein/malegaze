@@ -2,21 +2,38 @@ import Scenery from "../Scenery";
 import Camera from "../../camera/Camera";
 import Model from "../../model/Model";
 import cameraTypes from "../../camera/cameraTypes";
+import controlsTypes from "../../controls/controlsTypes";
+import Light from "../../light/Light";
+import * as THREE from "three";
 
 export default new Scenery({
     name: 'actress_scenery',
     cameras: [
         new Camera({
             type: cameraTypes.PERSPECTIVE,
-            properties: { fov: 30, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 1500 },
-            initialPosition: {x: 10, y: 10, z: 10},
+            properties: { fov: 60, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 3000 },
+            initialPosition: {x: 18, y: 84.9, z: 227.3},
         }),
     ],
+    controls: controlsTypes.MOBILE,
     models: [
         new Model({
             name: 'scene2',
             path: "models/glb/02_SCENE-02.glb",
             type: 'gltf'
         })
-    ]
+    ],
+    lights: [
+        new Light({
+            name: 'directionnal',
+            light: new  THREE.DirectionalLight(0xffffff, 1),
+            initialPosition: {x: 0, y: 20, z: 50},
+        }),
+    ],
+    onLoaded: (self) => {
+        console.log('Scene actress loaded', self)
+    },
+    onUpdate: (self) => {
+        console.log(self.cameraManager.controls.deviceOrientation)
+    }
 })

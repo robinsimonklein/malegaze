@@ -5,6 +5,7 @@ import Light from "../../light/Light";
 import cameraTypes from "../../camera/cameraTypes";
 import controlsTypes from "../../controls/controlsTypes";
 import * as THREE from "three";
+import MobileControls from "../../controls/MobileControls";
 
 export default new Scenery({
     name: 'cameraman_scenery',
@@ -14,7 +15,7 @@ export default new Scenery({
             properties: { fov: 1, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 1500 },
             initialPosition: {x: -50, y: 150, z: -300},
             settings: {
-                focusDistance: 300
+                focusDistance: 350
             },
             debug: true
         }),
@@ -31,7 +32,7 @@ export default new Scenery({
             properties: { fov: 1, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 1500 },
             initialPosition: {x: 30, y: 30, z: 30},
             settings: {
-                focusDistance: 300
+                focusDistance: 350
             }
         }),
     ],
@@ -58,7 +59,11 @@ export default new Scenery({
             }
         }),
     ],
-    onCreated: () => {
-
+    onLoaded: (self) => {
+        self.mobileControls = new MobileControls(self.cameraManager.cameraObject)
+    },
+    onUpdate: (self) => {
+        self.mobileControls.update(['focalLength'])
     }
+
 })

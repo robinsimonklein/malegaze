@@ -6,7 +6,9 @@
 
 <script>
     export default {
-
+        created() {
+            this.$store.dispatch('app/checkMobile')
+        }
     }
 </script>
 

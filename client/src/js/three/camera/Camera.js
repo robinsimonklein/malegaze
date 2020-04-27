@@ -14,6 +14,7 @@ class Camera {
         far: 1500
     }
     settings = {
+        alphaOffset: 0,
         focusDistance: 0,
         focalLength: 24,
         fstop: 4,
@@ -30,7 +31,7 @@ class Camera {
      * @param {{fov, aspectRatio, near, far}} properties
      * @param {{x: Number, y: Number, z: Number}} initialPosition
      * @param {*} settings
-     * @param {Boolean} helper
+     * @param {Boolean} debug
      */
     constructor({
         type,

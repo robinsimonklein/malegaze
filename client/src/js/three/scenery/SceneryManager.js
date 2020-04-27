@@ -3,11 +3,7 @@ class SceneryManager{
     sceneries = []
     currentScenery = 0
 
-    scene;
-
-    constructor(sceneries, scene) {
-        this.scene = scene
-
+    constructor(sceneries) {
         this.buildSceneries(sceneries)
     }
 
@@ -21,8 +17,32 @@ class SceneryManager{
         return this.sceneries[this.currentScenery]
     }
 
+    /**
+     * Get scenery index by scenery name
+     * @param name
+     * @returns {any}
+     */
+    getSceneryIndexByName(name) {
+        const index = this.sceneries.findIndex((scenery) => scenery.name === name)
+        return index >= 0 ? index : null
+    }
+
+    // --- SETTERS
+
+    /**
+     * Set current scenery
+     * @param {Number} index
+     */
+    setCurrentScenery(index){
+        this.currentScenery = index
+    }
+
     // --- METHODS
 
+    /**
+     * Build sceneries array
+     * @param sceneries
+     */
     buildSceneries(sceneries) {
         sceneries.forEach((scenery) => {
             this.sceneries.push(scenery)
@@ -32,9 +52,10 @@ class SceneryManager{
     /**
      * Add scenery to scene
      * @param {Scenery} scenery
+     * @param {} scene
      */
-    addSceneryToScene(scenery = this.scenery) {
-        scenery.addToScene(this.scene)
+    addSceneryToScene({scenery = this.scenery, scene}) {
+        scenery.addToScene(scene)
     }
 
     /**
@@ -44,6 +65,11 @@ class SceneryManager{
         this.scenery.update()
     }
 
+    /**
+     * On window resize
+     * @param width
+     * @param height
+     */
     onWindowResize({width, height}) {
 
     }
