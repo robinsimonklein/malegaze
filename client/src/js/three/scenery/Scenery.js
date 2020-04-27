@@ -10,6 +10,9 @@ class Scenery {
     audioManager;
     lightManager;
 
+    onCreated;
+    onLoaded;
+
     /**
      * Create a new Scenery
      * @param {String} name
@@ -18,6 +21,7 @@ class Scenery {
      * @param {[Model]} models
      * @param {[Light]} lights
      * @param {Function} onCreated
+     * @param {Function} onLoaded
      */
     constructor({
         name= "undefined",
@@ -25,8 +29,8 @@ class Scenery {
         controls = null,
         models,
         lights,
-        // lights,
-        onCreated = (self) => self
+        onCreated = (self) => self,
+        onLoaded = (self) => self
 
     }) {
         this.name = name
@@ -35,9 +39,11 @@ class Scenery {
         this.buildModels(models)
         this.buildLights(lights)
 
-        if(onCreated !== undefined) onCreated(this)
-
-        console.log(this)
+        if(onCreated !== undefined){
+            this.onCreated = onCreated
+            this.onCreated(this)
+        }
+        if(onLoaded !== undefined) this.onLoaded = onLoaded
     }
 
     /**
@@ -76,6 +82,9 @@ class Scenery {
         this.modelManager.addToScene(scene)
         // Add lights to scene
         this.lightManager.addToScene(scene)
+
+        // Run onLoaded when scenery is added to scene
+        this.onLoaded(this)
     }
 
     /**
