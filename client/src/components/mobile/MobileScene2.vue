@@ -30,7 +30,6 @@
         methods: {
             next() {
                 this.$socket.emit('state_request', appStates.SPECTATOR)
-                this.$socket.emit('state_request', appStates.SCENE3)
             },
 
             init() {
