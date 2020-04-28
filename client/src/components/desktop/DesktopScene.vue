@@ -1,10 +1,6 @@
 <template>
     <div id="scene-container" class="scene-container" ref="sceneContainer">
-        <CameraOverlay v-if="appState === 'scene1'" />
-        <video>
-            <source src="@/assets/video/cinema-vid.mp4" type="video/mp4">
-        </video>
-
+        <CameraOverlay v-if="appState === 'cameraman'" />
     </div>
 </template>
 
