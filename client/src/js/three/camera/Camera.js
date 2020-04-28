@@ -110,6 +110,9 @@ class Camera {
         this.helper = new CameraHelper(this.camera);
     }
 
+    /**
+     * Mat changer
+     */
     matChanger() {
         for ( let e in this.settings ) {
             if ( e in this.camera.postprocessing.bokeh_uniforms ) {

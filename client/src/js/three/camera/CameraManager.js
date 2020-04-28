@@ -10,21 +10,26 @@ class CameraManager {
     // Controls
     controls;
 
-
-    constructor({cameras, controls = null}) {
+    /**
+     * CameraManager
+     * @param {[Camera]} cameras
+     * @param {*} controls
+     * @param {Boolean} debug
+     */
+    constructor({cameras, controls = null, debug = false}) { // eslint-disable-line
         // Add cameras
         if(cameras){
             cameras.forEach((camera) => {
                 this.addCamera(camera)
             })
         }
-
+        // Build controls
         if(controls) this.buildControls(controls)
-        // this.update()
     }
 
     // -- SETTERS
 
+    // ...
 
     // -- GETTERS
 
@@ -77,6 +82,10 @@ class CameraManager {
         return this.cameraObjects.length - 1 >= 0 ? this.cameraObjects.length - 1 : 0
     }
 
+    /**
+     * Change current camera
+     * @param cameraIndex
+     */
     changeCamera(cameraIndex){
         this.currentCamera = cameraIndex
     }

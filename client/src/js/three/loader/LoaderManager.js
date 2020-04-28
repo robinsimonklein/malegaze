@@ -9,6 +9,9 @@ class LoaderManager {
         this.buildLoadingManager()
     }
 
+    /**
+     * Build the THREE LoadingManager
+     */
     buildLoadingManager() {
         this.loadingManager = new THREE.LoadingManager()
 
@@ -26,6 +29,9 @@ class LoaderManager {
         }
     }
 
+    /**
+     * Load all the assets (models, audi, ...)
+     */
     load() {
         store.commit('desktop/setLoading', true)
         console.log('🔴️ Start global loading')
@@ -35,18 +41,25 @@ class LoaderManager {
             // Load models
             scenery.modelManager.loadModels()
 
-            // Load videos
-
             // Load audios
+            //...
         })
     }
 
+    /**
+     * When loaded
+     */
     onLoad() {
         console.log('✅ Loading finished !')
         store.commit('desktop/setLoading', false)
-
     }
 
+    /**
+     * On progress
+     * @param url
+     * @param itemsLoaded
+     * @param itemsTotal
+     */
     onProgress(url, itemsLoaded, itemsTotal) {
         store.commit('desktop/setLoadingProgress', Math.round((itemsLoaded / itemsTotal) * 100))
     }

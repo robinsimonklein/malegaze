@@ -10,9 +10,15 @@ class ThreeEntryPoint {
         this.sceneManager = new SceneManager(this.canvas)
     }
 
+    /**
+     * Initiate THREE and run the animation
+     * @param {HTMLElement} container
+     * @param {String} sceneryName
+     */
     init(container, sceneryName) {
-
+        // Add canvas in DOM container
         container.appendChild(this.canvas)
+
         // Bind all the events
         this.bindEventListeners()
 
@@ -29,11 +35,9 @@ class ThreeEntryPoint {
     /**
      * Create the render canvas
      * @param document
-     * @param container
      */
     createCanvas(document){
-        const canvas = document.createElement('canvas')
-        this.canvas = canvas
+        this.canvas = document.createElement('canvas')
     }
 
     /**

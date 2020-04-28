@@ -27,7 +27,7 @@ class Scenery {
      * @param {Function} onUpdate
      */
     constructor({
-        name= "undefined",
+        name = "undefined",
         cameras,
         controls = null,
         models,
@@ -82,11 +82,11 @@ class Scenery {
      */
     addToScene(scene) {
         // Add cameras to scene
-        this.cameraManager.addToScene(scene)
+        if(this.cameraManager) this.cameraManager.addToScene(scene)
         // Add models to scene
-        this.modelManager.addToScene(scene)
+        if(this.modelManager) this.modelManager.addToScene(scene)
         // Add lights to scene
-        this.lightManager.addToScene(scene)
+        if(this.lightManager) this.lightManager.addToScene(scene)
 
         // Run onLoaded when scenery is added to scene
         this.onLoaded(this)
@@ -96,9 +96,14 @@ class Scenery {
      * Update loop
      */
     update() {
+        // Run the scenery's onUpdate method
         if(this.onUpdate) this.onUpdate(this)
 
-        this.cameraManager.update()
+        // Run managers update loops
+        if(this.cameraManager) this.cameraManager.update()
+        if(this.modelManager) this.modelManager.update()
+        if(this.lightManager) this.lightManager.update()
+        if(this.audioManager) this.audioManager.update()
     }
 }
 export default Scenery

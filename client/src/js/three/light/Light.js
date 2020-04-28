@@ -1,6 +1,7 @@
 class Light {
-    name
-    light
+    name;
+    light;
+    initialPosition = {x: 0, y: 0, z: 0};
 
     constructor({
         name = "undefined",
@@ -11,7 +12,10 @@ class Light {
         this.name = name
         this.light = light
 
-        if(initialPosition) this.setLightPosition(initialPosition)
+        if(initialPosition) {
+            this.initialPosition = initialPosition
+            this.setLightPosition(initialPosition)
+        }
         if(properties) this.updateLightProperties(properties)
     }
 

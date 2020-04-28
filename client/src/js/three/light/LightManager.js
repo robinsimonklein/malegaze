@@ -2,7 +2,12 @@ class LightManager {
 
     lightObjects = [];
 
-    constructor({lights, debug = false}) {
+    /**
+     * LightManager
+     * @param {[Light]} lights
+     * @param {Boolean} debug
+     */
+    constructor({lights, debug = false}) { // eslint-disable-line
         if(lights){
             lights.forEach((light) => {
                 this.lightObjects.push(light)
@@ -71,6 +76,9 @@ class LightManager {
 
     // --- METHODS
 
+    /**
+     * Build light helpers
+     */
     buildHelpers() {
         // TODO: build light helpers
     }

@@ -4,7 +4,7 @@ class Model {
     type;
 
     /**
-     *
+     * Model
      * @param {String} name
      * @param {String} path
      * @param {'gtlf', 'fbx'} type
@@ -13,6 +13,13 @@ class Model {
         this.name = name;
         this.path = path;
         this.type = type;
+    }
+
+    /**
+     * Update loop
+     */
+    update() {
+
     }
 }
 

@@ -16,7 +16,6 @@ class SceneManager {
         height: 0
     };
     sceneryManager;
-    sceneSubjects;
 
     stats;
 
@@ -49,7 +48,7 @@ class SceneManager {
 
     /**
      * Build the THREE scene
-     * @returns {Scene}
+     * @returns {*}
      */
     buildScene() {
         const scene = new THREE.Scene();
@@ -63,9 +62,6 @@ class SceneManager {
      */
     clearScene() {
         this.scene = this.buildScene();
-
-        // FIXME On garde ça ici ?
-        // this.sceneSubjects = this.createSceneSubjects(this.scene);
     }
 
     /**
@@ -86,6 +82,9 @@ class SceneManager {
         return renderer;
     }
 
+    /**
+     * Build the sceneries + sceneryManager
+     */
     buildSceneries() {
 
         // Import sceneries
@@ -94,7 +93,7 @@ class SceneManager {
         sceneries.push(actress_scenery)
         sceneries.push(spectator_scenery)
 
-        this.sceneryManager = new SceneryManager(sceneries, this.scene)
+        this.sceneryManager = new SceneryManager({sceneries: sceneries, scene: this.scene})
     }
 
     /**

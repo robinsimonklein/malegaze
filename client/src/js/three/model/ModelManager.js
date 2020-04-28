@@ -11,7 +11,12 @@ class ModelManager {
     gltfLoader;
     fbxLoader;
 
-    constructor({models}) {
+    /**
+     * ModelManager
+     * @param {[Model]} models
+     * @param {Boolean} debug
+     */
+    constructor({models, debug = false}) { // eslint-disable-line
         if(models) {
             models.forEach((models) => {
                 this.addModel(models)
@@ -19,17 +24,26 @@ class ModelManager {
         }
     }
 
+    /**
+     * Add model to models array
+     * @param {Model} model
+     */
     addModel(model) {
         this.models.push(model)
     }
 
+    /**
+     * Build the THREE loaders
+     */
     buildLoaders() {
         this.gltfLoader = new GLTFLoader(LoaderManager.loadingManager);
         this.fbxLoader = new FBXLoader(LoaderManager.loadingManager);
     }
 
+    /**
+     * Load all the models from models array
+     */
     loadModels() {
-
         // Build loader if not built yet
         if(!this.loadersReady) {
             this.buildLoaders()

@@ -5,7 +5,13 @@ class SceneryManager{
     sceneries = []
     currentScenery = 0
 
-    constructor(sceneries, scene) {
+    /**
+     * SceneryManager
+     * @param {[Scenery]} sceneries
+     * @param {*} scene
+     * @param {Boolean} debug
+     */
+    constructor({sceneries, scene, debug = false}) { // eslint-disable-line
         this.scene = scene
         this.buildSceneries(sceneries)
     }
@@ -75,7 +81,7 @@ class SceneryManager{
      * @param width
      * @param height
      */
-    onWindowResize({width, height}) {
+    onWindowResize({width, height}) { // eslint-disable-line
 
     }
 
