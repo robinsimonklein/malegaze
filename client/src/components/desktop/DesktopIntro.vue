@@ -2,7 +2,7 @@
     <div class="desktop-intro">
         <button class="desktop-intro__start" @click="startVideo">Forcer la vidéo (provisoir)</button>
         <video class="desktop-intro__video" ref="player">
-            <source src="@/assets/video/intro.mp4" type="video/mp4">
+            <source src="/video/intro.mp4" type="video/mp4">
         </video>
     </div>
 </template>
