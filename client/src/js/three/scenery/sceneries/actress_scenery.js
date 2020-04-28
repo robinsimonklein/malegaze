@@ -18,8 +18,8 @@ export default new Scenery({
     controls: controlsTypes.MOBILE,
     models: [
         new Model({
-            name: 'scene2',
-            path: "models/glb/02_SCENE-02.glb",
+            name: 'actress_scenery',
+            path: "models/glb/actress_scenery.glb",
             type: 'gltf'
         })
     ],
@@ -30,10 +30,4 @@ export default new Scenery({
             initialPosition: {x: 0, y: 20, z: 50},
         }),
     ],
-    onLoaded: (self) => {
-        console.log('Scene actress loaded', self)
-    },
-    onUpdate: (self) => {
-        console.log(self.cameraManager.controls.deviceOrientation)
-    }
 })

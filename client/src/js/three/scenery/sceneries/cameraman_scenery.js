@@ -40,7 +40,7 @@ export default new Scenery({
     models: [
         new Model({
             name: 'film_set',
-            path: 'models/glb/scene-01.glb',
+            path: 'models/glb/cameraman_scenery.glb',
             type: 'gltf'
         }),
     ],
