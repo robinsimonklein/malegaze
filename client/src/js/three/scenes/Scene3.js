@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import store from '../../../store';
 import appStates from '../../appStates';
-import MobileOrientationControls from '../utils/MobileOrientationControls';
+import MobileOrientationControls from '../controls/MobileOrientationControls';
 
 class Scene3 {
     scene;

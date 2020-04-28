@@ -4,7 +4,7 @@ import store from '../../../store';
 import appStates from '../../appStates';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
-import MobileOrientationControls from '../utils/MobileOrientationControls';
+import MobileOrientationControls from '../controls/MobileOrientationControls';
 
 class Scene2 {
 

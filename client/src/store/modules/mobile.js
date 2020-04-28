@@ -1,4 +1,4 @@
-import {ID} from "../../js/utils";
+import {ID} from "../../js/helpers/Utils";
 
 export const mobile = {
     namespaced: true,

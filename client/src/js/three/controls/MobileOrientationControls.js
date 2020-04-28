@@ -60,6 +60,9 @@ class MobileOrientationControls {
 
     }
 
+    /**
+     * Update loop
+     */
     update() {
         this.deviceOrientation = this.getDeviceOrientation()
         this.screenOrientation = this.getScreenOrientation()

@@ -35,17 +35,18 @@
                 return this.$route.params.mobileId
             },
             currentComponent() {
+                // TODO: Replace MobileScene1, MobileScene2, ...
                 switch(this.$store.state.app.appState) {
                     case appStates.INDEX:
                     case appStates.SETUP:
                         return "MobileSetup"
                     case appStates.INTRO:
                         return "MobileIntro"
-                    case appStates.SCENE1:
+                    case appStates.CAMERAMAN:
                         return "MobileScene1"
-                    case appStates.SCENE2:
+                    case appStates.ACTRESS:
                         return "MobileScene2"
-                    case appStates.SCENE3:
+                    case appStates.SPECTATOR:
                         return "MobileScene3"
                     case appStates.END:
                         return "MobileEnd"
