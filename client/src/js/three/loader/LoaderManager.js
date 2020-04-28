@@ -48,7 +48,7 @@ class LoaderManager {
     }
 
     onProgress(url, itemsLoaded, itemsTotal) {
-        store.commit('desktop/setLoadingProgress', (itemsLoaded / itemsTotal) * 100)
+        store.commit('desktop/setLoadingProgress', Math.round((itemsLoaded / itemsTotal) * 100))
     }
 }
 
