@@ -2,38 +2,32 @@ import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import store from '../../../store'
 import appStates from '../../appStates';
-import MobileOrientationControls from "../utils/MobileOrientationControls";
-import MobileControls from "../utils/MobileControls";
-import CinemaCamera from "../cameras/CinemaCamera";
+import MobileControls from "../controls/MobileControls";
+import CameraManager from "../camera/CameraManager";
+import cameraTypes from "../camera/cameraTypes";
+import MobileOrientationControls from "../controls/MobileOrientationControls";
 
 class Scene1 {
     scene;
 
-    currentCamera = 0;
-    cameras = [];
-    cinemaCameras = [];
+    cameraManager;
     orientationControls = []
-    // cameraHelpers = [];
-    screenDimensions;
     mobileControls;
-
-    params;
+    screenDimensions;
 
     constructor(scene, screenDimensions) {
         this.scene = scene;
+        this.cameraManager = new CameraManager(scene)
+
         this.buildLight();
         this.buildLoader();
         this.screenDimensions = screenDimensions
 
         this.buildCameras()
-        // this.buildCamerasHelpers()
 
-        this.mobileControls = new MobileControls(this.cinemaCameras[this.currentCamera])
+        this.mobileControls = new MobileControls(this.cameraManager.cameraObject)
         this.mobileControls.update(['focalLength'])
 
-        this.params = {
-            focus: 530,
-        };
     }
 
     buildLight() {
@@ -70,7 +64,7 @@ class Scene1 {
                 console.log(Math.round(xhr.loaded / xhr.total * 100) + '% loaded');
             },
             (error) => {
-                console.log('An error happened', error);
+                console.error('An error happened', error);
             }
         );
 
@@ -82,63 +76,52 @@ class Scene1 {
         const near = 1;
         const far = 1500;
 
+        // -------------------
         // First camera
-        this.cinemaCameras[0] = new CinemaCamera(fov, aspectRatio, near, far);
-        this.cinemaCameras[0].focusDistance = 530
-        this.cameras[0] = this.cinemaCameras[0].getCamera();
-        this.cameras[0].position.set(-50, 150, -300);
-        this.scene.add(this.cameras[0])
+        let camera1 = this.cameraManager.createCamera(cameraTypes.CINEMATIC, {fov, aspectRatio, near, far})
+        camera1.settings.focusDistance = 530
+        camera1.camera.position.set(-50, 150, -300)
+        camera1.settings.showFocus = true
 
-        this.orientationControls[0] = new MobileOrientationControls(this.cameras[0])
+        // Set orientationControls for first camera
+        this.orientationControls[0] = new MobileOrientationControls(camera1.camera)
         this.orientationControls[0].alphaOffset = Math.PI // 180° rotation by default
         this.orientationControls[0].update()
 
+        // -------------------
         // Second camera
-        this.cinemaCameras[1] = new CinemaCamera(fov, aspectRatio, near, far);
-        this.cinemaCameras[1].focusDistance = 30
-        this.cameras[1] = this.cinemaCameras[1].getCamera();
-        this.cameras[1].position.set(-70, 150, 170);
-        this.scene.add(this.cameras[1])
+        let camera2 = this.cameraManager.createCamera(cameraTypes.CINEMATIC, {fov, aspectRatio, near, far});
+        camera2.settings.focusDistance = 300
+        camera2.camera.position.set(-70, 150, 170)
 
-        this.orientationControls[1] = new MobileOrientationControls(this.cameras[1])
-        this.orientationControls[1].alphaOffset = 0// 0° rotation by default
+        // Set orientationControls for first camera
+        this.orientationControls[1] = new MobileOrientationControls(camera2.camera)
         this.orientationControls[1].update()
 
+        // -------------------
         // Third camera
-        this.cinemaCameras[2] = new CinemaCamera(fov, aspectRatio, near, far);
-        this.cinemaCameras[2].focusDistance = 530
-        this.cameras[2] = this.cinemaCameras[2].getCamera();
-        this.cameras[2].position.set(0, 50, 700);
-        this.scene.add(this.cameras[2])
+        let camera3 = this.cameraManager.createCamera(cameraTypes.CINEMATIC, {fov, aspectRatio, near, far});
+        camera3.settings.focusDistance = 470
+        camera3.camera.position.set(0, 50, 700)
 
-        this.orientationControls[2] = new MobileOrientationControls(this.cameras[2])
-        this.orientationControls[2].alphaOffset = 0 // 0° rotation by default
+        // Set orientationControls for first camera
+        this.orientationControls[2] = new MobileOrientationControls(camera3.camera)
         this.orientationControls[2].update()
     }
 
-
-    buildCamerasHelpers() {
-        for (let i = 0; i < this.cameras.length; i++) {
-            this.cameraHelpers[i] = new THREE.CameraHelper(this.cameras[i]);
-            this.scene.add(this.cameraHelpers[i])
-        }
-    }
-
-
     nextScene() {
-        store.dispatch('app/requestState', appStates.SCENE2);
+        store.dispatch('app/requestState', appStates.ACTRESS);
     }
 
     update() {
-        this.cinemaCameras[this.currentCamera].update()
-        this.orientationControls[this.currentCamera].update()
+        // Update the camera & controllers
+        this.cameraManager.update()
+        if(this.orientationControls.length > 0) this.orientationControls[0].update()
         this.mobileControls.update(['focalLength'])
-        // this.cameraHelpers[this.currentCamera].update()
     }
 
     onWindowResize({width, height}) {
-        this.cameras[this.currentCamera].aspect = width / height;
-        this.cameras[this.currentCamera].updateProjectionMatrix();
+        this.cameraManager.onWindowResize({width, height})
     }
 
 }

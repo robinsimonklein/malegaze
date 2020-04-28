@@ -2,7 +2,7 @@
     <div class="desktop-intro">
         <button class="desktop-intro__start" @click="startVideo">Forcer la vidéo (provisoir)</button>
         <video class="desktop-intro__video" ref="player">
-            <source src="@/assets/video/intro.mp4" type="video/mp4">
+            <source src="/video/intro.mp4" type="video/mp4">
         </video>
     </div>
 </template>
@@ -25,14 +25,14 @@
         mounted() {
             // Commencer la vidéo si on arrive directement sur cette vue, provisoir.
             this.$refs.player.addEventListener('ended', () => {
-                this.$store.dispatch('app/requestState', appStates.SCENE1)
+                this.$store.dispatch('app/requestState', appStates.CAMERAMAN)
             })
 
             try {
                 this.$refs.player.play()
             }
-            catch (e) {
-                console.log(e)
+            catch (err) {
+                console.error(err)
             }
         }
     }
