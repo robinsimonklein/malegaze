@@ -29,7 +29,12 @@ export const app = {
                     case appStates.ACTRESS:
                     case appStates.SPECTATOR:
                         // If 3D scenery, load the scenery
-                        ThreeEntryPoint.sceneManager.loadSceneryByName(`${value}_scenery`)
+                        if(ThreeEntryPoint.sceneManager.sceneryManager.scenery.name === `${value}_scenery`){
+                            // Scene already loaded
+                            break;
+                        }else{
+                            ThreeEntryPoint.sceneManager.loadSceneryByName(`${value}_scenery`)
+                        }
                         break;
                     default:
                         break;

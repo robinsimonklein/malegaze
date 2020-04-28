@@ -4,6 +4,7 @@ import LightManager from "../light/LightManager";
 
 class Scenery {
     name;
+    scene;
 
     cameraManager;
     modelManager;

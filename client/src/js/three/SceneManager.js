@@ -94,7 +94,7 @@ class SceneManager {
         sceneries.push(actress_scenery)
         sceneries.push(spectator_scenery)
 
-        this.sceneryManager = new SceneryManager(sceneries)
+        this.sceneryManager = new SceneryManager(sceneries, this.scene)
     }
 
     /**
@@ -102,6 +102,7 @@ class SceneManager {
      * @param {String} name
      */
     loadSceneryByName(name){
+
         // Remove all elements from scene
         this.clearScene()
         const sceneryIndex = this.sceneryManager.getSceneryIndexByName(name)

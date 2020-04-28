@@ -1,9 +1,12 @@
 class SceneryManager{
 
+    scene;
+
     sceneries = []
     currentScenery = 0
 
-    constructor(sceneries) {
+    constructor(sceneries, scene) {
+        this.scene = scene
         this.buildSceneries(sceneries)
     }
 
@@ -55,6 +58,8 @@ class SceneryManager{
      * @param {} scene
      */
     addSceneryToScene({scenery = this.scenery, scene}) {
+        this.scene = scene
+        scenery.scene = scene
         scenery.addToScene(scene)
     }
 
