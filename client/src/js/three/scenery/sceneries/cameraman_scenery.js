@@ -15,6 +15,7 @@ export default new Scenery({
             properties: { fov: 1, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 1500 },
             initialPosition: {x: -50, y: 150, z: -300},
             settings: {
+                alphaOffset: Math.PI,
                 focusDistance: 350
             },
             debug: true

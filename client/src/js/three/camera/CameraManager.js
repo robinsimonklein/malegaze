@@ -89,6 +89,7 @@ class CameraManager {
         switch (type){
             case controlsTypes.MOBILE:
                 this.controls = new MobileOrientationControls(this.camera)
+                this.controls.alphaOffset = this.cameraObject.settings.alphaOffset ?? 0
                 break;
             case controlsTypes.ORBIT:
             default:
