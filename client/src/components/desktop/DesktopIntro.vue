@@ -31,8 +31,8 @@
             try {
                 this.$refs.player.play()
             }
-            catch (e) {
-                console.log(e)
+            catch (err) {
+                console.error(err)
             }
         }
     }

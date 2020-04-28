@@ -46,9 +46,8 @@ export const app = {
             this._vm.$socket.emit('state_request', value)
         },
         checkMobile({commit}){
-            var md = new MobileDetect(window.navigator.userAgent);
+            const md = new MobileDetect(window.navigator.userAgent);
             commit('setIsMobile', (!!md.mobile()))
         }
-
     },
 }

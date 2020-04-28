@@ -42,7 +42,7 @@ class LoaderManager {
     }
 
     onLoad() {
-        console.log('Loading finished !')
+        console.log('✅ Loading finished !')
         store.commit('desktop/setLoading', false)
 
     }
