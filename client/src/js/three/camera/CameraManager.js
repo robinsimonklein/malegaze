@@ -18,13 +18,15 @@ class CameraManager {
      */
     constructor({cameras, controls = null, debug = false}) { // eslint-disable-line
         // Add cameras
-        if(cameras){
+        if (cameras) {
             cameras.forEach((camera) => {
-                this.addCamera(camera)
-            })
+                this.addCamera(camera);
+            });
         }
         // Build controls
-        if(controls) this.buildControls(controls)
+        if (controls) {
+            this.buildControls(controls);
+        }
     }
 
     // -- SETTERS
@@ -38,7 +40,7 @@ class CameraManager {
      * @returns {Camera}
      */
     get cameraObject() {
-        return this.cameraObjects[this.currentCamera]
+        return this.cameraObjects[this.currentCamera];
     }
 
     /**
@@ -46,7 +48,7 @@ class CameraManager {
      * @returns {*}
      */
     get camera() {
-        return this.cameraObjects[this.currentCamera].camera
+        return this.cameraObjects[this.currentCamera].camera;
     }
 
     /**
@@ -54,7 +56,7 @@ class CameraManager {
      * @returns {*}
      */
     get helper() {
-        return this.cameraObjects[this.currentCamera].helper
+        return this.cameraObjects[this.currentCamera].helper;
     }
 
     /**
@@ -62,11 +64,11 @@ class CameraManager {
      * @returns {*}
      */
     get cameras() {
-        let cameras = []
+        let cameras = [];
         this.cameraObjects.map((cameraObject) => {
-            this.cameras.push(cameraObject.camera)
-        })
-        return cameras
+            this.cameras.push(cameraObject.camera);
+        });
+        return cameras;
     }
 
     // -- METHODS
@@ -75,34 +77,34 @@ class CameraManager {
      * Add a camera to cameras array
      * @param camera
      */
-    addCamera(camera){
-        this.cameraObjects.push(camera)
+    addCamera(camera) {
+        this.cameraObjects.push(camera);
 
         // Return the index of the camera
-        return this.cameraObjects.length - 1 >= 0 ? this.cameraObjects.length - 1 : 0
+        return this.cameraObjects.length - 1 >= 0 ? this.cameraObjects.length - 1 : 0;
     }
 
     /**
      * Change current camera
      * @param cameraIndex
      */
-    changeCamera(cameraIndex){
-        this.currentCamera = cameraIndex
+    changeCamera(cameraIndex) {
+        this.currentCamera = cameraIndex;
     }
 
     /**
      * Build controls for current camera
      * @param {controlsTypes} type
      */
-    buildControls(type){
-        switch (type){
+    buildControls(type) {
+        switch (type) {
             case controlsTypes.MOBILE:
-                this.controls = new MobileOrientationControls(this.camera)
-                this.controls.alphaOffset = this.cameraObject.settings.alphaOffset ?? 0
+                this.controls = new MobileOrientationControls(this.camera);
+                this.controls.alphaOffset = this.cameraObject.settings.alphaOffset ?? 0;
                 break;
             case controlsTypes.ORBIT:
             default:
-                this.controls = new OrbitControls(this.camera)
+                this.controls = new OrbitControls(this.camera);
                 break;
         }
     }
@@ -121,8 +123,12 @@ class CameraManager {
      * Update loop
      */
     update() {
-        if(this.cameraObject) this.cameraObject.update()
-        if(this.controls) this.controls.update()
+        if (this.cameraObject) {
+            this.cameraObject.update();
+        }
+        if (this.controls) {
+            this.controls.update();
+        }
     }
 
     /**
@@ -136,4 +142,4 @@ class CameraManager {
     }
 }
 
-export default CameraManager
+export default CameraManager;
