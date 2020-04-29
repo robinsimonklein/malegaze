@@ -8,13 +8,15 @@ class LightManager {
      * @param {Boolean} debug
      */
     constructor({lights, debug = false}) { // eslint-disable-line
-        if(lights){
+        if (lights) {
             lights.forEach((light) => {
-                this.lightObjects.push(light)
-            })
+                this.lightObjects.push(light);
+            });
         }
 
-        if(debug) this.buildHelpers();
+        if (debug) {
+            this.buildHelpers();
+        }
     }
 
     // --- GETTERS
@@ -24,11 +26,11 @@ class LightManager {
      * @returns {[]}
      */
     get lights() {
-        let lights = []
+        let lights = [];
         this.lightObjects.forEach((lightObject) => {
-            lights.push(lightObject.light)
-        })
-        return lights
+            lights.push(lightObject.light);
+        });
+        return lights;
     }
 
     /**
@@ -37,8 +39,10 @@ class LightManager {
      * @returns {Light}
      */
     getLightObjectByIndex(index) {
-        if(!(this.lightObjects.length > 0)) return null
-        return this.lightObjects[index] ?? null
+        if (!(this.lightObjects.length > 0)) {
+            return null;
+        }
+        return this.lightObjects[index] ?? null;
     }
 
     /**
@@ -47,7 +51,7 @@ class LightManager {
      * @returns {*}
      */
     getLightByIndex(index) {
-        return this.getLightObjectByIndex(index).light ?? null
+        return this.getLightObjectByIndex(index).light ?? null;
     }
 
     /**
@@ -56,13 +60,15 @@ class LightManager {
      * @returns {Light}
      */
     getLightObjectByName(name) {
-        if(!(this.lightObjects.length > 0)) return null
+        if (!(this.lightObjects.length > 0)) {
+            return null;
+        }
 
         let lightObject = this.lightObjects.find((lightObject) => {
-            return lightObject.name === name
-        })
+            return lightObject.name === name;
+        });
 
-        return lightObject ?? null
+        return lightObject ?? null;
     }
 
     /**
@@ -71,7 +77,7 @@ class LightManager {
      * @returns {*}
      */
     getLightByName(name) {
-        return this.getLightObjectByName(name).light ?? null
+        return this.getLightObjectByName(name).light ?? null;
     }
 
     // --- METHODS
@@ -89,20 +95,20 @@ class LightManager {
      */
     addToScene(scene) {
         this.lights.forEach((light) => {
-            scene.add(light)
-        })
+            scene.add(light);
+        });
     }
 
     /**
      * Update loop
      */
     update() {
-        if(this.lightObjects.length > 0) {
+        if (this.lightObjects.length > 0) {
             this.lightObjects.forEach((lightObject) => {
-                lightObject.update()
-            })
+                lightObject.update();
+            });
         }
     }
 }
 
-export default LightManager
+export default LightManager;
