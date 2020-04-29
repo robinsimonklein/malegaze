@@ -6,8 +6,8 @@ class ThreeEntryPoint {
     renderAnimation;
 
     constructor() {
-        this.createCanvas(document)
-        this.sceneManager = new SceneManager(this.canvas)
+        this.createCanvas(document);
+        this.sceneManager = new SceneManager(this.canvas);
     }
 
     /**
@@ -17,19 +17,19 @@ class ThreeEntryPoint {
      */
     init(container, sceneryName) {
         // Add canvas in DOM container
-        container.appendChild(this.canvas)
+        container.appendChild(this.canvas);
 
         // Bind all the events
-        this.bindEventListeners()
+        this.bindEventListeners();
 
         // Init sceneManager
-        this.sceneManager.init()
+        this.sceneManager.init();
 
         // Add current scenery to scene
-        this.sceneManager.loadSceneryByName(sceneryName)
+        this.sceneManager.loadSceneryByName(sceneryName);
 
         // Start rendering
-        this.start()
+        this.start();
     }
 
     /**
@@ -37,7 +37,7 @@ class ThreeEntryPoint {
      * @param document
      */
     createCanvas(document){
-        this.canvas = document.createElement('canvas')
+        this.canvas = document.createElement('canvas');
     }
 
     /**
@@ -46,9 +46,9 @@ class ThreeEntryPoint {
     bindEventListeners() {
         // Resize event
         window.addEventListener('resize', () => {
-            this.resizeCanvas()
-        })
-        this.resizeCanvas()
+            this.resizeCanvas();
+        });
+        this.resizeCanvas();
     }
 
     /**
@@ -69,25 +69,27 @@ class ThreeEntryPoint {
      */
     render() {
         this.renderAnimation= requestAnimationFrame(this.render.bind(this));
-        this.sceneManager.update()
+        this.sceneManager.update();
     }
 
     /**
      * Start the rendering animation
      */
     start() {
-        this.render()
+        this.render();
     }
 
     /**
      * Stop the rendering animation
      */
     stop() {
-        if(this.renderAnimation) cancelAnimationFrame(this.renderAnimation)
-        this.renderAnimation = null
+        if(this.renderAnimation) {
+            cancelAnimationFrame(this.renderAnimation);
+        }
+        this.renderAnimation = null;
     }
 }
 
 // Make singleton
-const instance = new ThreeEntryPoint()
-export default instance
+const instance = new ThreeEntryPoint();
+export default instance;

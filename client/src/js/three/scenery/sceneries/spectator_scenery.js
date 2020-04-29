@@ -1,17 +1,17 @@
-import Scenery from "../Scenery";
-import Camera from "../../camera/Camera";
-import Model from "../../model/Model";
-import Light from "../../light/Light";
-import cameraTypes from "../../camera/cameraTypes";
-import controlsTypes from "../../controls/controlsTypes";
-import * as THREE from "three";
+import Scenery from '../Scenery';
+import Camera from '../../camera/Camera';
+import Model from '../../model/Model';
+import Light from '../../light/Light';
+import cameraTypes from '../../camera/cameraTypes';
+import controlsTypes from '../../controls/controlsTypes';
+import * as THREE from 'three';
 
 export default new Scenery({
     name: 'spectator_scenery',
     cameras: [
         new Camera({
             type: cameraTypes.PERSPECTIVE,
-            properties: { fov: 60, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 8000 },
+            properties: {fov: 60, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 8000},
             initialPosition: {x: -20, y: 200, z: 520},
         }),
     ],
@@ -87,13 +87,14 @@ export default new Scenery({
          * @param {String} path
          */
         self.buildVideo = (self, {src}) => {
-            self.video = document.createElement('video')
-            self.video.setAttribute('style', 'display: none')
-            let source = document.createElement('source')
-            source.setAttribute('src', src)
-            source.setAttribute('type', 'video/mp4')
-            self.video.appendChild(source)
-            document.body.appendChild(self.video)
+            self.video = document.createElement('video');
+            self.video.setAttribute('style', 'display: none');
+            const source = document.createElement('source');
+            source.setAttribute('src', src);
+            source.setAttribute('type', 'video/mp4');
+            self.video.appendChild(source);
+            document.body.appendChild(self.video);
+            console.log(self.video);
         }
 
         /**
@@ -130,7 +131,7 @@ export default new Scenery({
     onLoaded: (self) => {
 
         // Light settings
-        let spotlight = self.lightManager.getLightByName('spotlight')
+        const spotlight = self.lightManager.getLightByName('spotlight');
         spotlight.shadow.mapSize.width = 1024;
         spotlight.shadow.mapSize.height = 1024;
 
@@ -143,8 +144,8 @@ export default new Scenery({
         self.createActor(self, {position: [-1200, 270]});
 
         // Create cinema screen
-        self.buildVideo(self, {src: '/video/cinema-vid.mp4'})
-        self.buildScreen(self)
+        self.buildVideo(self, {src: '/video/cinema-vid.mp4'});
+        self.buildScreen(self);
 
     },
     onUpdate: (self) => {
