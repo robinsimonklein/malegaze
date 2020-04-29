@@ -1,5 +1,5 @@
 <template>
-    <div class="mobile-scene-2" id="mobile-scene-2" ref="mobileScene2">
+    <div class="mobile-scene-2" id="mobile-scene-2" ref="mobileScene2" @click="shoot">
         <p>Tap the screen</p>
         <div class="mobile-scene-2__wrapper"  ref="circleWrapper">
             <div class=""></div>
@@ -32,6 +32,9 @@
                 this.$socket.emit('state_request', appStates.SPECTATOR)
             },
 
+            shoot() {
+               this.$socket.emit('mobile_shoot')
+            },
             init() {
                 this.sceneDiv = this.$refs.circleWrapper;
                 this.circleAnimation();

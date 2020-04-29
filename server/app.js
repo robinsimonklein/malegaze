@@ -76,6 +76,10 @@ io.on('connection', function (socket) {
         socket.in(socket.mobileRoom).emit('mobile_controls', controls)
     })
 
+    socket.on('mobile_shoot', () => {
+        socket.in(socket.mobileRoom).emit('mobile_shoot')
+    })
+
     // App
     socket.on('state_request', (state) => {
         console.log('state_request', state)
