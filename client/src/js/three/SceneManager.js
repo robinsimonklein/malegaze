@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 
 import Stats from 'three/examples/jsm/libs/stats.module.js';
-import cameraTypes from "./camera/cameraTypes";
+import cameraTypes from './camera/cameraTypes';
 // Sceneries
-import SceneryManager from "./scenery/SceneryManager";
-import cameraman_scenery from "./scenery/sceneries/cameraman_scenery";
-import actress_scenery from "./scenery/sceneries/actress_scenery";
-import spectator_scenery from "./scenery/sceneries/spectator_scenery";
+import SceneryManager from './scenery/SceneryManager';
+import cameraman_scenery from './scenery/sceneries/cameraman_scenery';
+import actress_scenery from './scenery/sceneries/actress_scenery';
+import spectator_scenery from './scenery/sceneries/spectator_scenery';
 
 class SceneManager {
     canvas;
@@ -32,7 +32,7 @@ class SceneManager {
         this.renderer = this.buildRenderer(this.screenDimensions);
 
         // Initiate sceneries
-        this.buildSceneries()
+        this.buildSceneries();
     }
 
     // --- METHODS
@@ -52,7 +52,7 @@ class SceneManager {
      */
     buildScene() {
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color("#1d1428");
+        scene.background = new THREE.Color('#1d1428');
 
         return scene;
     }
@@ -88,28 +88,28 @@ class SceneManager {
     buildSceneries() {
 
         // Import sceneries
-        let sceneries = []
-        sceneries.push(cameraman_scenery)
-        sceneries.push(actress_scenery)
-        sceneries.push(spectator_scenery)
+        const sceneries = [];
+        sceneries.push(cameraman_scenery);
+        sceneries.push(actress_scenery);
+        sceneries.push(spectator_scenery);
 
-        this.sceneryManager = new SceneryManager({sceneries: sceneries, scene: this.scene})
+        this.sceneryManager = new SceneryManager({sceneries: sceneries, scene: this.scene});
     }
 
     /**
      * Load scenery by name
      * @param {String} name
      */
-    loadSceneryByName(name){
+    loadSceneryByName(name) {
 
         // Remove all elements from scene
-        this.clearScene()
-        const sceneryIndex = this.sceneryManager.getSceneryIndexByName(name)
-        if(sceneryIndex !== null){
-            this.sceneryManager.setCurrentScenery(sceneryIndex)
-            this.sceneryManager.addSceneryToScene({scene: this.scene})
-        }else{
-            console.error('Cannot load scenery : ' + name)
+        this.clearScene();
+        const sceneryIndex = this.sceneryManager.getSceneryIndexByName(name);
+        if (sceneryIndex !== null) {
+            this.sceneryManager.setCurrentScenery(sceneryIndex);
+            this.sceneryManager.addSceneryToScene({scene: this.scene});
+        } else {
+            console.error('Cannot load scenery : ' + name);
         }
     }
 
@@ -120,17 +120,17 @@ class SceneManager {
         // const elapsedTime = this.clock.getElapsedTime();
 
         // Cancel rendering if scenery isn't ready
-        if(!this.sceneryManager.scenery || !this.sceneryManager.scenery.cameraManager) {
-            return
+        if (!this.sceneryManager.scenery || !this.sceneryManager.scenery.cameraManager) {
+            return;
         }
 
         this.stats.update();
-        this.sceneryManager.update()
+        this.sceneryManager.update();
 
         // Render depending to the camera type
-        if(this.sceneryManager.scenery.cameraManager.cameraObject.type === cameraTypes.CINEMATIC){
+        if (this.sceneryManager.scenery.cameraManager.cameraObject.type === cameraTypes.CINEMATIC) {
             this.sceneryManager.scenery.cameraManager.camera.renderCinematic(this.scene, this.renderer);
-        }else{
+        } else {
             this.renderer.render(this.scene, this.sceneryManager.scenery.cameraManager.camera);
         }
 
@@ -145,7 +145,7 @@ class SceneManager {
         this.screenDimensions.width = width;
         this.screenDimensions.height = height;
 
-        this.sceneryManager.onWindowResize({width, height})
+        this.sceneryManager.onWindowResize({width, height});
         this.renderer.setSize(width, height);
     }
 }

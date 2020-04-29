@@ -170,7 +170,7 @@
             border-radius: 100%;
             background-color: #dd2e2e;
 
-            animation: rec 2s infinite;
+            animation: rec 2s infinite; // TODO
         }
     }
 

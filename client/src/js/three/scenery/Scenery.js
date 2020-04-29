@@ -1,6 +1,6 @@
-import CameraManager from "../camera/CameraManager";
-import ModelManager from "../model/ModelManager";
-import LightManager from "../light/LightManager";
+import CameraManager from '../camera/CameraManager';
+import ModelManager from '../model/ModelManager';
+import LightManager from '../light/LightManager';
 
 class Scenery {
     name;
@@ -27,28 +27,32 @@ class Scenery {
      * @param {Function} onUpdate
      */
     constructor({
-        name = "undefined",
-        cameras,
-        controls = null,
-        models,
-        lights,
-        onCreated = (self) => self,
-        onLoaded = (self) => self,
-        onUpdate = (self) => self
+                    name = "undefined",
+                    cameras,
+                    controls = null,
+                    models,
+                    lights,
+                    onCreated = (self) => self,
+                    onLoaded = (self) => self,
+                    onUpdate = (self) => self
 
-    }) {
-        this.name = name
+                }) {
+        this.name = name;
 
-        this.buildCameras(cameras, controls)
-        this.buildModels(models)
-        this.buildLights(lights)
+        this.buildCameras(cameras, controls);
+        this.buildModels(models);
+        this.buildLights(lights);
 
-        if(onCreated !== undefined){
-            this.onCreated = onCreated
-            this.onCreated(this)
+        if (onCreated !== undefined) {
+            this.onCreated = onCreated;
+            this.onCreated(this);
         }
-        if(onLoaded !== undefined) this.onLoaded = onLoaded
-        if(onUpdate !== undefined) this.onUpdate = onUpdate
+        if (onLoaded !== undefined) {
+            this.onLoaded = onLoaded;
+        }
+        if (onUpdate !== undefined) {
+            this.onUpdate = onUpdate;
+        }
     }
 
     /**
@@ -57,7 +61,7 @@ class Scenery {
      * @param {controlsTypes} controls
      */
     buildCameras(cameras, controls) {
-        this.cameraManager = new CameraManager({cameras, controls})
+        this.cameraManager = new CameraManager({cameras, controls});
     }
 
     /**
@@ -65,7 +69,7 @@ class Scenery {
      * @param models
      */
     buildModels(models) {
-        this.modelManager = new ModelManager({models})
+        this.modelManager = new ModelManager({models});
     }
 
     /**
@@ -73,7 +77,7 @@ class Scenery {
      * @param {[Light]} lights
      */
     buildLights(lights) {
-        this.lightManager = new LightManager({lights})
+        this.lightManager = new LightManager({lights});
     }
 
     /**
@@ -82,14 +86,20 @@ class Scenery {
      */
     addToScene(scene) {
         // Add cameras to scene
-        if(this.cameraManager) this.cameraManager.addToScene(scene)
+        if (this.cameraManager) {
+            this.cameraManager.addToScene(scene);
+        }
         // Add models to scene
-        if(this.modelManager) this.modelManager.addToScene(scene)
+        if (this.modelManager) {
+            this.modelManager.addToScene(scene);
+        }
         // Add lights to scene
-        if(this.lightManager) this.lightManager.addToScene(scene)
+        if (this.lightManager) {
+            this.lightManager.addToScene(scene);
+        }
 
         // Run onLoaded when scenery is added to scene
-        this.onLoaded(this)
+        this.onLoaded(this);
     }
 
     /**
@@ -97,13 +107,24 @@ class Scenery {
      */
     update() {
         // Run the scenery's onUpdate method
-        if(this.onUpdate) this.onUpdate(this)
+        if (this.onUpdate) {
+            this.onUpdate(this);
+        }
 
         // Run managers update loops
-        if(this.cameraManager) this.cameraManager.update()
-        if(this.modelManager) this.modelManager.update()
-        if(this.lightManager) this.lightManager.update()
-        if(this.audioManager) this.audioManager.update()
+        if (this.cameraManager) {
+            this.cameraManager.update();
+        }
+        if (this.modelManager) {
+            this.modelManager.update();
+        }
+        if (this.lightManager) {
+            this.lightManager.update();
+        }
+        if (this.audioManager) {
+            this.audioManager.update();
+        }
     }
 }
-export default Scenery
+
+export default Scenery;

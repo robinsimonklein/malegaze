@@ -1,11 +1,11 @@
 import appStates from '../../js/appStates';
 import ThreeEntryPoint from '../../js/three/ThreeEntryPoint';
-import MobileDetect from "mobile-detect";
+import MobileDetect from 'mobile-detect';
 
 export const app = {
     namespaced: true,
     state: {
-        appState: process.env.VUE_APP_SKIP_MOBILE_SETUP === "true" ? appStates.INTRO : appStates.INDEX,
+            appState: process.env.VUE_APP_SKIP_MOBILE_SETUP === "true" ? appStates.INTRO : appStates.INDEX,
         isMobile: false
     },
     getters: {
