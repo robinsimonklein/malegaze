@@ -1,7 +1,7 @@
 <template>
     <div class="camera-overlay">
         <div class="camera-overlay__corner camera-overlay__corner--tl">
-            <div class="camera-overlay__rec">
+            <div v-show="recording" class="camera-overlay__rec">
                 <i class="camera-overlay__rec-point"></i>REC
             </div>
         </div>
@@ -17,7 +17,7 @@
             <div class="camera-overlay__target--right"></div>
         </div>
         <div class="camera-overlay__progress">
-            <div class="camera-overlay__progress-bar" :style="`width: ${Math.round(progress * 100)}%`"></div>
+            <div class="camera-overlay__progress-bar" :style="`width: ${progress}%`"></div>
         </div>
         <div class="camera-overlay__settings">
             <span>1/50</span>
@@ -28,25 +28,26 @@
 </template>
 
 <script>
-    import CameraOverlayManager from "../../../js/three/overlays/CameraOverlayManager"
+    import CameraOverlay from "../../../js/three/overlays/CameraOverlay"
 
     export default {
         name: "CameraOverlay",
         data() {
             return {
                 progress: 0,
+                recording: false,
                 anim: null
             }
         },
         methods: {
-            getProgress() {
-                this.anim = requestAnimationFrame(this.getProgress)
-                this.progress = CameraOverlayManager.progress
-
+            update() {
+                this.anim = requestAnimationFrame(this.update)
+                this.progress = CameraOverlay.progress
+                this.recording = CameraOverlay.recording
             }
         },
         mounted() {
-            this.getProgress()
+            this.update()
         }
     }
 </script>

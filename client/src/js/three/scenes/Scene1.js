@@ -5,7 +5,7 @@ import appStates from '../../appStates';
 import MobileOrientationControls from "../utils/MobileOrientationControls";
 import MobileControls from "../utils/MobileControls";
 import CinemaCamera from "../cameras/CinemaCamera";
-import CameraOverlayManager from "../overlays/CameraOverlayManager"
+import CameraOverlay from "../overlays/CameraOverlay"
 
 class Scene1 {
     scene;
@@ -136,12 +136,12 @@ class Scene1 {
 
         for (let i = 0; i < intersects.length; i++) {
             if (intersects[i].object.name === "ACTRICE"){
-                if (CameraOverlayManager.progress < 1) CameraOverlayManager.progress += 0.005
+                if (CameraOverlay.progress < 1) CameraOverlay.progress += 0.005
                 return
             }
         }
 
-        CameraOverlayManager.progress = 0;
+        CameraOverlay.progress = 0;
     }
 
     nextScene() {

@@ -24,6 +24,22 @@ class ModelManager {
         }
     }
 
+    // --- GETTERS
+
+    /**
+     *
+     * @param {String} name
+     * @returns {*}
+     */
+    getLoadedModelByName(name) {
+        if(this.loadedModels.length <= 0) return undefined
+        return this.loadedModels.find((loadedModel) => {
+            return loadedModel.name === name
+        })
+    }
+
+    // --- METHODS
+
     /**
      * Add model to models array
      * @param {Model} model
@@ -57,6 +73,8 @@ class ModelManager {
                     this.gltfLoader.load(
                         model.path,
                         (obj) => {
+                            obj.name = model.name
+                            obj.scene.name = model.name
                             this.loadedModels.push(obj)
                         },
                     )
