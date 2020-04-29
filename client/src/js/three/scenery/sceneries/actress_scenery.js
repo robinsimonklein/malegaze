@@ -4,6 +4,8 @@ import Model from "../../model/Model";
 import cameraTypes from "../../camera/cameraTypes";
 import controlsTypes from "../../controls/controlsTypes";
 import Light from "../../light/Light";
+import store from "../../../../store";
+import appStates from "../../../appStates";
 import * as THREE from "three";
 
 export default new Scenery({
@@ -87,6 +89,7 @@ export default new Scenery({
 
                if(diffX < 0.95 && diffY < 6.7 && diffZ < 13.5) {
                    cancelAnimationFrame(eyesAttractionFrame);
+                   store.dispatch('app/requestState', appStates.SPECTATOR)
                } else {
                    position.x = distX;
                    position.y = distY;

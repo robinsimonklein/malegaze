@@ -6,7 +6,7 @@
             <div class=""></div>
             <div class=""></div>
         </div>
-        <button @click="next" class="btn mobile-scene-2__button">Next</button>
+        <!--<button @click="next" class="btn mobile-scene-2__button">Next</button>-->
 
         <!-- Track the mobile orientation -->
         <MobileOrientation :debug="false"/>
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-    import appStates from '../../js/appStates';
+    //import appStates from '../../js/appStates';
     import MobileOrientation from './orientation/MobileOrientation';
 
     export default {
@@ -28,10 +28,9 @@
             }
         },
         methods: {
-            next() {
+           /* next() {
                 this.$socket.emit('state_request', appStates.SPECTATOR)
-            },
-
+            },*/
             shoot() {
                this.$socket.emit('mobile_shoot')
             },
