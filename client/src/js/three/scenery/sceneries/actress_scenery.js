@@ -101,7 +101,6 @@ export default new Scenery({
        };
 
        self.shoot = (self) => {
-
            self.raycaster.setFromCamera({x: 0.0,y: 0.0}, self.cameraManager.camera);
            let intersects = self.raycaster.intersectObjects(self.group.children);
 
@@ -111,7 +110,6 @@ export default new Scenery({
            }
 
        };
-
 
        setTimeout(() => {
            self.eyesAttraction()
