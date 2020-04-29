@@ -4,19 +4,21 @@ class Light {
     initialPosition = {x: 0, y: 0, z: 0};
 
     constructor({
-        name = "undefined",
-        light,
-        initialPosition = {x: 0, y: 0, z: 0},
-        properties = {}
-    }) {
-        this.name = name
-        this.light = light
+                    name = 'undefined',
+                    light,
+                    initialPosition = {x: 0, y: 0, z: 0},
+                    properties = {}
+                }) {
+        this.name = name;
+        this.light = light;
 
-        if(initialPosition) {
-            this.initialPosition = initialPosition
-            this.setLightPosition(initialPosition)
+        if (initialPosition) {
+            this.initialPosition = initialPosition;
+            this.setLightPosition(initialPosition);
         }
-        if(properties) this.updateLightProperties(properties)
+        if (properties) {
+            this.updateLightProperties(properties);
+        }
     }
 
     /**
@@ -25,10 +27,16 @@ class Light {
      * @param {Number} y
      * @param {Number} z
      */
-    setLightPosition({x, y, z}){
-        if(x) this.light.position.x = x
-        if(y) this.light.position.y = y
-        if(z) this.light.position.z = z
+    setLightPosition({x, y, z}) {
+        if (x) {
+            this.light.position.x = x;
+        }
+        if (y) {
+            this.light.position.y = y;
+        }
+        if (z) {
+            this.light.position.z = z;
+        }
     }
 
     /**
@@ -36,9 +44,9 @@ class Light {
      * @param {{}} properties
      */
     updateLightProperties(properties) {
-        for(let [key, value] of Object.entries(properties)) {
-            if(this.light[key] !== null && this.light[key] !== undefined){
-                this.light[key] = value
+        for (let [key, value] of Object.entries(properties)) {
+            if (this.light[key] !== null && this.light[key] !== undefined) {
+                this.light[key] = value;
             }
         }
     }
@@ -51,4 +59,4 @@ class Light {
     }
 }
 
-export default Light
+export default Light;
