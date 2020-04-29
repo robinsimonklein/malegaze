@@ -1,9 +1,9 @@
-class SceneryManager{
+class SceneryManager {
 
     scene;
 
-    sceneries = []
-    currentScenery = 0
+    sceneries = [];
+    currentScenery = 0;
 
     /**
      * SceneryManager
@@ -13,7 +13,7 @@ class SceneryManager{
      */
     constructor({sceneries, scene, debug = false}) { // eslint-disable-line
         this.scene = scene
-        this.buildSceneries(sceneries)
+        this.buildSceneries(sceneries);
     }
 
     // --- GETTERS
@@ -23,7 +23,7 @@ class SceneryManager{
      * @returns {Scenery}
      */
     get scenery() {
-        return this.sceneries[this.currentScenery]
+        return this.sceneries[this.currentScenery];
     }
 
     /**
@@ -32,8 +32,8 @@ class SceneryManager{
      * @returns {any}
      */
     getSceneryIndexByName(name) {
-        const index = this.sceneries.findIndex((scenery) => scenery.name === name)
-        return index >= 0 ? index : null
+        const index = this.sceneries.findIndex((scenery) => scenery.name === name);
+        return index >= 0 ? index : null;
     }
 
     // --- SETTERS
@@ -43,7 +43,7 @@ class SceneryManager{
      * @param {Number} index
      */
     setCurrentScenery(index){
-        this.currentScenery = index
+        this.currentScenery = index;
     }
 
     // --- METHODS
@@ -54,7 +54,7 @@ class SceneryManager{
      */
     buildSceneries(sceneries) {
         sceneries.forEach((scenery) => {
-            this.sceneries.push(scenery)
+            this.sceneries.push(scenery);
         })
     }
 
@@ -64,16 +64,16 @@ class SceneryManager{
      * @param {} scene
      */
     addSceneryToScene({scenery = this.scenery, scene}) {
-        this.scene = scene
-        scenery.scene = scene
-        scenery.addToScene(scene)
+        this.scene = scene;
+        scenery.scene = scene;
+        scenery.addToScene(scene);
     }
 
     /**
      * Update loop
      */
     update() {
-        this.scenery.update()
+        this.scenery.update();
     }
 
     /**
@@ -87,4 +87,4 @@ class SceneryManager{
 
 }
 
-export default SceneryManager
+export default SceneryManager;
