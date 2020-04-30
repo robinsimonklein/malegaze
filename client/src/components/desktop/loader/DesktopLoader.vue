@@ -1,6 +1,7 @@
 <template>
     <div class="desktop-loader">
         <h1>{{ loadingProgress }} %</h1>
+        <p class="desktop-loader__text">Chargement...</p>
     </div>
 </template>
 
@@ -20,7 +21,25 @@
         height: 100vh;
         width: 100vw;
         display: inline-flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
+        transition: opacity;
+
+        &__text {
+            animation: loading 2s infinite;
+        }
+    }
+
+    @keyframes loading {
+        0% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.2;
+        }
+        100% {
+            opacity: 1;
+        }
     }
 </style>
