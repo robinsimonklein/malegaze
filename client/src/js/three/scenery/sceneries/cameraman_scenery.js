@@ -9,17 +9,34 @@ import MobileControls from "../../controls/MobileControls";
 import CameraOverlay from "../../overlays/CameraOverlay";
 import store from "../../../../store";
 import appStates from "../../../appStates";
+import MobileOrientationControls from "../../controls/MobileOrientationControls";
 
 export default new Scenery({
     name: 'cameraman_scenery',
     cameras: [
+        /*
+        new Camera({
+            type: cameraTypes.PERSPECTIVE,
+            properties: { fov: 1, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 4000 },
+            initialPosition: {x: -50, y: 150, z: -300},
+        }),
+
+         */
+        new Camera({
+            type: cameraTypes.CINEMATIC,
+            properties: { fov: 1, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 1500 },
+            initialPosition: {x: -50, y: 150, z: -300},
+            settings: {
+                focusDistance: 100,
+            },
+        }),
         new Camera({
             type: cameraTypes.CINEMATIC,
             properties: { fov: 1, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 1500 },
             initialPosition: {x: -50, y: 150, z: -300},
             settings: {
                 alphaOffset: Math.PI,
-                focusDistance: 530
+                focusDistance: 530,
             },
         }),
         new Camera({
@@ -39,7 +56,7 @@ export default new Scenery({
             },
         }),
     ],
-    controls: controlsTypes.MOBILE,
+    controls: null,
     models: [
         new Model({
             name: 'film_set',
@@ -65,22 +82,33 @@ export default new Scenery({
     onCreated: (self) => {
         // Raycaster
         self.raycaster = new THREE.Raycaster()
-        self.currentCamera = 0
-
-        self.shoots = [
+        self.sequences = [
             {
                 cameraIndex: 0,
-                targetName: 'ACTRICE'
+                update: (self) => {
+                    self.followCurve(self, {
+                        curve: self.curve1,
+                        cameraIndex: 0,
+                        duration: 800,
+                    },
+                    (self) => {
+                        self.changeSequence(self, {index: 1})
+                        self.controls = new MobileOrientationControls(self.cameraManager.camera)
+                        self.controls.alphaOffset = Math.PI
+                        self.mobileControls = new MobileControls(self.cameraManager.cameraObject)
+                    })
+                }
             },
             {
                 cameraIndex: 1,
-                targetName: 'ACTRICE'
-            },
-            {
-                cameraIndex: 2,
-                targetName: 'ACTRICE'
+                update: (self) => {
+                    self.controls.update()
+                    self.mobileControls.update(['focalLength'])
+                }
             }
         ]
+        self.currentSequence = 0
+
 
         // -- METHODS
 
@@ -99,10 +127,14 @@ export default new Scenery({
             }
         }
 
+        self.changeSequence = (self, {index}) => {
+            self.cameraManager.changeCamera(self.sequences[index].cameraIndex)
+            self.currentSequence = index
+        }
+
     },
     onLoaded: (self) => {
         console.log('self', self)
-        console.log('ACTRICE', self.scene.getObjectByName('ACTRICE'))
 
         // Mobile controls
         self.mobileControls = new MobileControls(self.cameraManager.cameraObject)
@@ -110,9 +142,65 @@ export default new Scenery({
         // Fog
         self.scene.fog = new THREE.Fog(0xff4444, 300, 1000);
 
+        // Create a sine-like wave
+        self.curve1 = new THREE.CatmullRomCurve3( [
+            new THREE.Vector3( -100, 80, -500 ),
+            new THREE.Vector3( -100, 80, -230 ),
+        ] );
+
+
+        var points = self.curve1.getPoints( 50 );
+        var geometry = new THREE.BufferGeometry().setFromPoints( points );
+
+        var material = new THREE.LineBasicMaterial( { color : 0x0000ff } );
+
+        // Create the final object to add to the scene
+        var splineObject = new THREE.Line( geometry, material );
+
+        self.scene.add(splineObject)
+
+
+
+        // Camera animation
+        self.camPosIndex = 0
+
         // --- METHODS
 
-        console.log(self.scene.getObjectByName('ACTRICE'))
+        /**
+         * Follow the curve with camera
+         * @param self
+         * @param camera
+         * @param callback
+         */
+        self.followCurve = (self, {curve, cameraIndex, angle, duration}, callback) => {
+            if(self.camPosIndex >= duration) {
+                console.log('terminé')
+                callback(self)
+                return
+            }
+
+            var camPos = curve.getPoint(self.camPosIndex / duration);
+            var camRot = curve.getTangent(self.camPosIndex / duration);
+
+            self.cameraManager.cameraObjects[cameraIndex].camera.position.x = (camPos.x)
+            self.cameraManager.cameraObjects[cameraIndex].camera.position.y = (camPos.y)
+            self.cameraManager.cameraObjects[cameraIndex].camera.position.z = (camPos.z)
+
+            self.cameraManager.cameraObjects[cameraIndex].camera.rotation.x = 0
+            self.cameraManager.cameraObjects[cameraIndex].camera.rotation.y = -Math.PI/2
+            self.cameraManager.cameraObjects[cameraIndex].camera.rotation.z = 0
+
+            // self.cameraManager.cameraObjects[cameraIndex].camera.rotation.y -= Math.PI
+            // self.cameraManager.cameraObjects[cameraIndex].camera.rotation.x = 0
+            // self.cameraManager.cameraObjects[cameraIndex].camera.rotation.z = 0
+
+            self.camPosIndex += 1
+        }
+
+        /**
+         * Raycaster intersects
+         * @param self
+         */
         self.raycasterIntersects = (self) => {
             self.raycaster.setFromCamera({x: 0, y: 0}, self.cameraManager.camera)
 
@@ -136,8 +224,10 @@ export default new Scenery({
         }
     },
     onUpdate: (self) => {
-        self.mobileControls.update(['focalLength'])
-        self.raycasterIntersects(self)
+        // self.mobileControls.update(['focalLength'])
+
+
+        self.sequences[self.currentSequence].update(self)
     }
 
 })
