@@ -7,9 +7,21 @@
   },
   "opts": {
     "destination": "./docs/",
-    "recurse": true
+    "encoding": "utf8",
+    "recurse": true,
+    "template": "./node_modules/braintree-jsdoc-template",
   },
   "tags": {
     "allowUnknownTags": true
+  },
+  "templates": {
+    "referenceTitle": "Male Gaze",
+    "disableSort": false,
+    "collapse": false,
+    "resources": {
+      "Male Gaze": "https://malegaze.netlify.app",
+      "Three.js": "https://threejs.org/docs/index.html#manual/en/introduction/Creating-a-scene",
+      "Vue.js": "https://fr.vuejs.org/v2/guide/index.html"
+    }
   }
 }
