@@ -103,8 +103,9 @@ class CameraManager {
                 this.controls.alphaOffset = this.cameraObject.settings.alphaOffset ?? 0;
                 break;
             case controlsTypes.ORBIT:
+                this.controls = new OrbitControls(this.camera, document.body);
+                break;
             default:
-                this.controls = new OrbitControls(this.camera);
                 break;
         }
     }
