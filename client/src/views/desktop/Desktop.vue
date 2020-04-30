@@ -1,6 +1,6 @@
 <template>
     <div class="desktop">
-        <template v-if="true">
+        <template v-if="loading">
             <DesktopLoader />
         </template>
         <template v-else>
