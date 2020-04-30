@@ -3,12 +3,12 @@ import Camera from "../../camera/Camera";
 import Model from "../../model/Model";
 import Light from "../../light/Light";
 import cameraTypes from "../../camera/cameraTypes";
-import controlsTypes from "../../controls/controlsTypes";
+// import controlsTypes from "../../controls/controlsTypes";
 import * as THREE from "three";
 import MobileControls from "../../controls/MobileControls";
 import CameraOverlay from "../../overlays/CameraOverlay";
-import store from "../../../../store";
-import appStates from "../../../appStates";
+// import store from "../../../../store";
+// import appStates from "../../../appStates";
 import MobileOrientationControls from "../../controls/MobileOrientationControls";
 
 export default new Scenery({
@@ -172,7 +172,7 @@ export default new Scenery({
          * @param camera
          * @param callback
          */
-        self.followCurve = (self, {curve, cameraIndex, angle, duration}, callback) => {
+        self.followCurve = (self, {curve, cameraIndex, duration}, callback) => {
             if(self.camPosIndex >= duration) {
                 console.log('terminé')
                 callback(self)
@@ -180,7 +180,7 @@ export default new Scenery({
             }
 
             var camPos = curve.getPoint(self.camPosIndex / duration);
-            var camRot = curve.getTangent(self.camPosIndex / duration);
+            // var camRot = curve.getTangent(self.camPosIndex / duration);
 
             self.cameraManager.cameraObjects[cameraIndex].camera.position.x = (camPos.x)
             self.cameraManager.cameraObjects[cameraIndex].camera.position.y = (camPos.y)
@@ -204,7 +204,7 @@ export default new Scenery({
         self.raycasterIntersects = (self) => {
             self.raycaster.setFromCamera({x: 0, y: 0}, self.cameraManager.camera)
 
-            let intersect = self.raycaster.intersectObject(self.scene.getObjectByName('ACTRICE'), true);
+            // let intersect = self.raycaster.intersectObject(self.scene.getObjectByName('ACTRICE'), true);
 
             // console.log(intersect)
             /*

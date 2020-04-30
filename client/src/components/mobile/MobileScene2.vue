@@ -14,7 +14,6 @@
 </template>
 
 <script>
-    import appStates from '../../js/appStates';
     import MobileOrientation from './orientation/MobileOrientation';
 
     export default {
