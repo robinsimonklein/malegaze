@@ -1,7 +1,9 @@
 <template>
     <div class="camera-overlay">
         <div class="camera-overlay__corner camera-overlay__corner--tl">
-            <div class="camera-overlay__rec"><i class="camera-overlay__rec-point"></i>REC</div>
+            <div v-show="recording" class="camera-overlay__rec">
+                <i class="camera-overlay__rec-point"></i>REC
+            </div>
         </div>
         <div class="camera-overlay__corner camera-overlay__corner--tr">
             <svg class="camera-overlay__battery" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 512 512" xml:space="preserve"><path class="st0" d="M496 208h-16v-16c0-8.8-7.2-16-16-16h-16v-16c0-17.7-14.3-32-32-32H32c-17.7 0-32 14.3-32 32v192c0 17.7 14.3 32 32 32h384c17.7 0 32-14.3 32-32v-16h16c8.8 0 16-7.2 16-16v-16h16c8.8 0 16-7.2 16-16v-64c0-8.8-7.2-16-16-16zm-80-16v160H32V160h384v32z"/><path class="st0" d="M64 192h32v128H64zm64 0h32v128h-32zm64 0h32v128h-32zm64 0h32v128h-32z"/></svg>
@@ -14,6 +16,9 @@
             <div class="camera-overlay__target--center"></div>
             <div class="camera-overlay__target--right"></div>
         </div>
+        <div class="camera-overlay__progress">
+            <div class="camera-overlay__progress-bar" :style="`width: ${progress}%`"></div>
+        </div>
         <div class="camera-overlay__settings">
             <span>1/50</span>
             <span>F 2.8</span>
@@ -23,8 +28,27 @@
 </template>
 
 <script>
+    import CameraOverlay from "../../../js/three/overlays/CameraOverlay"
+
     export default {
         name: "CameraOverlay",
+        data() {
+            return {
+                progress: 0,
+                recording: false,
+                anim: null
+            }
+        },
+        methods: {
+            update() {
+                this.anim = requestAnimationFrame(this.update)
+                this.progress = CameraOverlay.progress
+                this.recording = CameraOverlay.recording
+            }
+        },
+        mounted() {
+            this.update()
+        }
     }
 </script>
 
@@ -142,6 +166,26 @@
             border-top: 1px solid white;
             border-bottom: 1px solid white;
         }
+    }
+
+    &__progress {
+        position: absolute;
+        top: 5vh;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 1px solid rgba(white, .5);
+        height: 1rem;
+        width: 40vw;
+
+        &-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: green;
+            transition: width .2s linear;
+        }
+
     }
 
     &__settings {
