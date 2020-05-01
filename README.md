@@ -1,4 +1,4 @@
-# Male Gaze
+# [Male Gaze](https://malegaze.netlify.app)
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/752f1a75-cedf-4203-8126-17cc6a19ca09/deploy-status)](https://app.netlify.com/sites/malegaze/deploys)
 
@@ -19,6 +19,9 @@ Le projet est basé sur [three.js](https://threejs.org/) pour la 3D et [socket.i
 
 ### Prototypes
 Voir les prototypes ici : [https://malegaze-prototype.netlify.com](https://malegaze-prototype.netlify.com/)
+
+## Documentation
+The code documentation is available here : [Documentation](https://doc-malegaze.netlify.app)
 
 ## Installation & setup
 
