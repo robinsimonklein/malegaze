@@ -1,6 +1,7 @@
 import CameraManager from '../camera/CameraManager';
 import ModelManager from '../model/ModelManager';
 import LightManager from '../light/LightManager';
+import SoundManager from "../sound/SoundManager";
 
 class Scenery {
     name;
@@ -10,7 +11,7 @@ class Scenery {
     modelManager;
     audioManager;
     lightManager;
-
+    soundManager;
     onCreated;
     onLoaded;
     onUpdate;
@@ -22,6 +23,7 @@ class Scenery {
      * @param {controlsTypes} controls
      * @param {[Model]} models
      * @param {[Light]} lights
+     * @param {{Sound}} sounds
      * @param {Function} onCreated
      * @param {Function} onLoaded
      * @param {Function} onUpdate
@@ -32,6 +34,7 @@ class Scenery {
                     controls = null,
                     models,
                     lights,
+                    sounds,
                     onCreated = (self) => self,
                     onLoaded = (self) => self,
                     onUpdate = (self) => self
@@ -42,6 +45,7 @@ class Scenery {
         this.buildCameras(cameras, controls);
         this.buildModels(models);
         this.buildLights(lights);
+        this.buildSounds(sounds);
 
         if (onCreated !== undefined) {
             this.onCreated = onCreated;
@@ -81,6 +85,14 @@ class Scenery {
     }
 
     /**
+     * Build sounds and soundManager
+     * @param {{Sound}} sounds
+     */
+    buildSounds(sounds) {
+        this.soundManager = new SoundManager({sounds});
+    }
+
+    /**
      * Add elements to scene
      * @param scene
      */
@@ -97,6 +109,10 @@ class Scenery {
         if (this.lightManager) {
             this.lightManager.addToScene(scene);
         }
+
+     /*   if(this.soundManager) {
+            this.soundManager.addToScene(scene)
+        }*/
 
         // Run onLoaded when scenery is added to scene
         this.onLoaded(this);
