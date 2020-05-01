@@ -2,13 +2,6 @@
  * The {@link SoundManager} manages all the sounds of a {@link Scenery}.
  */
 class SoundManager {
-
-    /**
-     *
-     */
-    constructor() {
-
-class SoundManager {
     soundObjects = [];
     currentSound = 0;
 
@@ -46,7 +39,6 @@ class SoundManager {
     get sound() {
         return this.soundObjects[this.currentSound].sound;
     }
-
 
 }
 
