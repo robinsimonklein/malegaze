@@ -1,11 +1,11 @@
-# [Male Gaze](https://malegaze.netlify.app)
+# Male Gaze
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/752f1a75-cedf-4203-8126-17cc6a19ca09/deploy-status)](https://app.netlify.com/sites/malegaze/deploys)
 
 Comment peut-on faire prendre conscience de l’**impact** qu’a le **male gaze** dans notre perception des **femmes** au quotidien, au travers du **cinéma** ?
 
 ## Présentation
-**Male Gaze** est une expérience interactive visant à faire prendre coscience l'utilisateur du phénomène de Male Gaze. 
+**[Male Gaze](https://malegaze.netlify.app)** est une expérience interactive visant à faire prendre conscience à l'utilisateur du phénomène de Male Gaze. 
 
 ### Concept
 Nous souhaitons plonger l’utilisateur en plein coeur d’une une scène de tournage pour qu’il prenne réellement conscience de ce qu’implique le Male gaze dans le monde cinématographique. Il va être confronté à toutes les étapes de la création d’un scénario tourné autour du male gaze. 
@@ -16,6 +16,7 @@ L’expérience se concentrera sur le cinéma et on peut imaginer qu’elle soit
 
 ### Technos
 Le projet est basé sur [three.js](https://threejs.org/) pour la 3D et [socket.io](https://socket.io/) pour la communication en temps réel avec le mobile.
+Le client est construit avec [Vue.js](https://vuejs.org/).
 
 ### Prototypes
 Voir les prototypes ici : [https://malegaze-prototype.netlify.com](https://malegaze-prototype.netlify.com/)
