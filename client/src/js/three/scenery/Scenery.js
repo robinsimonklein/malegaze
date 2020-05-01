@@ -1,6 +1,7 @@
 import CameraManager from '../camera/CameraManager';
 import ModelManager from '../model/ModelManager';
 import LightManager from '../light/LightManager';
+import SoundManager from "../sound/SoundManager";
 
 /**
  * A {@link Scenery} defines all the contents that needs to be rendered in the 3D View of a scenery.
@@ -53,7 +54,7 @@ class Scenery {
     modelManager;
     audioManager;
     lightManager;
-
+    soundManager;
     onCreated;
     onLoaded;
     onUpdate;
@@ -85,6 +86,7 @@ class Scenery {
         this.buildCameras(cameras, controls);
         this.buildModels(models);
         this.buildLights(lights);
+        this.buildSounds(sounds);
 
         if (onCreated !== undefined) {
             this.onCreated = onCreated;
@@ -127,8 +129,16 @@ class Scenery {
     }
 
     /**
-     * Add all the elements to scene (cameras, lights, models, ...)
-     * @param {THREE.Scene} scene - The scene in which we want to add the {@link Scenery} elements
+     * Build sounds and soundManager
+     * @param {{Sound}} sounds
+     */
+    buildSounds(sounds) {
+        this.soundManager = new SoundManager({sounds});
+    }
+
+    /**
+     * Add elements to scene
+     * @param scene
      */
     addToScene(scene) {
         // Add cameras to scene
@@ -143,6 +153,10 @@ class Scenery {
         if (this.lightManager) {
             this.lightManager.addToScene(scene);
         }
+
+     /*   if(this.soundManager) {
+            this.soundManager.addToScene(scene)
+        }*/
 
         // Run onLoaded when scenery is added to scene
         this.onLoaded(this);

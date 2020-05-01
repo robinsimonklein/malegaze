@@ -4,9 +4,11 @@ import Model from "../../model/Model";
 import cameraTypes from "../../camera/cameraTypes";
 import controlsTypes from "../../controls/controlsTypes";
 import Light from "../../light/Light";
+import Sound from "../../sound/Sound"
 import store from "../../../../store";
 import appStates from "../../../appStates";
 import * as THREE from "three";
+import PositionalSound from "../../sound/PositionalSound";
 
 export default new Scenery({
     name: 'actress_scenery',
@@ -32,12 +34,29 @@ export default new Scenery({
             initialPosition: {x: 0, y: 20, z: 50},
         }),
     ],
+    sounds : [
+        new Sound({
+            name : 'ostTest',
+            path : 'sound/ostTest.mp3',
+            isLoop : true,
+            volume: 0.1,
+        }),
+        new PositionalSound({
+            name : 'test',
+            path : 'sound/ostTest.mp3',
+            refDistance: 100
+        })
+    ],
   /* onCreated: (self) => {
         self.shoot = () => {
 
         }
     },*/
    onLoaded: (self) => {
+
+
+      self.soundManager.addToCamera(self.cameraManager.camera);
+      self.soundManager.sound.play();
 
        self.group = new THREE.Group();
        self.raycaster =  new THREE.Raycaster();
@@ -89,6 +108,7 @@ export default new Scenery({
 
                if(diffX < 0.95 && diffY < 6.7 && diffZ < 13.5) {
                    cancelAnimationFrame(eyesAttractionFrame);
+                   self.soundManager.stopAll();
                    store.dispatch('app/requestState', appStates.SPECTATOR)
                } else {
                    position.x = distX;
