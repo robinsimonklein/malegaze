@@ -15,15 +15,15 @@ export default new Scenery({
     cameras: [
         new Camera({
             type: cameraTypes.PERSPECTIVE,
-            properties: { fov: 60, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 3000 },
-            initialPosition: {x: 18, y: 84.9, z: 227.3},
+            properties: { fov: 180, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 3000 },
+            initialPosition: {x: 50, y: 180, z: 330},
         }),
     ],
     controls: controlsTypes.MOBILE,
     models: [
         new Model({
             name: 'actress_scenery',
-            path: "models/glb/actress_scenery.glb",
+            path: "models/glb/actress_scenery2.glb",
             type: 'gltf'
         })
     ],
@@ -54,7 +54,8 @@ export default new Scenery({
     },*/
    onLoaded: (self) => {
 
-
+       self.scene.fog = new THREE.Fog(0x1d1428, 250, 1800);
+     //self.cameraManager.camera.lookAt(0,200,0)
       self.soundManager.addToCamera(self.cameraManager.camera);
       self.soundManager.sound.play();
 
@@ -65,7 +66,7 @@ export default new Scenery({
        var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap } );
 
        self.eyeSprite =  new THREE.Sprite( spriteMaterial );
-       self.eyeSprite.scale.set(5, 5, 1);
+       self.eyeSprite.scale.set(10, 10, 1);
 
        self.randomIntFromInterval = (min, max) => {
            return Math.floor(Math.random() * (max - min + 1) + min);
@@ -75,7 +76,7 @@ export default new Scenery({
 
            for(var i = 0; i < number; i++) {
                var x = self.randomIntFromInterval(-100 , 100);
-               var y = self.randomIntFromInterval(20 , 200);
+               var y = self.randomIntFromInterval(100 , 350);
                var z = self.randomIntFromInterval(-50 , 50);
 
                var clonedSprite = self.eyeSprite.clone();
@@ -106,7 +107,7 @@ export default new Scenery({
 
                //console.log(diffX, diffY, diffZ);
 
-               if(diffX < 0.95 && diffY < 6.7 && diffZ < 13.5) {
+               if(diffX < 10.5 && diffY < 3.15 && diffZ < 34.2) {
                    cancelAnimationFrame(eyesAttractionFrame);
                    self.soundManager.stopAll();
                    store.dispatch('app/requestState', appStates.SPECTATOR)
@@ -130,6 +131,8 @@ export default new Scenery({
            }
 
        };
+
+      // window.addEventListener('keypress', self.eyesAttraction)
 
        setTimeout(() => {
            self.eyesAttraction()
