@@ -12,17 +12,15 @@ class Sound {
     audioListener;
 
     /**
-     *
-     * @param type
-     * @param name
-     * @param path
-     * @param isLoop
-     * @param {HTMLAudioElement} audioListener
+     * @param {string} name - The name of the sound
+     * @param {string} path - The path of the sound file
+     * @param {boolean} [isLoop=false] - Defines if the sound loops
+     * @param {number} volume - the volume of the sound
      */
     constructor({
         name,
         path,
-        isLoop,
+        isLoop = false,
         volume,
     }) {
         this.name = name;
@@ -32,8 +30,10 @@ class Sound {
         this.loadSound()
     }
 
+    /**
+     * Load sounds
+     */
     loadSound() {
-
         this.audioListener = new THREE.AudioListener();
 
         this.sound = new THREE.Audio(this.audioListener);
@@ -47,14 +47,25 @@ class Sound {
         })
     }
 
+    /**
+     * Add the sound to scene
+     * @param {THREE.Scene} scene - The scene in which we want to add the sound
+     */
     addToScene(scene) {
         scene.add(this.sound);
     }
 
+    /**
+     * Add the sound to camera
+     * @param camera - The camera in which we want to add the sound
+     */
     addToCamera(camera) {
         camera.add(this.audioListener);
     }
 
+    /**
+     * Stop the audio
+     */
     stop() {
         this.sound.pause()
     }

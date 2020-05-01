@@ -34,6 +34,15 @@ import SoundManager from "../sound/SoundManager";
  *         }),
  *         // ...
  *     ],
+ *     sounds: [
+ *         new Sound({
+ *             name: 'my_sound',
+ *             path : 'sound/ostTest.mp3',
+ *             isLoop : true,
+ *             volume: 0.1,
+ *         }),
+ *         // ...
+ *     ],
  *     onCreated: (self) => { // Don't forget self :)
  *         // Add your code here
  *     },
@@ -66,6 +75,7 @@ class Scenery {
      * @param {controlsTypes} controls - Controls mode used in the scenery
      * @param {Model[]} models - An array of models that have to be loaded in the scenery
      * @param {Light[]} lights - An array of light
+     * @param {Sound[]} sounds - An array of sounds
      * @param {Function} onCreated - All the logic that needs to be triggered when the {@link Scenery} is created
      * @param {Function} onLoaded - All the logic that needs to be triggered when the {@link Scenery} is loaded into the Three.js scene and displayed for the first time
      * @param {Function} onUpdate - All the logic that needs to be triggered when the {@link Scenery} is updated
@@ -76,6 +86,7 @@ class Scenery {
         controls = null,
         models,
         lights,
+        sounds,
         onCreated = (self) => self,
         onLoaded = (self) => self,
         onUpdate = (self) => self
