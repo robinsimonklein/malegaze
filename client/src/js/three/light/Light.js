@@ -1,15 +1,41 @@
+/**
+ * @example
+ * new Light({
+ *     name: 'spotlights',
+ *     light: new THREE.DirectionalLight(0xff4444, 1),
+ *     initialPosition: {x: 0, y: 200, z: -700},
+ *     properties: {
+ *         castShadow: true,
+ *         // ...
+ *     }
+ * })
+ */
 class Light {
     name;
+    type;
     light;
     initialPosition = {x: 0, y: 0, z: 0};
 
+    helper;
+
+    /**
+     * @param {string} name - Name of the light
+     * @param {lightTypes} type - Type of the light
+     * @param {*} light - The Three.js light
+     * @param {Object} [initialPosition] - Initial position of the light
+     * @param {Object} [properties] - Light properties (you can set all the properties of the Three.js light)
+     *
+     * @see https://threejs.org/docs/#api/en/lights/Light
+     */
     constructor({
-                    name = 'undefined',
-                    light,
-                    initialPosition = {x: 0, y: 0, z: 0},
-                    properties = {}
-                }) {
+        name = 'undefined',
+        type,
+        light,
+        initialPosition = {x: 0, y: 0, z: 0},
+        properties = {}
+    }) {
         this.name = name;
+        this.type = type;
         this.light = light;
 
         if (initialPosition) {
@@ -17,33 +43,29 @@ class Light {
             this.setLightPosition(initialPosition);
         }
         if (properties) {
-            this.updateLightProperties(properties);
+            this.setLightProperties(properties);
         }
     }
+
+    // --- METHODS
 
     /**
      * Set light position
-     * @param {Number} x
-     * @param {Number} y
-     * @param {Number} z
+     * @param {number} x - Position X
+     * @param {number} y - Position Y
+     * @param {number} z - Position Z
      */
     setLightPosition({x, y, z}) {
-        if (x) {
-            this.light.position.x = x;
-        }
-        if (y) {
-            this.light.position.y = y;
-        }
-        if (z) {
-            this.light.position.z = z;
-        }
+        if(x) this.light.position.x = x;
+        if(y) this.light.position.y = y;
+        if(z) this.light.position.z = z;
     }
 
     /**
-     * Update light properties
-     * @param {{}} properties
+     * Set light properties
+     * @param {Object} properties
      */
-    updateLightProperties(properties) {
+    setLightProperties(properties) {
         for (let [key, value] of Object.entries(properties)) {
             if (this.light[key] !== null && this.light[key] !== undefined) {
                 this.light[key] = value;

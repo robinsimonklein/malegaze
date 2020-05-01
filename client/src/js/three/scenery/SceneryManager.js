@@ -1,3 +1,6 @@
+/**
+ * The {@link SceneryManager} manage the different sceneries of the app.
+ */
 class SceneryManager {
 
     scene;
@@ -6,10 +9,9 @@ class SceneryManager {
     currentScenery = 0;
 
     /**
-     * SceneryManager
-     * @param {[Scenery]} sceneries
-     * @param {*} scene
-     * @param {Boolean} debug
+     * @param {Scenery[]} sceneries - Array of the sceneries
+     * @param {THREE.Scene} scene - The Three.js scene
+     * @param {boolean} [debug = false]
      */
     constructor({sceneries, scene, debug = false}) { // eslint-disable-line
         this.scene = scene
@@ -19,7 +21,7 @@ class SceneryManager {
     // --- GETTERS
 
     /**
-     * Returns the current scenery
+     * Returns the current {@link scenery}
      * @returns {Scenery}
      */
     get scenery() {
@@ -27,9 +29,9 @@ class SceneryManager {
     }
 
     /**
-     * Get scenery index by scenery name
-     * @param name
-     * @returns {any}
+     * Get {@link Scenery} index by {@link Scenery} name
+     * @param {string} name - The {@link Scenery} name
+     * @returns {Scenery} - Returns the scenery
      */
     getSceneryIndexByName(name) {
         const index = this.sceneries.findIndex((scenery) => scenery.name === name);
@@ -40,7 +42,7 @@ class SceneryManager {
 
     /**
      * Set current scenery
-     * @param {Number} index
+     * @param {number} index - Index of the {@link Scenery}
      */
     setCurrentScenery(index){
         this.currentScenery = index;
@@ -50,7 +52,8 @@ class SceneryManager {
 
     /**
      * Build sceneries array
-     * @param sceneries
+     * @param {Scenery[]} sceneries
+     * @private
      */
     buildSceneries(sceneries) {
         sceneries.forEach((scenery) => {
@@ -60,8 +63,8 @@ class SceneryManager {
 
     /**
      * Add scenery to scene
-     * @param {Scenery} scenery
-     * @param {} scene
+     * @param {Scenery} scenery - The {@link Scenery} to add
+     * @param {THREE.Scene} scene - The Three scene
      */
     addSceneryToScene({scenery = this.scenery, scene}) {
         this.scene = scene;
@@ -78,8 +81,8 @@ class SceneryManager {
 
     /**
      * On window resize
-     * @param width
-     * @param height
+     * @param {number} width - Window width
+     * @param {number} height - Window height
      */
     onWindowResize({width, height}) { // eslint-disable-line
 

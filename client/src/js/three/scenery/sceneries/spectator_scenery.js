@@ -48,7 +48,7 @@ export default new Scenery({
 
         /**
          *
-         * @param {self} self
+         * @param {*} self
          * @param {string }name
          * @param {number} x
          * @param {number} y
@@ -67,8 +67,8 @@ export default new Scenery({
 
         /**
          * Create actor
-         * @param {self} self
-         * @param {[Number]} position
+         * @param {*} self
+         * @param {number[]} position
          */
          self.createActress = (self, {position}) => {
             const objects = [];
@@ -107,8 +107,8 @@ export default new Scenery({
 
         /**
          * Build video
-         * @param {self} self
-         * @param {String} path
+         * @param {*} self
+         * @param {string} path
          */
         self.buildVideo = (self, {src}) => {
             self.video = document.createElement('video');
@@ -123,7 +123,7 @@ export default new Scenery({
 
         /**
          * Build screen
-         * @param {self} self
+         * @param {*} self
          */
         self.buildScreen = (self) => {
             const geometry = new THREE.BoxGeometry(615, 305, 10);

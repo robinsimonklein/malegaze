@@ -27,6 +27,11 @@ yarn dev
 yarn build
 ```
 
+### Generate the documentation
+```
+yarn docs
+```
+
 ### Run your tests
 ```
 yarn test

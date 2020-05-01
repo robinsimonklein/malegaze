@@ -2,6 +2,49 @@ import CameraManager from '../camera/CameraManager';
 import ModelManager from '../model/ModelManager';
 import LightManager from '../light/LightManager';
 
+/**
+ * A {@link Scenery} defines all the contents that needs to be rendered in the 3D View of a scenery.
+ *
+ * @example
+ * new Scenery({
+ *     name: 'my_scenery',
+ *     cameras: [
+ *         new Camera({
+ *              type: cameraTypes.PERSPECTIVE,
+ *              properties: { fov: 1, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 4000 },
+ *              initialPosition: {x: -50, y: 150, z: -300}
+ *         }),
+ *         // ...
+ *     ],
+ *     controls: controlsTypes.MOBILE,
+ *     models: [
+ *         new Model({
+ *             name: 'film_set',
+ *             path: 'models/glb/my_scenery.glb',
+ *             type: modelTypes.GLB
+ *         }),
+ *         // ...
+ *     ],
+ *     lights: [
+ *         new Light({
+ *             name: 'ambiant',
+ *             light: new THREE.HemisphereLight(0xffb8c6, 0x080820),
+ *             initialPosition: {x: 0, y: 300, z: 0}
+ *         }),
+ *         // ...
+ *     ],
+ *     onCreated: (self) => { // Don't forget self :)
+ *         // Add your code here
+ *     },
+ *     onLoaded: (self) => { // Don't forget self :)
+ *         // Add your code here
+ *     },
+ *     onUpdate: (self) => { // Don't forget self :)
+ *         // Add your code here
+ *     },
+ *
+ * })
+ */
 class Scenery {
     name;
     scene;
@@ -17,26 +60,26 @@ class Scenery {
 
     /**
      * Create a new Scenery
-     * @param {String} name
-     * @param {[Camera]} cameras
-     * @param {controlsTypes} controls
-     * @param {[Model]} models
-     * @param {[Light]} lights
-     * @param {Function} onCreated
-     * @param {Function} onLoaded
-     * @param {Function} onUpdate
+     * @param {string} name - The name of the scenery
+     * @param {Camera[]} cameras - An array of cameras
+     * @param {controlsTypes} controls - Controls mode used in the scenery
+     * @param {Model[]} models - An array of models that have to be loaded in the scenery
+     * @param {Light[]} lights - An array of light
+     * @param {Function} onCreated - All the logic that needs to be triggered when the {@link Scenery} is created
+     * @param {Function} onLoaded - All the logic that needs to be triggered when the {@link Scenery} is loaded into the Three.js scene and displayed for the first time
+     * @param {Function} onUpdate - All the logic that needs to be triggered when the {@link Scenery} is updated
      */
     constructor({
-                    name = "undefined",
-                    cameras,
-                    controls = null,
-                    models,
-                    lights,
-                    onCreated = (self) => self,
-                    onLoaded = (self) => self,
-                    onUpdate = (self) => self
+        name = "undefined",
+        cameras,
+        controls = null,
+        models,
+        lights,
+        onCreated = (self) => self,
+        onLoaded = (self) => self,
+        onUpdate = (self) => self
 
-                }) {
+    }) {
         this.name = name;
 
         this.buildCameras(cameras, controls);
@@ -57,8 +100,9 @@ class Scenery {
 
     /**
      * Build cameras and cameraManager
-     * @param {[Camera]} cameras
+     * @param {Camera[]} cameras
      * @param {controlsTypes} controls
+     * @private
      */
     buildCameras(cameras, controls) {
         this.cameraManager = new CameraManager({cameras, controls});
@@ -66,7 +110,8 @@ class Scenery {
 
     /**
      * Build models and modelManager
-     * @param models
+     * @param {Model[]} models
+     * @private
      */
     buildModels(models) {
         this.modelManager = new ModelManager({models});
@@ -74,15 +119,16 @@ class Scenery {
 
     /**
      * Build lights and lightManager
-     * @param {[Light]} lights
+     * @param {Light[]} lights
+     * @private
      */
     buildLights(lights) {
         this.lightManager = new LightManager({lights});
     }
 
     /**
-     * Add elements to scene
-     * @param scene
+     * Add all the elements to scene (cameras, lights, models, ...)
+     * @param {THREE.Scene} scene - The scene in which we want to add the {@link Scenery} elements
      */
     addToScene(scene) {
         // Add cameras to scene

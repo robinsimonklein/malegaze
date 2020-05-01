@@ -23,3 +23,6 @@ yarn-error.log*
 
 # HTTPS Certificate
 /cert
+
+# Docs
+/docs

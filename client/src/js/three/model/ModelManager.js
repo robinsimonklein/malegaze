@@ -1,7 +1,11 @@
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 import LoaderManager from './../loader/LoaderManager'
 import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
+import modelTypes from "./modelTypes";
 
+/**
+ * Allows you to manage the different models of a {@link Scenery}. It also manage the different models formats and load them with the good Three.js loader.
+ */
 class ModelManager {
 
     models = [];
@@ -13,8 +17,8 @@ class ModelManager {
 
     /**
      * ModelManager
-     * @param {[Model]} models
-     * @param {Boolean} debug
+     * @param {Model[]} models - Array of models
+     * @param {boolean} debug - Enable/Disable debug mode
      */
     constructor({models, debug = false}) { // eslint-disable-line
         if(models) {
@@ -27,8 +31,8 @@ class ModelManager {
     // --- GETTERS
 
     /**
-     *
-     * @param {String} name
+     * Get loaded model by name
+     * @param {string} name - Name of the model
      * @returns {*}
      */
     getLoadedModelByName(name) {
@@ -42,7 +46,7 @@ class ModelManager {
 
     /**
      * Add model to models array
-     * @param {Model} model
+     * @param {Model} model - The {@link Model} to add
      */
     addModel(model) {
         this.models.push(model)
@@ -50,6 +54,7 @@ class ModelManager {
 
     /**
      * Build the THREE loaders
+     * @private
      */
     buildLoaders() {
         this.gltfLoader = new GLTFLoader(LoaderManager.loadingManager);
@@ -57,7 +62,8 @@ class ModelManager {
     }
 
     /**
-     * Load all the models from models array
+     * Load all the models from models array in the {@link ModelManager}
+     * @async
      */
     loadModels() {
         // Build loader if not built yet
@@ -68,8 +74,8 @@ class ModelManager {
 
         this.models.forEach((model) => {
             switch (model.type) {
-                case 'gltf':
-                case 'glb':
+                case modelTypes.GLTF:
+                case modelTypes.GLB:
                     this.gltfLoader.load(
                         model.path,
                         (obj) => {
@@ -79,7 +85,7 @@ class ModelManager {
                         },
                     )
                     break;
-                case 'fbx':
+                case modelTypes.FBX:
                     break;
                 default:
                     break;
@@ -90,7 +96,7 @@ class ModelManager {
 
     /**
      * Add models to scene
-     * @param scene
+     * @param {THREE.Scene} scene - The scene in which we want to add the {@link ModelManager} models
      */
     addToScene(scene) {
         if(this.loadedModels.length <= 0){
