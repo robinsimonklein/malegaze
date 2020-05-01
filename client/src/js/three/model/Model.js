@@ -5,9 +5,9 @@ class Model {
 
     /**
      * Model
-     * @param {String} name
-     * @param {String} path
-     * @param {'gtlf', 'fbx'} type
+     * @param {string} name - Name of the model
+     * @param {string} path - Path of the model (from /pubilc)
+     * @param {modelTypes} type - Type of the model
      */
     constructor({name, path, type}) {
         this.name = name;

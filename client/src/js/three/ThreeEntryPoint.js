@@ -1,5 +1,8 @@
 import SceneManager from './SceneManager';
 
+/**
+ * This is the Three.js entry point of the application. It makes the link between Vue.js components and Three.js scene ,renderer, sceneries, etc...
+ */
 class ThreeEntryPoint {
     canvas;
     sceneManager;
@@ -12,8 +15,8 @@ class ThreeEntryPoint {
 
     /**
      * Initiate THREE and run the animation
-     * @param {HTMLElement} container
-     * @param {String} sceneryName
+     * @param {HTMLElement} container - The HTML container of the 3D scene
+     * @param {string} sceneryName - Default {@link Scenery} name
      */
     init(container, sceneryName) {
         // Add canvas in DOM container
@@ -34,7 +37,8 @@ class ThreeEntryPoint {
 
     /**
      * Create the render canvas
-     * @param document
+     * @param {*} document
+     * @private
      */
     createCanvas(document){
         this.canvas = document.createElement('canvas');
@@ -42,6 +46,7 @@ class ThreeEntryPoint {
 
     /**
      * Bind all the needed events
+     * @private
      */
     bindEventListeners() {
         // Resize event

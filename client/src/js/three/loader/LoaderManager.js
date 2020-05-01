@@ -2,6 +2,9 @@ import * as THREE from "three"
 import ThreeEntryPoint from '../ThreeEntryPoint'
 import store from '../../../store';
 
+/**
+ * Loader Manager is a singleton used to load all the assets of the application. It loads models, audios, etc in a unique loading status for a global app loading.
+ */
 class LoaderManager {
     loadingManager;
 
@@ -11,6 +14,7 @@ class LoaderManager {
 
     /**
      * Build the THREE LoadingManager
+     * @private
      */
     buildLoadingManager() {
         this.loadingManager = new THREE.LoadingManager()
@@ -48,6 +52,7 @@ class LoaderManager {
 
     /**
      * When loaded
+     * @private
      */
     onLoad() {
         console.log('✅ Loading finished !')
@@ -59,6 +64,7 @@ class LoaderManager {
      * @param url
      * @param itemsLoaded
      * @param itemsTotal
+     * @private
      */
     onProgress(url, itemsLoaded, itemsTotal) {
         store.commit('desktop/setLoadingProgress', Math.round((itemsLoaded / itemsTotal) * 100))

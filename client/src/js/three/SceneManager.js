@@ -8,6 +8,9 @@ import cameraman_scenery from './scenery/sceneries/cameraman_scenery';
 import actress_scenery from './scenery/sceneries/actress_scenery';
 import spectator_scenery from './scenery/sceneries/spectator_scenery';
 
+/**
+ * The {@link SceneManager} build the sceneries, initiate the 3D scene and renders it in the update loop.
+ */
 class SceneManager {
     canvas;
     renderer;
@@ -21,6 +24,9 @@ class SceneManager {
 
     clock = new THREE.Clock();
 
+    /**
+     * @param {HTMLCanvasElement} canvas - The canvas where the 3D scene will be rendered
+     */
     constructor(canvas) {
         this.canvas = canvas;
 
@@ -48,7 +54,7 @@ class SceneManager {
 
     /**
      * Build the THREE scene
-     * @returns {*}
+     * @returns {THREE.Scene}
      */
     buildScene() {
         const scene = new THREE.Scene();
@@ -66,9 +72,9 @@ class SceneManager {
 
     /**
      * Build the renderer
-     * @param width
-     * @param height
-     * @returns {WebGLRenderer}
+     * @param {number} width - Width of the renderer
+     * @param {number} height - height of the renderer
+     * @returns {THREE.WebGLRenderer}
      */
     buildRenderer({width, height}) {
         const renderer = new THREE.WebGLRenderer({canvas: this.canvas, antialias: true, alpha: true});
@@ -98,7 +104,7 @@ class SceneManager {
 
     /**
      * Load scenery by name
-     * @param {String} name
+     * @param {string} name
      */
     loadSceneryByName(name) {
 
@@ -137,7 +143,8 @@ class SceneManager {
     }
 
     /**
-     * When window size change
+     * On window resize
+     * @private
      */
     onWindowResize() {
         const {width, height} = this.canvas;

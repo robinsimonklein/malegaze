@@ -1,14 +1,15 @@
 import store from './../../../store/index'
 
+/**
+ * MobileControls receive a stream of mobile controls (like zoom). It can be used in a {@link Scenery} to update some objects settings in real time (i.e. the zoom of the camera).
+ */
 class MobileControls {
 
     object;
-
     controls = {};
 
     /**
-     * MobileControls
-     * @param object The object to control
+     * @param {THREE.Object} object - The object to control
      */
     constructor(object) {
         this.object = object
@@ -16,7 +17,8 @@ class MobileControls {
 
     /**
      * Get updated mobile controls from store
-     * @returns {any}
+     * @return {any}
+     * @private
      */
     getMobileControls() {
         return JSON.parse(JSON.stringify(store.state.mobile.controls))
@@ -24,7 +26,10 @@ class MobileControls {
 
     /**
      * Update loop
-     * @param {[String]} controlsToUpdate
+     * @param {string[]} controlsToUpdate - The controls to update
+     * @example
+     * let mobileControls = new MobileControls(myCamera)
+     * mobileControls.update(['focalLength'])
      */
     update(controlsToUpdate) { // Pass an array of the controls keys you want to update
         this.controls = this.getMobileControls()

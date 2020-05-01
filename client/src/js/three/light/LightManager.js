@@ -1,11 +1,13 @@
+/**
+ * Allows you to manage the different lights of a {@link Scenery}.
+ */
 class LightManager {
 
     lightObjects = [];
 
     /**
-     * LightManager
-     * @param {[Light]} lights
-     * @param {Boolean} debug
+     * @param {Light[]} lights - Array of the lights
+     * @param {boolean} [debug=false] - Enable/disable debug mode
      */
     constructor({lights, debug = false}) { // eslint-disable-line
         if (lights) {
@@ -22,8 +24,8 @@ class LightManager {
     // --- GETTERS
 
     /**
-     * Get an array of THREE lights
-     * @returns {[]}
+     * Get an array of Three.js lights
+     * @returns {Array}
      */
     get lights() {
         let lights = [];
@@ -35,7 +37,7 @@ class LightManager {
 
     /**
      * Get light object by index
-     * @param {Number} index
+     * @param {number} index - Index of the light in {@link LightManager}
      * @returns {Light}
      */
     getLightObjectByIndex(index) {
@@ -47,8 +49,8 @@ class LightManager {
 
     /**
      * Get THREE light by index
-     * @param {Number} index
-     * @returns {*}
+     * @param {number} index - Index of the light
+     * @returns {THREE.Light}
      */
     getLightByIndex(index) {
         return this.getLightObjectByIndex(index).light ?? null;
@@ -56,7 +58,7 @@ class LightManager {
 
     /**
      * Get light object by name
-     * @param {String} name
+     * @param {string} name - Name of the light
      * @returns {Light}
      */
     getLightObjectByName(name) {
@@ -73,8 +75,8 @@ class LightManager {
 
     /**
      * Get THREE light by name
-     * @param {String} name
-     * @returns {*}
+     * @param {string} name - Name of the light
+     * @returns {THREE.Light}
      */
     getLightByName(name) {
         return this.getLightObjectByName(name).light ?? null;
@@ -84,6 +86,7 @@ class LightManager {
 
     /**
      * Build light helpers
+     * @private
      */
     buildHelpers() {
         // TODO: build light helpers
@@ -91,7 +94,7 @@ class LightManager {
 
     /**
      * Add lights to scene
-     * @param scene
+     * @param {THREE.Scene} scene - The scene in which we want to add the {@link LightManager} lights
      */
     addToScene(scene) {
         this.lights.forEach((light) => {

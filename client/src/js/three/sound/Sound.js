@@ -1,6 +1,8 @@
 import * as THREE from "three";
 
-
+/**
+ *
+ */
 class Sound {
     sound;
     type;
@@ -10,6 +12,14 @@ class Sound {
     isLoop;
     audioListener;
 
+    /**
+     *
+     * @param type
+     * @param name
+     * @param path
+     * @param isLoop
+     * @param {HTMLAudioElement} audioListener
+     */
     constructor({
         type,
         name,
@@ -21,4 +31,13 @@ class Sound {
 
     }
 
+    /**
+     * Update loop
+     */
+    update() {
+
+    }
+
 }
+
+export default Sound
