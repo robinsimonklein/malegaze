@@ -112,7 +112,8 @@ class ModelManager {
             return
         }
         this.loadedModels.forEach((loadedModel) => {
-            scene.add(loadedModel.scene)
+
+            scene.add(loadedModel.scene ? loadedModel.scene : loadedModel)
         })
     }
 
