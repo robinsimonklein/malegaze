@@ -1,0 +1,33 @@
+{
+  "plugins": ["plugins/markdown"],
+  "source": {
+    "include": ["./src"],
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "opts": {
+    "destination": "./docs/",
+    "encoding": "utf8",
+    "recurse": true,
+    "template": "./node_modules/braintree-jsdoc-template",
+    "readme": "../README.md"
+  },
+  "tags": {
+    "allowUnknownTags": true
+  },
+  "templates": {
+    "referenceTitle": "Male Gaze",
+    "disableSort": false,
+    "collapse": false,
+    "resources": {
+      "Male Gaze": "https://malegaze.netlify.app",
+      "Three.js": "https://threejs.org/docs/index.html#manual/en/introduction/Creating-a-scene",
+      "Vue.js": "https://fr.vuejs.org/v2/guide/index.html"
+    },
+    "search": {
+      "apiKey": "0aff808bdb0650b6f6684f62c3304e87",
+      "indexName": "malegaze",
+      "hitsPerPage": 7
+    }
+  }
+}

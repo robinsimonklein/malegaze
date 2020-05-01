@@ -2,6 +2,9 @@ import MobileOrientationControls from "../controls/MobileOrientationControls";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import controlsTypes from "../controls/controlsTypes";
 
+/**
+ * Allows you to manage the different cameras of a {@link Scenery}.
+ */
 class CameraManager {
     // Cameras
     cameraObjects = [];
@@ -12,9 +15,9 @@ class CameraManager {
 
     /**
      * CameraManager
-     * @param {[Camera]} cameras
-     * @param {*} controls
-     * @param {Boolean} debug
+     * @param {Camera[]} cameras - An array of cameras
+     * @param {controlsTypes} [controls=null] - Controls type
+     * @param {boolean} [debug=false] - Enable/disable debug mode
      */
     constructor({cameras, controls = null, debug = false}) { // eslint-disable-line
         // Add cameras
@@ -36,7 +39,7 @@ class CameraManager {
     // -- GETTERS
 
     /**
-     * Returns the current camera object (with settings, type, ...)
+     * Returns the current {@link Camera} object (with settings, type, ...)
      * @returns {Camera}
      */
     get cameraObject() {
@@ -60,13 +63,13 @@ class CameraManager {
     }
 
     /**
-     * Returns all the cameras (three.js camera)
-     * @returns {*}
+     * Returns an array of the cameras (three.js cameras)
+     * @returns {Array}
      */
     get cameras() {
         let cameras = [];
         this.cameraObjects.map((cameraObject) => {
-            this.cameras.push(cameraObject.camera);
+            cameras.push(cameraObject.camera);
         });
         return cameras;
     }
@@ -74,8 +77,10 @@ class CameraManager {
     // -- METHODS
 
     /**
-     * Add a camera to cameras array
-     * @param camera
+     * Add a {@link Camera} to cameraObjects array.
+     * Returns the index of the {@link Camera} in the {@link CameraManager}
+     * @param {Camera} camera - The {@link Camera} to add
+     * @return {number} - Return the index of the {@link Camera}
      */
     addCamera(camera) {
         this.cameraObjects.push(camera);
@@ -86,7 +91,7 @@ class CameraManager {
 
     /**
      * Change current camera
-     * @param cameraIndex
+     * @param {number} cameraIndex - The {@link Camera} index
      */
     changeCamera(cameraIndex) {
         this.currentCamera = cameraIndex;
@@ -94,7 +99,8 @@ class CameraManager {
 
     /**
      * Build controls for current camera
-     * @param {controlsTypes} type
+     * @param {controlsTypes} type - Type of the controls
+     * @private
      */
     buildControls(type) {
         switch (type) {
@@ -103,15 +109,16 @@ class CameraManager {
                 this.controls.alphaOffset = this.cameraObject.settings.alphaOffset ?? 0;
                 break;
             case controlsTypes.ORBIT:
+                this.controls = new OrbitControls(this.camera, document.body);
+                break;
             default:
-                this.controls = new OrbitControls(this.camera);
                 break;
         }
     }
 
     /**
      * Add elements to scene
-     * @param scene
+     * @param {THREE.Scene} scene - The scene in which we want to add the {@link CameraManager} cameras
      */
     addToScene(scene) {
         this.cameraObjects.forEach((cameraObject) => {
@@ -133,8 +140,8 @@ class CameraManager {
 
     /**
      * Triggered on window resize
-     * @param width
-     * @param height
+     * @param {number} width - Window width
+     * @param {number} height - Window height
      */
     onWindowResize({width, height}) {
         this.camera.aspect = width / height;
