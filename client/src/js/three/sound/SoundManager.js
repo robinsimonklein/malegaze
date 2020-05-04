@@ -23,6 +23,27 @@ class SoundManager {
         return this.soundObjects[this.currentSound].sound;
     }
 
+    /**
+     * Get the {@link Sound} or {@PositionalSound} by its name
+     * @param {string} name - The name of the sound
+     * @return {Sound|PositionalSound}
+     */
+    getSoundObjectByName(name) {
+        if(this.soundObjects.length <= 0) return undefined
+        return this.soundObjects.find((soundObject) => {
+            return soundObject.name === name
+        })
+    }
+
+    /**
+     * Get the sound by name
+     * @param name
+     * @return {*}
+     */
+    getSoundByName(name) {
+        return this.getSoundObjectByName(name) ? this.getSoundObjectByName(name).sound : undefined
+    }
+
     // --- METHODS
 
     /**
