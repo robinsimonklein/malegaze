@@ -46,7 +46,7 @@ class LoaderManager {
             scenery.modelManager.loadModels()
 
             // Load audios
-            //...
+            scenery.soundManager.loadSound();
         })
     }
 

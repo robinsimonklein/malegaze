@@ -4,17 +4,21 @@
 class SceneryManager {
 
     scene;
-
+    renderer;
     sceneries = [];
     currentScenery = 0;
 
     /**
      * @param {Scenery[]} sceneries - Array of the sceneries
      * @param {THREE.Scene} scene - The Three.js scene
+     * @param {renderer}
      * @param {boolean} [debug = false]
      */
-    constructor({sceneries, scene, debug = false}) { // eslint-disable-line
-        this.scene = scene
+    constructor({sceneries, scene, renderer = null, debug = false}) { // eslint-disable-line
+        this.scene = scene;
+        this.renderer = renderer;
+
+        this.addRendererToScene(sceneries);
         this.buildSceneries(sceneries);
     }
 
@@ -70,6 +74,18 @@ class SceneryManager {
         this.scene = scene;
         scenery.scene = scene;
         scenery.addToScene(scene);
+    }
+
+    /**
+     * Add renderer to scene
+     * @param sceneries
+     */
+    addRendererToScene(sceneries) {
+        sceneries.forEach((scenery) => {
+            if(scenery.renderer !== undefined) {
+                scenery.renderer = this.renderer;
+            }
+        })
     }
 
     /**

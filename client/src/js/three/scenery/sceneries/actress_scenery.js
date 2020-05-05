@@ -8,7 +8,12 @@ import Sound from "../../sound/Sound"
 import store from "../../../../store";
 import appStates from "../../../appStates";
 import * as THREE from "three";
-import PositionalSound from "../../sound/PositionalSound";
+import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
+/*import { AfterimagePass } from 'three/examples/jsm/postprocessing/AfterimagePass.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';*/
+import * as Nodes from 'three/examples/jsm/nodes/Nodes.js';
+//import PositionalSound from "../../sound/PositionalSound";
 
 export default new Scenery({
     name: 'actress_scenery',
@@ -19,6 +24,7 @@ export default new Scenery({
             initialPosition: {x: 50, y: 180, z: 330},
         }),
     ],
+    renderer: null,
     controls: controlsTypes.MOBILE,
     models: [
         new Model({
@@ -36,37 +42,79 @@ export default new Scenery({
     ],
     sounds : [
         new Sound({
-            name : 'ostTest',
-            path : 'sound/ostTest.mp3',
+            name : 'test',
+            path : 'sound/musicScene2.mp3',
             isLoop : true,
             volume: 0.1,
-        }),
-        new PositionalSound({
+        })
+      /*  new PositionalSound({
             name : 'test',
             path : 'sound/ostTest.mp3',
             refDistance: 100
-        })
+        })*/
     ],
-  /* onCreated: (self) => {
-        self.shoot = () => {
-
-        }
-    },*/
    onLoaded: (self) => {
 
-       self.scene.fog = new THREE.Fog(0x1d1428, 250, 1800);
-     //self.cameraManager.camera.lookAt(0,200,0)
-      self.soundManager.addToCamera(self.cameraManager.camera);
-      self.soundManager.sound.play();
+       self.scene.fog = new THREE.Fog(0x000000, 250, 1800);
+
+       self.soundManager.addToCamera(self.cameraManager.camera);
+       self.percent = null;
+       self.blur = null;
 
        self.group = new THREE.Group();
        self.raycaster =  new THREE.Raycaster();
-
        var spriteMap = new THREE.TextureLoader().load( "models/images/oeil.png" );
        var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap } );
-
        self.eyeSprite =  new THREE.Sprite( spriteMaterial );
        self.eyeSprite.scale.set(10, 10, 1);
+
+       self.nodepostFade = new Nodes.NodePostProcessing(self.renderer);
+       self.nodepostBlur = new Nodes.NodePostProcessing(self.renderer, self.nodepostFade.renderTarget);
+       self.frame = new Nodes.NodeFrame();
+       self.clock = new THREE.Clock();
+
+       /*self.composer = new EffectComposer(self.renderer);
+       self.composer.addPass(new RenderPass(self.scene, self.cameraManager.camera));
+
+       self.afterImagePass = new AfterimagePass();
+       self.composer.addPass(self.afterImagePass);*/
+
+       self.createGUI = () => {
+           let gui = new GUI( { name: 'Damp setting' } );
+           gui.add( self.percent, 'value', 0, 1 ).step( 0.01 );
+           gui.add( self.blur.radius, 'x', 0, 5 ).step( 0.5 );
+           gui.add( self.blur.radius, 'y', 0, 5 ).step( 0.5 );
+       };
+
+        self.addFade = () => {
+
+            var color = new Nodes.ColorNode(0x000000);
+            self.percent = new Nodes.FloatNode(.5);
+
+            var fade = new Nodes.MathNode(
+                new Nodes.ScreenNode(),
+                color,
+                self.percent,
+                Nodes.MathNode.MIX
+            );
+
+            self.nodepostFade.output = fade;
+
+        };
+
+        self.addBlur = () => {
+
+            var size = self.renderer.getDrawingBufferSize( new THREE.Vector2() );
+
+            self.blur = new Nodes.BlurNode( new Nodes.ScreenNode() );
+            self.blur.size = new THREE.Vector2( size.width, size.height );
+
+            self.nodepostBlur.output = self.blur;
+
+            self.blur.radius.x = 0;
+            self.blur.radius.y = 0;
+
+        };
 
        self.randomIntFromInterval = (min, max) => {
            return Math.floor(Math.random() * (max - min + 1) + min);
@@ -132,17 +180,29 @@ export default new Scenery({
 
        };
 
-      // window.addEventListener('keypress', self.eyesAttraction)
+       self.soundManager.sound.play();
+       window.addEventListener('keypress', () => {
+           self.soundManager.sound.play();
+       });
 
-       setTimeout(() => {
+       /*setTimeout(() => {
            self.eyesAttraction()
-       },2500);
+       },2500);*/
 
        self.generateEye(5);
+       self.addFade();
+       self.addBlur();
+      self.createGUI();
     },
 
 
-   /* onUpdate: (self) => {
+    onUpdate: (self) => {
 
-    }*/
+        var delta = self.clock.getDelta();
+        self.frame.update( delta );
+        //self.nodepostFade.render(self.scene, self.cameraManager.camera, self.frame);
+        self.nodepostBlur.render(self.scene, self.cameraManager.camera, self.frame);
+
+        //self.composer.render();
+    }
 })

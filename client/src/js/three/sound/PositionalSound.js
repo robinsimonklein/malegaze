@@ -25,7 +25,6 @@ class PositionalSound {
         this.name = name;
         this.path = path;
         this.refDistance = refDistance;
-        this.loadSound();
 
     }
 
