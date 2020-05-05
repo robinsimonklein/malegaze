@@ -31,6 +31,11 @@ export default new Scenery({
             name: 'actress_scenery',
             path: "models/glb/actress_scenery2.glb",
             type: 'gltf'
+        }),
+        new Model({
+            name: 'homme_geant',
+            path: "models/glb/homme_geant.glb",
+            type: 'gltf'
         })
     ],
     lights: [
@@ -46,6 +51,12 @@ export default new Scenery({
             path : 'sound/musicScene2.mp3',
             isLoop : true,
             volume: 0.1,
+        }),
+        new Sound({
+            name : 'whispering',
+            path : 'sound/whispering.mp3',
+            isLoop : true,
+            volume: 0.1,
         })
       /*  new PositionalSound({
             name : 'test',
@@ -58,6 +69,7 @@ export default new Scenery({
        self.scene.fog = new THREE.Fog(0x000000, 250, 1800);
 
        self.soundManager.addToCamera(self.cameraManager.camera);
+       console.log(self.soundManager);
        self.percent = null;
        self.blur = null;
 
@@ -180,9 +192,10 @@ export default new Scenery({
 
        };
 
-       self.soundManager.sound.play();
+       //self.soundManager.sound.play();
        window.addEventListener('keypress', () => {
            self.soundManager.sound.play();
+           self.soundManager.soundObjects[1].sound.play();
        });
 
        /*setTimeout(() => {
