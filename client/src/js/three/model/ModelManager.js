@@ -85,7 +85,15 @@ class ModelManager {
                         },
                     )
                     break;
-                case modelTypes.FBX:
+                case 'fbx':
+                    this.fbxLoader.load(
+                        model.path,
+                        (obj) => {
+                            obj.name = model.name
+                            // obj.scene.name = model.name
+                            this.loadedModels.push(obj)
+                        }
+                    )
                     break;
                 default:
                     break;
@@ -104,7 +112,8 @@ class ModelManager {
             return
         }
         this.loadedModels.forEach((loadedModel) => {
-            scene.add(loadedModel.scene)
+
+            scene.add(loadedModel.scene ? loadedModel.scene : loadedModel)
         })
     }
 

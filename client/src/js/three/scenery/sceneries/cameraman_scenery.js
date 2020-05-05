@@ -10,18 +10,16 @@ import CameraOverlay from "../../overlays/CameraOverlay";
 // import store from "../../../../store";
 // import appStates from "../../../appStates";
 import MobileOrientationControls from "../../controls/MobileOrientationControls";
+import controlsTypes from "../../controls/controlsTypes";
 
 export default new Scenery({
     name: 'cameraman_scenery',
     cameras: [
-        /*
         new Camera({
             type: cameraTypes.PERSPECTIVE,
             properties: { fov: 1, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 4000 },
             initialPosition: {x: -50, y: 150, z: -300},
         }),
-
-         */
         new Camera({
             type: cameraTypes.CINEMATIC,
             properties: { fov: 1, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 1500 },
@@ -29,6 +27,7 @@ export default new Scenery({
             settings: {
                 focusDistance: 100,
             },
+            debug: true
         }),
         new Camera({
             type: cameraTypes.CINEMATIC,
@@ -38,6 +37,7 @@ export default new Scenery({
                 alphaOffset: Math.PI,
                 focusDistance: 530,
             },
+            debug: true
         }),
         new Camera({
             type: cameraTypes.CINEMATIC,
@@ -56,7 +56,7 @@ export default new Scenery({
             },
         }),
     ],
-    controls: null,
+    controls: controlsTypes.ORBIT,
     models: [
         new Model({
             name: 'film_set',
@@ -69,6 +69,7 @@ export default new Scenery({
             name: 'ambiant',
             light: new THREE.HemisphereLight(0xffb8c6, 0x080820),
             initialPosition: {x: 0, y: 300, z: 0},
+            debug: true
         }),
         new Light({
             name: 'spotlights',
@@ -76,19 +77,18 @@ export default new Scenery({
             initialPosition: {x: 0, y: 200, z: -700},
             properties: {
                 castShadow: true
-            }
+            },
+            debug: true
         }),
     ],
     onCreated: (self) => {
-        // Raycaster
-        self.raycaster = new THREE.Raycaster()
         self.sequences = [
             {
-                cameraIndex: 0,
+                cameraIndex: 1,
                 update: (self) => {
                     self.followCurve(self, {
                         curve: self.curve1,
-                        cameraIndex: 0,
+                        cameraIndex: 1,
                         duration: 800,
                     },
                     (self) => {
@@ -109,27 +109,24 @@ export default new Scenery({
         ]
         self.currentSequence = 0
 
-
         // -- METHODS
 
-        /**
-         * Go to next camera
-         * @param self
-         * @return {boolean}
-         */
-        self.nextCamera = (self) => {
-            CameraOverlay.progress = 0
-            if(self.cameraManager.cameraObjects[self.currentCamera + 1]){
-                console.log('oui')
-                return true
-            } else {
-                return false
-            }
+        self.changeSequence = (self, {index}) => {
+            // self.cameraManager.changeCamera(self.sequences[index].cameraIndex)
+            self.currentSequence = index
         }
 
-        self.changeSequence = (self, {index}) => {
-            self.cameraManager.changeCamera(self.sequences[index].cameraIndex)
-            self.currentSequence = index
+        /** Display curve */
+        self.displayCurve = (self, {curve}) => {
+            const points = curve.getPoints( 50 );
+            const geometry = new THREE.BufferGeometry().setFromPoints( points );
+
+            const material = new THREE.LineBasicMaterial( { color : 0x0000ff } );
+
+            // Create the final object to add to the scene
+            let splineObject = new THREE.Line( geometry, material );
+
+            self.scene.add(splineObject)
         }
 
     },
@@ -140,26 +137,16 @@ export default new Scenery({
         self.mobileControls = new MobileControls(self.cameraManager.cameraObject)
 
         // Fog
-        self.scene.fog = new THREE.Fog(0xff4444, 300, 1000);
+        // self.scene.fog = new THREE.Fog(0x1d1428, 200, 1000);
 
         // Create a sine-like wave
         self.curve1 = new THREE.CatmullRomCurve3( [
             new THREE.Vector3( -100, 80, -500 ),
             new THREE.Vector3( -100, 80, -230 ),
-        ] );
+            new THREE.Vector3( -150, 150, -0 )
+        ]);
 
-
-        var points = self.curve1.getPoints( 50 );
-        var geometry = new THREE.BufferGeometry().setFromPoints( points );
-
-        var material = new THREE.LineBasicMaterial( { color : 0x0000ff } );
-
-        // Create the final object to add to the scene
-        var splineObject = new THREE.Line( geometry, material );
-
-        self.scene.add(splineObject)
-
-
+        self.displayCurve(self, {curve: self.curve1})
 
         // Camera animation
         self.camPosIndex = 0
@@ -190,43 +177,10 @@ export default new Scenery({
             self.cameraManager.cameraObjects[cameraIndex].camera.rotation.y = -Math.PI/2
             self.cameraManager.cameraObjects[cameraIndex].camera.rotation.z = 0
 
-            // self.cameraManager.cameraObjects[cameraIndex].camera.rotation.y -= Math.PI
-            // self.cameraManager.cameraObjects[cameraIndex].camera.rotation.x = 0
-            // self.cameraManager.cameraObjects[cameraIndex].camera.rotation.z = 0
-
             self.camPosIndex += 1
-        }
-
-        /**
-         * Raycaster intersects
-         * @param self
-         */
-        self.raycasterIntersects = (self) => {
-            self.raycaster.setFromCamera({x: 0, y: 0}, self.cameraManager.camera)
-
-            // let intersect = self.raycaster.intersectObject(self.scene.getObjectByName('ACTRICE'), true);
-
-            // console.log(intersect)
-            /*
-            for (let i = 0; i < intersects.length; i++) {
-                if (intersects[i].object.name === "ACTRICE"){
-                    if (CameraOverlay.progress < 1) CameraOverlay.progress += 0.005
-                    if (CameraOverlay.progress >= 1) {
-                        if(!self.nextCamera(self)) store.dispatch('app/requestState', appStates.ACTRESS);
-                    }
-                    return
-                }
-            }
-
-             */
-
-            CameraOverlay.progress = 0;
         }
     },
     onUpdate: (self) => {
-        // self.mobileControls.update(['focalLength'])
-
-
         self.sequences[self.currentSequence].update(self)
     }
 
