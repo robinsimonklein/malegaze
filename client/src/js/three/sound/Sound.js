@@ -27,7 +27,6 @@ class Sound {
         this.path = path;
         this.isLoop = isLoop;
         this.volume = volume;
-        this.loadSound()
     }
 
     /**
@@ -44,6 +43,10 @@ class Sound {
             this.sound.setBuffer( audioBuffer );
             this.sound.setLoop( this.isLoop );
             this.sound.setVolume(this.volume)
+        },(xhr) => {
+                console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+            }, (err) => {
+                console.log( err );
         })
     }
 

@@ -37,7 +37,7 @@ import SoundManager from "../sound/SoundManager";
  *     sounds: [
  *         new Sound({
  *             name: 'my_sound',
- *             path : 'sound/ostTest.mp3',
+ *             path : 'sound/musicScene2.mp3',
  *             isLoop : true,
  *             volume: 0.1,
  *         }),
@@ -58,6 +58,7 @@ import SoundManager from "../sound/SoundManager";
 class Scenery {
     name;
     scene;
+    renderer;
 
     cameraManager;
     modelManager;
@@ -76,6 +77,7 @@ class Scenery {
      * @param {Model[]} models - An array of models that have to be loaded in the scenery
      * @param {Light[]} lights - An array of light
      * @param {Sound[]} sounds - An array of sounds
+     * @param {renderer}
      * @param {Function} onCreated - All the logic that needs to be triggered when the {@link Scenery} is created
      * @param {Function} onLoaded - All the logic that needs to be triggered when the {@link Scenery} is loaded into the Three.js scene and displayed for the first time
      * @param {Function} onUpdate - All the logic that needs to be triggered when the {@link Scenery} is updated
@@ -87,17 +89,22 @@ class Scenery {
         models,
         lights,
         sounds,
+        renderer,
         onCreated = (self) => self,
         onLoaded = (self) => self,
         onUpdate = (self) => self
 
     }) {
         this.name = name;
-
+        this.renderer = renderer;
         this.buildCameras(cameras, controls);
         this.buildModels(models);
         this.buildLights(lights);
         this.buildSounds(sounds);
+
+        if(this.renderer !== undefined) {
+            this.renderer = renderer;
+        }
 
         if (onCreated !== undefined) {
             this.onCreated = onCreated;
@@ -141,7 +148,7 @@ class Scenery {
 
     /**
      * Build sounds and soundManager
-     * @param {{Sound}} sounds
+     * @param {{Sound[]}} sounds
      */
     buildSounds(sounds) {
         this.soundManager = new SoundManager({sounds});
@@ -164,10 +171,6 @@ class Scenery {
         if (this.lightManager) {
             this.lightManager.addToScene(scene);
         }
-
-     /*   if(this.soundManager) {
-            this.soundManager.addToScene(scene)
-        }*/
 
         // Run onLoaded when scenery is added to scene
         this.onLoaded(this);

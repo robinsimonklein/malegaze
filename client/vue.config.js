@@ -10,6 +10,9 @@ if(process.env.VUE_APP_HTTPS === "true" && process.env.NODE_ENV === 'development
 }
 
 module.exports = {
+    configureWebpack: {
+        devtool: 'source-map'
+    },
     devServer: {
         disableHostCheck: true,
         https: https,

@@ -58,7 +58,8 @@ class SceneManager {
      */
     buildScene() {
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color('#1d1428');
+        //scene.background = new THREE.Color('#1d1428');
+        scene.background = new THREE.Color('#000000');
 
         return scene;
     }
@@ -99,7 +100,7 @@ class SceneManager {
         sceneries.push(actress_scenery);
         sceneries.push(spectator_scenery);
 
-        this.sceneryManager = new SceneryManager({sceneries: sceneries, scene: this.scene});
+        this.sceneryManager = new SceneryManager({sceneries: sceneries, scene: this.scene, renderer: this.renderer});
     }
 
     /**
@@ -136,7 +137,7 @@ class SceneManager {
         // Render depending to the camera type
         if (this.sceneryManager.scenery.cameraManager.cameraObject.type === cameraTypes.CINEMATIC) {
             this.sceneryManager.scenery.cameraManager.camera.renderCinematic(this.scene, this.renderer);
-        } else {
+        } else if (this.sceneryManager.scenery.name !== 'actress_scenery') {
             this.renderer.render(this.scene, this.sceneryManager.scenery.cameraManager.camera);
         }
 

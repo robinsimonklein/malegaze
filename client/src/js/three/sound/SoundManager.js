@@ -36,6 +36,12 @@ class SoundManager {
         }
     }
 
+    loadSound() {
+        this.soundObjects.forEach((sound) => {
+            sound.loadSound()
+        })
+    }
+
     /**
      * Add a sound to {@link SoundManager}
      * @param {Sound} sound - The sound to add
