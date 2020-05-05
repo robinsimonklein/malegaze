@@ -1,7 +1,7 @@
 <template>
     <div id="scene-container" class="scene-container" ref="sceneContainer">
         <CameraOverlay v-if="appState === 'cameraman'" />
-        <ActressComponent v-if="appState === 'actress'"/>
+        <ActressComponent v-if="appState === 'actress' || appState === 'spectator'"/>
     </div>
 </template>
 

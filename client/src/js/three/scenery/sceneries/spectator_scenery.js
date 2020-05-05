@@ -10,14 +10,14 @@ import Sound from '../../sound/Sound';
 import store from '../../../../store';
 import appStates from '../../../appStates';
 
-export default new Scenery({ // TODO: Overlay
+export default new Scenery({
     name: 'spectator_scenery',
     orbitControls: null,
     cameras: [
         new Camera({
             type: cameraTypes.PERSPECTIVE,
             properties: {fov: 60, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 8000},
-            initialPosition: {x: -20, y: 200, z: 520}, // TODO: Change position
+            initialPosition: {x: -20, y: 200, z: 390},
         }),
     ],
     controls: controlsTypes.MOBILE,
@@ -56,6 +56,7 @@ export default new Scenery({ // TODO: Overlay
         self.video = null;
         self.time = 0;
         self.volumetricLights = [];
+        self.ghosts = [];
 
         /**
          * @param {*} self
@@ -129,11 +130,13 @@ export default new Scenery({ // TODO: Overlay
             self.eyes.push(objects);
         }
 
-        /* TODO
+        // TODO
 
-        self.buildGhost = (self) => {
-
-        } */
+        self.buildGhost = (self, position) => {
+            // self.ghosts.push();
+            const ghost = new THREE.Object3D();
+            ghost.position.set(position.x, position.y, position.z);
+        }
 
         /**
          * Build video
@@ -192,8 +195,7 @@ export default new Scenery({ // TODO: Overlay
         spotlight.shadow.camera.fov = 30;
 
         self.soundManager.addToCamera(self.cameraManager.camera);
-        window.addEventListener('keypress', () => self.soundManager.sound.play());
-        // self.soundManager.sound.play();
+        self.soundManager.sound.play();
 
         // Create actors
         self.createActress(self, {position: [850, 270]});
