@@ -6,7 +6,7 @@ import cameraTypes from "../../camera/cameraTypes";
 // import controlsTypes from "../../controls/controlsTypes";
 import * as THREE from "three";
 import MobileControls from "../../controls/MobileControls";
-import CameraOverlay from "../../overlays/CameraOverlay";
+// import CameraOverlay from "../../overlays/CameraOverlay";
 // import store from "../../../../store";
 // import appStates from "../../../appStates";
 import MobileOrientationControls from "../../controls/MobileOrientationControls";
