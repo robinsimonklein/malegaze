@@ -116,6 +116,10 @@ class CameraManager {
         }
     }
 
+    setControls(type){
+        this.buildControls(type)
+    }
+
     /**
      * Add elements to scene
      * @param {THREE.Scene} scene - The scene in which we want to add the {@link CameraManager} cameras

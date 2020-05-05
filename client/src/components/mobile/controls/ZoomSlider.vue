@@ -1,6 +1,6 @@
 <template>
     <div class="zoom-slider">
-        <input class="zoom-slider__input" v-model="focalLength" type="range" min="24" max="150" step="0.1" />
+        <input class="zoom-slider__input" v-model="zoom" type="range" min="12" max="50" step="0.1" />
     </div>
 </template>
 
@@ -9,17 +9,17 @@
         name: "ZoomSlider",
         data() {
             return {
-                focalLength: 24
+                zoom: 12
             };
         },
         methods: {
-            emitControls() {
-                this.$socket.emit('mobile_controls', {focalLength: this.focalLength});
+            emitZoom() {
+                this.$socket.emit('camera_zoom', this.zoom);
             }
         },
         watch: {
-            focalLength() {
-                this.emitControls();
+            zoom() {
+                this.emitZoom();
             }
         }
     }
@@ -57,6 +57,10 @@
             background: #fff;
             border-radius: .1rem;
             cursor: pointer;
+        }
+
+        &::-ms-fill-lower {
+            background: red;
         }
     }
 }

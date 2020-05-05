@@ -1,23 +1,7 @@
 <template>
-    <div class="mobile-scene-1">
-        <div class="mobile-scene-1__infos">
-            <span>Mobile Scène 1</span>
-            <button @click="next" class="btn">Next</button>
-        </div>
-        <div class="mobile-scene-1__controls">
-            <div class="mobile-scene-1__controls__zoom">
-                <span>ZOOM</span>
-                <div class="mobile-scene-1__controls__zoom__instructions">
-                    <div></div>
-                </div>
-                <ZoomSlider class="mobile-scene-1__controls__zoom__slider"/>
-            </div>
-            <div class="mobile-scene-1__controls__rec">
-                <div class="mobile-scene-1__controls__rec__button">
-                    <button @click="startRec()"></button>
-                </div>
-                <span>REC</span>
-            </div>
+    <div class="mobile-cameraman-scenery">
+        <div class="mobile-cameraman-scenery__interactions">
+            <component :is="interactionComponent" @done="emitInteractionDone"></component>
         </div>
         <!-- Track the mobile orientation -->
         <MobileOrientation :debug="false"/>
@@ -27,28 +11,62 @@
 <script>
     import appStates from '../../js/appStates';
     import MobileOrientation from './orientation/MobileOrientation';
-    import ZoomSlider from './controls/ZoomSlider';
+    import EventManager from "../../js/event/EventManager";
+    import MobileInteractionFraming from "./interactions/MobileInteractionFraming";
+    import MobileInteractionTraveling from "./interactions/MobileInteractionTraveling";
 
     export default {
-        name: "MobileScene1",
-        components: {ZoomSlider, MobileOrientation},
+        name: "MobileCameramanScenery",
+        components: {MobileOrientation, MobileInteractionFraming, MobileInteractionTraveling},
+        data() {
+            return {
+                interaction : null
+            }
+        },
+        sockets: {
+            camera_zoom(value) {
+                EventManager.publish('camera:zoom', value)
+            },
+            camera_rec() {
+                EventManager.publish('camera:rec')
+            },
+            mobile_interaction_set(interaction) {
+                this.interaction = interaction
+            }
+        },
+        computed: {
+            interactionComponent() {
+                switch (this.interaction) {
+                    case 'framing':
+                        return 'MobileInteractionFraming'
+                    case 'traveling':
+                        return 'MobileInteractionTraveling'
+                    default:
+                        return null
+                }
+            }
+        },
         methods: {
             next() {
                 this.$socket.emit('state_request', appStates.ACTRESS);
             },
+            emitInteractionDone() {
+                this.$socket.emit('mobile_interaction_done')
+            },
             startRec() {
+                this.$socket.emit('camera_rec');
             }
-        }
+        },
     }
 </script>
 
 <style lang="scss" scoped>
-    .mobile-scene-1 {
+    .mobile-cameraman-scenery {
         position: relative;
         width: 100vw;
         height: 100vh;
         background-color: #202020;
-        overflow-x: hidden;
+        overflow: hidden;
 
         &__infos {
             position: absolute;
@@ -138,5 +156,12 @@
             }
         }
 
+    }
+    .mobile-interaction {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        width: 100vw;
     }
 </style>
