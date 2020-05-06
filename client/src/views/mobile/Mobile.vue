@@ -9,7 +9,7 @@
 <script>
     import MobileSetup from "../../components/mobile/MobileSetup";
     import MobileIntro from "../../components/mobile/MobileIntro";
-    import MobileScene1 from "../../components/mobile/MobileScene1";
+    import MobileCameramanScenery from "../../components/mobile/MobileCameramanScenery";
     import MobileScene2 from "../../components/mobile/MobileScene2";
     import MobileScene3 from "../../components/mobile/MobileScene3";
     import MobileEnd from "../../components/mobile/MobileEnd";
@@ -20,7 +20,7 @@
         components: {
             MobileSetup,
             MobileIntro,
-            MobileScene1,
+            MobileCameramanScenery,
             MobileScene2,
             MobileScene3,
             MobileEnd
@@ -43,7 +43,7 @@
                     case appStates.INTRO:
                         return "MobileIntro"
                     case appStates.CAMERAMAN:
-                        return "MobileScene1"
+                        return "MobileCameramanScenery"
                     case appStates.ACTRESS:
                         return "MobileScene2"
                     case appStates.SPECTATOR:
@@ -72,6 +72,8 @@
         align-items: center;
         justify-content: center;
         height: 100vh;
+        max-height: 100vh;
+        overflow: hidden;
 
         &__debug {
             position: fixed;

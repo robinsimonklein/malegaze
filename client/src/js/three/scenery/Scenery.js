@@ -1,7 +1,7 @@
 import CameraManager from '../camera/CameraManager';
 import ModelManager from '../model/ModelManager';
 import LightManager from '../light/LightManager';
-import SoundManager from "../sound/SoundManager";
+import SoundManager from '../sound/SoundManager';
 
 /**
  * A {@link Scenery} defines all the contents that needs to be rendered in the 3D View of a scenery.
