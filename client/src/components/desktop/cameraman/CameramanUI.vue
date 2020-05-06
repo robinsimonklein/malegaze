@@ -7,6 +7,7 @@
         -->
         <DesktopTutorial/>
         <CameraOverlay />
+        <div class=""></div>
     </div>
 </template>
 

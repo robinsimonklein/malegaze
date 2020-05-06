@@ -5,12 +5,12 @@ import Light from "../../light/Light";
 import Sound from "../../sound/Sound";
 import cameraTypes from "../../camera/cameraTypes";
 import controlsTypes from "../../controls/controlsTypes";
-import MobileOrientationControls from "../../controls/MobileOrientationControls";
 import * as THREE from "three";
 import {lineToCurve} from "../../../helpers/Utils";
 import {MathUtils} from "three";
 import EventManager from "../../../event/EventManager";
 import {Vector3} from "three";
+import gsap from 'gsap'
 
 export default new Scenery({
     name: 'cameraman_scenery',
@@ -20,7 +20,7 @@ export default new Scenery({
             properties: {fov: 1, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 1500},
             initialPosition: {x: -50, y: 150, z: -300},
             settings: {
-                focalLength: 24,
+                focalLength: 33,
                 focusDistance: 100,
             },
         }),
@@ -30,7 +30,7 @@ export default new Scenery({
             initialPosition: {x: 0, y: 0, z: 0},
             settings: {
                 alphaOffset: MathUtils.degToRad(180),
-                focalLength: 24,
+                focalLength: 40,
                 focusDistance: 120,
             },
         }),
@@ -39,17 +39,19 @@ export default new Scenery({
             properties: {fov: 1, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 1500},
             initialPosition: {x: 0, y: 0, z: 0},
             settings: {
-                focalLength: 24,
+                focalLength: 40,
                 focusDistance: 300
             },
-            debug: true
         }),
         new Camera({
             type: cameraTypes.CINEMATIC,
             properties: {fov: 1, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 1500},
             initialPosition: {x: 30, y: 30, z: 30},
             settings: {
-                focusDistance: 350
+                alphaOffset: MathUtils.degToRad(180),
+                showFocus: true,
+                focalLength: 60,
+                focusDistance: 20
             },
         }),
         new Camera({
@@ -107,7 +109,9 @@ export default new Scenery({
         self.cameraCurves = [];
         self.cameraProgres = 0;
 
+        self.currentSequence = 0
         self.sequences = [
+            // Intro
             {
                 name: 'traveling intro',
                 cameraIndex: 0,
@@ -131,6 +135,8 @@ export default new Scenery({
                         })
                 }
             },
+
+            // Traveling
             {
                 name: 'tuto cadrage',
                 cameraIndex: 1,
@@ -145,7 +151,7 @@ export default new Scenery({
                     EventManager.publish('tutorial:display', {
                         title: 'Cadre l\'image',
                         subtitle: 'Oriente la caméra en pivotant le téléphone',
-                        icon: 'tutorial_icon_frame.svg',
+                        icon: 'tutorial_icon_framing.svg',
                         animation: 'orientation',
                     })
 
@@ -160,11 +166,11 @@ export default new Scenery({
                 }
             },
             {
-                name: 'cadrage plan 1',
+                name: 'cadrage traveling',
                 cameraIndex: 1,
-                ready: true,
+                ready: false,
                 init: () => {
-
+                    self.sequences[self.currentSequence].ready = true
                 },
                 update: (self) => {
                     const sequence = self.sequences[self.currentSequence]
@@ -177,8 +183,6 @@ export default new Scenery({
                         threshold: .1,
                         camera: self.cameraManager.camera,
                         onComplete: (self) => {
-                            // EventManager.publish('camera:progress_complete')
-                            // EventManager.publish('camera:aiming', {distance, threshold: distanceThreshold, aiming: false})
                             self.nextSequence(self)
                         }
                     })
@@ -211,7 +215,7 @@ export default new Scenery({
                 }
             },
             {
-                name: 'traveling plan 1',
+                name: 'traveling',
                 cameraIndex: 1,
                 ready: false,
                 init: () => {
@@ -221,7 +225,7 @@ export default new Scenery({
                         displayedEvent.unsubscribe();
                     })
 
-                    // On tutorial finished
+                    // On interaciton done
                     const travelingEvent = EventManager.subscribe('mobile:interaction_done', () => {
                         self.sequences[self.currentSequence].ready = true
                         // Unsubscribe the event
@@ -237,43 +241,172 @@ export default new Scenery({
                     self.followCurve(self, {
                             curveName: "P1_TRAVEL",
                             cameraIndex: 1,
-                            duration: 500,
+                            duration: 600,
                         },
                         (self) => {
                             self.nextSequence(self)
                         })
                 }
             },
+
+            // Zoom
             {
-                name: '',
+                name: 'cadrage zoom',
                 cameraIndex: 2,
-                init: (self) => {
-                    // Reset camera progress
+                init: () => {
                     EventManager.publish('camera:progress', 0)
+                    self.cameraManager.setControls(controlsTypes.MOBILE)
+                    const cameraPosition = self.cameraCurves.find(curve => curve.name === 'P2_ZOOM').getPointAt(0)
+                    self.cameraManager.camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
+                    EventManager.publish('mobile:interaction_set', 'framing')
+
+                    self.sequences[self.currentSequence].ready = true
                 },
                 update: (self) => {
+                    const sequence = self.sequences[self.currentSequence]
+
+                    // When ready
+                    if(!sequence.ready) return
+
+                    self.frameTarget(self, {
+                        target: new Vector3(0.3,0.25, -0.9),
+                        threshold: .1,
+                        camera: self.cameraManager.camera,
+                        onComplete: (self) => {
+                            self.nextSequence(self)
+                        }
+                    })
+
+                }
+            },
+            {
+                name: 'tuto zoom',
+                cameraIndex: 2,
+                init: (self) => {
+                    self.cameraManager.controls = null
+
+                    EventManager.publish('mobile:interaction_set', 'zoom')
+
+                    // Start tutorial
+                    EventManager.publish('tutorial:display', {
+                        title: 'Effectue un zoom',
+                        subtitle: 'UTILISE LE CURSEUR POUR lancer le zoom ',
+                        icon: 'tutorial_icon_zoom.svg',
+                    })
+
+                    // On tutorial finished
+                    const displayedEvent = EventManager.subscribe('tutorial:displayed', () => {
+                        self.sequences[self.currentSequence].ready = true
+                        self.nextSequence(self)
+                        // Unsubscribe the event
+                        displayedEvent.unsubscribe();
+                    })
+                }
+            },
+            {
+                name: 'zoom',
+                cameraIndex: 2,
+                ready: false,
+                init: (self) => {
+                    self.cameraManager.controls = null
+
+                    // On tutorial finished
+                    const travelingEvent = EventManager.subscribe('mobile:interaction_done', () => {
+                        self.sequences[self.currentSequence].ready = true
+                        // Unsubscribe the event
+                        travelingEvent.unsubscribe();
+                    })
+                },
+                update: (self) => {
+                    const sequence = self.sequences[self.currentSequence]
+
+                    // When ready
+                    if(!sequence.ready) return
+
                     self.followCurve(self, {
                             curveName: "P2_ZOOM",
                             cameraIndex: 2,
-                            duration: 500,
+                            duration: 600,
                         },
                         (self) => {
                             self.nextSequence(self)
                         })
                 }
             },
+
+            // Rotation
             {
-                cameraIndex: 4,
-                init: (self) => {
-                    self.controls = new MobileOrientationControls(self.cameraManager.camera)
-                    self.controls.alphaOffset = Math.PI
+                name: 'cadrage rotation',
+                cameraIndex: 3,
+                init: () => {
+                    EventManager.publish('camera:progress', 0)
+                    self.cameraManager.setControls(controlsTypes.MOBILE)
+                    const cameraPosition = self.cameraCurves.find(curve => curve.name === 'P3_ROTATION').getPointAt(0)
+                    self.cameraManager.camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
+                    EventManager.publish('mobile:interaction_set', 'framing')
+
+                    self.sequences[self.currentSequence].ready = true
                 },
                 update: (self) => {
-                    // self.controls.update()
+                    const sequence = self.sequences[self.currentSequence]
+
+                    // When ready
+                    if(!sequence.ready) return
+
+                    self.frameTarget(self, {
+                        target: new Vector3(-0.16,-0.33, 0.9),
+                        threshold: .1,
+                        camera: self.cameraManager.camera,
+                        onComplete: (self) => {
+                            self.nextSequence(self)
+                        }
+                    })
+
                 }
-            }
+            },
+            {
+                name: 'tuto rotation',
+                cameraIndex: 3,
+                init: (self) => {
+                    self.cameraManager.controls = null
+
+                    EventManager.publish('mobile:interaction_set', 'rotation')
+
+                    // Start tutorial
+                    EventManager.publish('tutorial:display', {
+                        title: 'EFFECTUE UNE ROTATION',
+                        subtitle: 'PIVOTE LE Téléphone vers la droite pour effectuer une rotation',
+                        icon: 'tutorial_icon_rotation.svg',
+                    })
+
+                    // On tutorial finished
+                    const displayedEvent = EventManager.subscribe('tutorial:displayed', () => {
+                        self.sequences[self.currentSequence].ready = true
+                        self.nextSequence(self)
+                        // Unsubscribe the event
+                        displayedEvent.unsubscribe();
+                    })
+                }
+            },
+            {
+                name: 'rotate',
+                cameraIndex: 3,
+                ready: false,
+                init: (self) => {
+                    self.cameraManager.controls = null
+
+                    // On interaction done
+                    const travelingEvent = EventManager.subscribe('mobile:interaction_done', () => {
+                        self.sequences[self.currentSequence].ready = true
+
+                        gsap.to(self.cameraManager.camera.rotation.x, {})
+
+                        // Unsubscribe the event
+                        travelingEvent.unsubscribe();
+                    })
+                },
+            },
         ]
-        self.currentSequence = 0
 
         // -- METHODS
 
@@ -370,6 +503,14 @@ export default new Scenery({
             self.camPosIndex += 1
         }
 
+        /**
+         * Frame target
+         * @param self
+         * @param target
+         * @param threshold
+         * @param camera
+         * @param onComplete
+         */
         self.frameTarget = (self, {target, threshold, camera, onComplete}) => {
 
             const dir = camera.getWorldDirection(new THREE.Vector3(0, 0, 0))

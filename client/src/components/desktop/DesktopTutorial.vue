@@ -46,7 +46,7 @@
             this.timeline.from('.desktop-tutorial__icon', {duration: 1, alpha: 0, ease: "power2.out"}, '-=0.8')
 
 
-            this.timeline.to('.desktop-tutorial', {duration: 1, alpha: 0, ease: "power2.out"}, '+=5')
+            this.timeline.to('.desktop-tutorial', {duration: 1, alpha: 0, ease: "power2.out"}, '+=4')
 
 
             this.event = EventManager.subscribe('tutorial:display', (data) => {
