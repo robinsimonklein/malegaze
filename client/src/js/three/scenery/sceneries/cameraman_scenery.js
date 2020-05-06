@@ -11,6 +11,8 @@ import {MathUtils} from "three";
 import EventManager from "../../../event/EventManager";
 import {Vector3} from "three";
 import gsap from 'gsap'
+import store from "../../../../store";
+import appStates from "../../../appStates";
 
 export default new Scenery({
     name: 'cameraman_scenery',
@@ -113,7 +115,7 @@ export default new Scenery({
         self.sequences = [
             // Intro
             {
-                name: 'traveling intro',
+                name: 'instructions intro',
                 cameraIndex: 0,
                 init: (self) => {
                     self.nextSequence(self)
@@ -128,7 +130,7 @@ export default new Scenery({
                     self.followCurve(self, {
                             curveName: "P0_INTRO",
                             cameraIndex: 0,
-                            duration: 10, // 1000
+                            duration: 200, // 1000
                         },
                         (self) => {
                             self.nextSequence(self)
@@ -248,19 +250,37 @@ export default new Scenery({
                         })
                 }
             },
+            {
+                name: 'transition to zoom',
+                cameraIndex: 1,
+                init: (self) => {
+                    EventManager.publish('transition:start', {
+                        text: 'Il faut savoir mettre en avant les atouts de nos actrices. Le réalisateur a fait un très bon choix de commencer par un traveling de bas en haut.'
+                    })
+
+                    self.nextSequence(self)
+
+                }
+            },
 
             // Zoom
             {
                 name: 'cadrage zoom',
                 cameraIndex: 2,
+                ready: false,
                 init: () => {
                     EventManager.publish('camera:progress', 0)
                     self.cameraManager.setControls(controlsTypes.MOBILE)
                     const cameraPosition = self.cameraCurves.find(curve => curve.name === 'P2_ZOOM').getPointAt(0)
                     self.cameraManager.camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
+                    EventManager.publish('camera:aiming', {distance: 4, threshold: 1, aiming: false})
                     EventManager.publish('mobile:interaction_set', 'framing')
 
-                    self.sequences[self.currentSequence].ready = true
+                    let transitionEvent = EventManager.subscribe('transition:ended', () => {
+                        self.sequences[self.currentSequence].ready = true
+
+                        transitionEvent.unsubscribe()
+                    })
                 },
                 update: (self) => {
                     const sequence = self.sequences[self.currentSequence]
@@ -333,19 +353,37 @@ export default new Scenery({
                         })
                 }
             },
+            {
+                name: 'transition to rotation',
+                cameraIndex: 2,
+                init: (self) => {
+                    EventManager.publish('transition:start', {
+                        text: 'Un zoom en contre plongé assure un côté dominateur à tout les coups !'
+                    })
+
+                    self.nextSequence(self)
+
+                }
+            },
 
             // Rotation
             {
                 name: 'cadrage rotation',
                 cameraIndex: 3,
+                ready: false,
                 init: () => {
                     EventManager.publish('camera:progress', 0)
                     self.cameraManager.setControls(controlsTypes.MOBILE)
                     const cameraPosition = self.cameraCurves.find(curve => curve.name === 'P3_ROTATION').getPointAt(0)
                     self.cameraManager.camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
+                    EventManager.publish('camera:aiming', {distance: 4, threshold: 1, aiming: false})
                     EventManager.publish('mobile:interaction_set', 'framing')
 
-                    self.sequences[self.currentSequence].ready = true
+                    let transitionEvent = EventManager.subscribe('transition:ended', () => {
+                        self.sequences[self.currentSequence].ready = true
+
+                        transitionEvent.unsubscribe()
+                    })
                 },
                 update: (self) => {
                     const sequence = self.sequences[self.currentSequence]
@@ -393,18 +431,34 @@ export default new Scenery({
                 cameraIndex: 3,
                 ready: false,
                 init: (self) => {
-                    self.cameraManager.controls = null
-
                     // On interaction done
                     const travelingEvent = EventManager.subscribe('mobile:interaction_done', () => {
                         self.sequences[self.currentSequence].ready = true
 
-                        gsap.to(self.cameraManager.camera.rotation.x, {})
+                        const y = self.cameraManager.camera.rotation.y
 
+                        gsap.to(self.cameraManager.camera.rotation, {y:y + MathUtils.degToRad(20), duration: 6}).then(() => {
+                            self.nextSequence(self)
+                        })
                         // Unsubscribe the event
                         travelingEvent.unsubscribe();
                     })
                 },
+            },
+            {
+                name: 'transition to actress scenery',
+                cameraIndex: 2,
+                init: (self) => { // eslint-disable-line
+                    EventManager.publish('transition:start', {
+                        text: 'Filmer la femme de bas en haut permet de la rendre sexy et encourage l’audience à prendre plus de plaisir en la regardant'
+                    })
+
+                    let transitionEvent = EventManager.subscribe('transition:ended', () => {
+                        store.dispatch('app/requestState', appStates.ACTRESS)
+
+                        transitionEvent.unsubscribe()
+                    })
+                }
             },
         ]
 
