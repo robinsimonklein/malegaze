@@ -5,8 +5,8 @@ import cameraTypes from "../../camera/cameraTypes";
 import controlsTypes from "../../controls/controlsTypes";
 import Light from "../../light/Light";
 import Sound from "../../sound/Sound"
-import store from "../../../../store";
-import appStates from "../../../appStates";
+/*import store from "../../../../store";
+import appStates from "../../../appStates";*/
 import * as THREE from "three";
 import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
 /*import { AfterimagePass } from 'three/examples/jsm/postprocessing/AfterimagePass.js';
@@ -29,12 +29,12 @@ export default new Scenery({
     models: [
         new Model({
             name: 'actress_scenery',
-            path: "models/glb/actress_scenery2.glb",
+            path: "models/glb/actress_scenery.glb",
             type: 'gltf'
         }),
         new Model({
-            name: 'homme_geant',
-            path: "models/glb/homme_geant.glb",
+            name: 'hommes_geants',
+            path: "models/glb/hommes_geants.glb",
             type: 'gltf'
         })
     ],
@@ -44,19 +44,29 @@ export default new Scenery({
             light: new  THREE.DirectionalLight(0xffffff, 1),
             initialPosition: {x: 0, y: 20, z: 50},
         }),
+        new Light({
+            name: 'pointLight',
+            light: new  THREE.PointLight(0xFF73EC, 10, 1000),
+            initialPosition: {x: 0, y: 800, z: -1100},
+        }),
+        new Light({
+            name: 'pointLight2',
+            light: new  THREE.PointLight(0xFF73EC, 10, 1000),
+            initialPosition: {x: -500, y: 800, z: -1100},
+        })
     ],
     sounds : [
         new Sound({
-            name : 'test',
+            name : 'ambiantSound',
             path : 'sound/musicScene2.mp3',
             isLoop : true,
-            volume: 0.1,
+            volume: 0.5,
         }),
         new Sound({
             name : 'whispering',
             path : 'sound/whispering.mp3',
             isLoop : true,
-            volume: 0.1,
+            volume: 0,
         })
       /*  new PositionalSound({
             name : 'test',
@@ -66,24 +76,47 @@ export default new Scenery({
     ],
    onLoaded: (self) => {
 
-       self.scene.fog = new THREE.Fog(0x000000, 250, 1800);
+       self.scene.fog = new THREE.Fog(0x000000, 250, 3000);
+
+       self.timer = 0;
+       self.volume = 0;
+       self.manSpeed = 0.0005;
+       self.whisperingVolume = 0;
+       self.ambiantSoundVolume = 0.5;
 
        self.soundManager.addToCamera(self.cameraManager.camera);
-       console.log(self.soundManager);
        self.percent = null;
        self.blur = null;
 
        self.group = new THREE.Group();
        self.raycaster =  new THREE.Raycaster();
-       var spriteMap = new THREE.TextureLoader().load( "models/images/oeil.png" );
+       /*var spriteMap = new THREE.TextureLoader().load( "models/images/oeil.png" );
        var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap } );
        self.eyeSprite =  new THREE.Sprite( spriteMaterial );
-       self.eyeSprite.scale.set(10, 10, 1);
+       self.eyeSprite.scale.set(10, 10, 1);*/
 
        self.nodepostFade = new Nodes.NodePostProcessing(self.renderer);
        self.nodepostBlur = new Nodes.NodePostProcessing(self.renderer, self.nodepostFade.renderTarget);
        self.frame = new Nodes.NodeFrame();
        self.clock = new THREE.Clock();
+
+       self.manModel = self.modelManager.getLoadedModelByName('hommes_geants');
+       self.manModel.scene.children.shift();
+       console.log(self.manModel);
+       //self.manModel.scene.children[0].viaible = false;
+
+       self.ambiantSound = self.soundManager.getSoundObjectByName('ambiantSound').sound;
+       self.whisperingSound = self.soundManager.getSoundObjectByName('whispering').sound;
+
+      self.pointLight = self.lightManager.getLightByName('pointLight');
+
+       let pointLightHelper = new THREE.PointLightHelper( self.pointLight, 10 );
+       self.scene.add( pointLightHelper );
+
+       self.pointLight2 = self.lightManager.getLightByName('pointLight2');
+
+       let pointLightHelper2 = new THREE.PointLightHelper( self.pointLight2, 10 );
+       self.scene.add( pointLightHelper2 );
 
        /*self.composer = new EffectComposer(self.renderer);
        self.composer.addPass(new RenderPass(self.scene, self.cameraManager.camera));
@@ -132,7 +165,26 @@ export default new Scenery({
            return Math.floor(Math.random() * (max - min + 1) + min);
        };
 
-       self.generateEye = (number) => {
+       self.menAttraction = () => {
+          let menAttractionFrame = requestAnimationFrame(self.menAttraction);
+
+           self.manModel.scene.children.forEach((child) => {
+
+               var numberz = child.position.z + (self.cameraManager.camera.position.z - child.position.z) * self.manSpeed;
+               var distZ = Math.round(numberz * 1000) / 1000;
+               var diffZ = Math.abs( distZ - self.cameraManager.camera.position.z );
+
+               if(diffZ < 600) {
+                  cancelAnimationFrame(menAttractionFrame);
+                   self.soundManager.stopAll();
+                   //store.dispatch('app/requestState', appStates.SPECTATOR)
+               } else {
+                   child.position.z = distZ;
+               }
+           })
+       };
+
+     /*  self.generateEye = (number) => {
 
            for(var i = 0; i < number; i++) {
                var x = self.randomIntFromInterval(-100 , 100);
@@ -145,17 +197,17 @@ export default new Scenery({
                self.group.add(clonedSprite);
                self.scene.add(self.group)
            }
-       };
+       };*/
 
-       self.eyesAttraction = () => {
+      /* self.eyesAttraction = () => {
            let eyesAttractionFrame = requestAnimationFrame(self.eyesAttraction);
 
            self.group.children.forEach((child) => {
                var position = child.position;
 
-               var numberx = position.x + (self.cameraManager.camera.position.x - position.x) * 0.005;
-               var numbery = position.y + (self.cameraManager.camera.position.y - position.y) * 0.005;
-               var numberz = position.z + (self.cameraManager.camera.position.z - position.z) * 0.005;
+               var numberx = position.x + (self.cameraManager.camera.position.x - position.x) * self.eyesSpeed;
+               var numbery = position.y + (self.cameraManager.camera.position.y - position.y) * self.eyesSpeed;
+               var numberz = position.z + (self.cameraManager.camera.position.z - position.z) * self.eyesSpeed;
 
                var distX = Math.round(numberx * 1000) / 1000;
                var distY = Math.round(numbery * 1000) / 1000;
@@ -179,30 +231,33 @@ export default new Scenery({
                }
 
            })
-       };
+       };*/
 
        self.shoot = (self) => {
            self.raycaster.setFromCamera({x: 0.0,y: 0.0}, self.cameraManager.camera);
-           let intersects = self.raycaster.intersectObjects(self.group.children);
+           let intersects = self.raycaster.intersectObjects(self.manModel.scene.children, true);
 
            if (intersects.length > 0) {
-               self.group.remove(intersects[0].object);
-               self.generateEye(self.randomIntFromInterval(1, 5));
+
+               intersects.forEach((element) => {
+                   var object = element.object.parent.parent;
+                   var position = element.object.parent.parent.position;
+                   if(position.z > -3050) {
+                       object.position.set(position.x, position.y, position.z -50);
+                   }
+
+               })
            }
 
        };
 
-       //self.soundManager.sound.play();
-       window.addEventListener('keypress', () => {
-           self.soundManager.sound.play();
-           self.soundManager.soundObjects[1].sound.play();
-       });
+       self.playAmbiantSound = () => {
+           self.ambiantSound.play();
+           self.whisperingSound.play();
+       };
 
-       /*setTimeout(() => {
-           self.eyesAttraction()
-       },2500);*/
+       window.addEventListener('keypress', () => {self.menAttraction()});
 
-       self.generateEye(5);
        self.addFade();
        self.addBlur();
       self.createGUI();
@@ -210,6 +265,41 @@ export default new Scenery({
 
 
     onUpdate: (self) => {
+
+        self.timer = 0;
+
+         if(self.timer === 500) {
+            console.log('man attraction')
+            self.playAmbiantSound();
+            self.menAttraction();
+        } else if(self.timer === 1000) {
+            console.log('whispering1')
+             self.whisperingVolume += 0.15;
+            self.whisperingSound.setVolume(self.whisperingVolume)
+           // self.whisperingSound.volume
+        } else if(self.timer === 2000) {
+            console.log('whispering2')
+             self.whisperingVolume += 0.30;
+             self.whisperingSound.setVolume(self.whisperingVolume)
+
+        } else if(self.timer === 3000) {
+             self.whisperingVolume += 0.50;
+             self.whisperingSound.setVolume(self.whisperingVolume)
+         }
+         else if(self.timer === 4000) {
+             self.whisperingVolume += 0.60;
+             self.whisperingSound.setVolume(self.whisperingVolume)
+         }
+         else if(self.timer === 5000) {
+             console.log('acceleration')
+             self.manSpeed = 0.001;
+             self.whisperingVolume += 0.70;
+             self.ambiantSoundVolume += 0.70;
+             self.whisperingSound.setVolume(self.whisperingVolume);
+             self.ambiantSound.setVolume(self.ambiantSoundVolume)
+
+             //grand max  self.manSpeed = 0.005;
+         }
 
         var delta = self.clock.getDelta();
         self.frame.update( delta );
