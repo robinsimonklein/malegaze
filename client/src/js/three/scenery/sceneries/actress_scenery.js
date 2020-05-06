@@ -9,10 +9,8 @@ import store from "../../../../store";
 import appStates from "../../../appStates";
 import * as THREE from "three";
 import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
-/*import { AfterimagePass } from 'three/examples/jsm/postprocessing/AfterimagePass.js';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';*/
 import * as Nodes from 'three/examples/jsm/nodes/Nodes.js';
+import THREEx from '../../light/VolumetricLight';
 //import PositionalSound from "../../sound/PositionalSound";
 
 export default new Scenery({
@@ -25,7 +23,7 @@ export default new Scenery({
         }),
     ],
     renderer: null,
-    controls: controlsTypes.MOBILE,
+    controls: controlsTypes.ORBIT,
     models: [
         new Model({
             name: 'actress_scenery',
@@ -44,7 +42,7 @@ export default new Scenery({
             light: new  THREE.DirectionalLight(0xffffff, 1),
             initialPosition: {x: 0, y: 20, z: 50},
         }),
-        new Light({
+      /*  new Light({
             name: 'pointLight',
             light: new  THREE.PointLight(0xFF73EC, 10, 1000),
             initialPosition: {x: 0, y: 800, z: -1100},
@@ -53,7 +51,7 @@ export default new Scenery({
             name: 'pointLight2',
             light: new  THREE.PointLight(0xFF73EC, 10, 1000),
             initialPosition: {x: -500, y: 800, z: -1100},
-        })
+        })*/
     ],
     sounds : [
         new Sound({
@@ -68,11 +66,6 @@ export default new Scenery({
             isLoop : true,
             volume: 0,
         })
-      /*  new PositionalSound({
-            name : 'test',
-            path : 'sound/ostTest.mp3',
-            refDistance: 100
-        })*/
     ],
    onLoaded: (self) => {
 
@@ -90,10 +83,6 @@ export default new Scenery({
 
        self.group = new THREE.Group();
        self.raycaster =  new THREE.Raycaster();
-       /*var spriteMap = new THREE.TextureLoader().load( "models/images/oeil.png" );
-       var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap } );
-       self.eyeSprite =  new THREE.Sprite( spriteMaterial );
-       self.eyeSprite.scale.set(10, 10, 1);*/
 
        self.nodepostFade = new Nodes.NodePostProcessing(self.renderer);
        self.nodepostBlur = new Nodes.NodePostProcessing(self.renderer, self.nodepostFade.renderTarget);
@@ -102,8 +91,6 @@ export default new Scenery({
 
        self.manModel = self.modelManager.getLoadedModelByName('hommes_geants');
        self.manModel.scene.children.shift();
-       console.log(self.manModel);
-       //self.manModel.scene.children[0].viaible = false;
 
        self.ambiantSound = self.soundManager.getSoundObjectByName('ambiantSound').sound;
        self.whisperingSound = self.soundManager.getSoundObjectByName('whispering').sound;
@@ -117,12 +104,6 @@ export default new Scenery({
 
        let pointLightHelper2 = new THREE.PointLightHelper( self.pointLight2, 10 );
        self.scene.add( pointLightHelper2 );*/
-
-       /*self.composer = new EffectComposer(self.renderer);
-       self.composer.addPass(new RenderPass(self.scene, self.cameraManager.camera));
-
-       self.afterImagePass = new AfterimagePass();
-       self.composer.addPass(self.afterImagePass);*/
 
        self.createGUI = () => {
            let gui = new GUI( { name: 'Damp setting' } );
@@ -256,17 +237,37 @@ export default new Scenery({
            self.whisperingSound.play();
        };
 
+       /**
+        * @param {*} self
+        * @param position
+        */
+       self.buildVolumetricLight = (self, position) => {
+           let lightColor = 0xFF73EC;
+           let geometry = new THREE.CylinderGeometry(25., 200., 500, 32 * 2, 20, true);
+
+           geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(0, 55, 0));
+           geometry.applyMatrix4(new THREE.Matrix4().makeRotationX(-0.15));
+
+           let material = new THREEx.VolumetricSpotLightMaterial(4.5, 15., position, new THREE.Color(lightColor), 1.);
+           let mesh = new THREE.Mesh(geometry, material);
+           mesh.position.set(position.x, position.y, position.z);
+           mesh.lookAt(new THREE.Vector3(0, 0, -150));
+           self.scene.add(mesh);
+
+       }
+
        window.addEventListener('keypress', () => {self.menAttraction()});
 
        self.addFade();
        self.addBlur();
+       self.buildVolumetricLight(self, new THREE.Vector3(0, 150, 50));
       //self.createGUI();
     },
 
 
     onUpdate: (self) => {
 
-        self.timer ++;
+        self.timer = 0;
 
          if(self.timer === 500) {
             console.log('man attraction')
