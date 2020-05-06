@@ -108,7 +108,7 @@ export default new Scenery({
        self.ambiantSound = self.soundManager.getSoundObjectByName('ambiantSound').sound;
        self.whisperingSound = self.soundManager.getSoundObjectByName('whispering').sound;
 
-      self.pointLight = self.lightManager.getLightByName('pointLight');
+      /*self.pointLight = self.lightManager.getLightByName('pointLight');
 
        let pointLightHelper = new THREE.PointLightHelper( self.pointLight, 10 );
        self.scene.add( pointLightHelper );
@@ -116,7 +116,7 @@ export default new Scenery({
        self.pointLight2 = self.lightManager.getLightByName('pointLight2');
 
        let pointLightHelper2 = new THREE.PointLightHelper( self.pointLight2, 10 );
-       self.scene.add( pointLightHelper2 );
+       self.scene.add( pointLightHelper2 );*/
 
        /*self.composer = new EffectComposer(self.renderer);
        self.composer.addPass(new RenderPass(self.scene, self.cameraManager.camera));
@@ -260,13 +260,13 @@ export default new Scenery({
 
        self.addFade();
        self.addBlur();
-      self.createGUI();
+      //self.createGUI();
     },
 
 
     onUpdate: (self) => {
 
-        self.timer = 0;
+        self.timer ++;
 
          if(self.timer === 500) {
             console.log('man attraction')
@@ -287,12 +287,13 @@ export default new Scenery({
              self.whisperingSound.setVolume(self.whisperingVolume)
          }
          else if(self.timer === 4000) {
+             self.manSpeed = 0.001;
              self.whisperingVolume += 0.60;
              self.whisperingSound.setVolume(self.whisperingVolume)
          }
          else if(self.timer === 5000) {
              console.log('acceleration')
-             self.manSpeed = 0.001;
+             self.manSpeed = 0.005;
              self.whisperingVolume += 0.70;
              self.ambiantSoundVolume += 0.70;
              self.whisperingSound.setVolume(self.whisperingVolume);
