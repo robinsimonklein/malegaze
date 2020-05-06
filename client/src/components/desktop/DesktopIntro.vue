@@ -1,6 +1,6 @@
 <template>
     <div class="desktop-intro">
-        <button class="desktop-intro__start" @click="startVideo">Forcer la vidéo (provisoir)</button>
+        <button class="desktop-intro__start" @click="startVideo">Forcer la vidéo (provisoire)</button>
         <video class="desktop-intro__video" ref="player">
             <source src="/video/intro.mp4" type="video/mp4">
         </video>
@@ -15,24 +15,24 @@
         data() {
             return {
                 player: null
-            }
+            };
         },
         methods: {
             startVideo() {
-                this.$refs.player.play()
+                this.$refs.player.play();
             }
         },
         mounted() {
-            // Commencer la vidéo si on arrive directement sur cette vue, provisoir.
+            // Commencer la vidéo si on arrive directement sur cette vue, provisoire.
             this.$refs.player.addEventListener('ended', () => {
-                this.$store.dispatch('app/requestState', appStates.CAMERAMAN)
+                this.$store.dispatch('app/requestState', appStates.CAMERAMAN);
             })
 
             try {
-                this.$refs.player.play()
+                this.$refs.player.play();
             }
             catch (err) {
-                console.error(err)
+                console.error(err);
             }
         }
     }
