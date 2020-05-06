@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="465.551" height="318.551" viewBox="0 0 465.551 318.551">
+  <g id="Groupe_83" data-name="Groupe 83" transform="translate(-90.982 -28.724)">
+    <g id="pointeur" transform="translate(-561.386 -358.96)">
+      <path id="Tracé_22" data-name="Tracé 22" d="M0,0,35.539,35.538,0,71.077" transform="translate(761.836 519.675) rotate(-135)" fill="none" stroke="#fff" stroke-width="4"/>
+      <path id="Tracé_24" data-name="Tracé 24" d="M0,0,35.539,35.538,0,71.077" transform="translate(812.095 623.321) rotate(135)" fill="none" stroke="#fff" stroke-width="4"/>
+      <path id="Tracé_25" data-name="Tracé 25" d="M0,0,35.539,35.538,0,71.077" transform="translate(1008.755 573.062) rotate(45)" fill="none" stroke="#fff" stroke-width="4"/>
+      <path id="Tracé_23" data-name="Tracé 23" d="M0,0,35.539,35.538,0,71.077" transform="translate(958.496 469.417) rotate(-45)" fill="none" stroke="#fff" stroke-width="4"/>
+      <g id="croix" transform="translate(865.489 527.07)">
+        <line id="Ligne_70" data-name="Ligne 70" y2="38.205" transform="translate(19.103)" fill="none" stroke="#fff" stroke-width="4"/>
+        <line id="Ligne_71" data-name="Ligne 71" y2="38.205" transform="translate(38.205 19.103) rotate(90)" fill="none" stroke="#fff" stroke-width="4" opacity="0.9"/>
+      </g>
+    </g>
+    <g id="fleches" transform="translate(-954.682 -114.248)">
+      <path id="Tracé_8" data-name="Tracé 8" d="M6743.118,10573l-10.747,10.746,10.747,10.748" transform="translate(-5643.61 -10281.5)" fill="none" stroke="#ff4040" stroke-width="4"/>
+      <path id="Tracé_26" data-name="Tracé 26" d="M6743.118,10573l-10.747,10.746,10.747,10.748" transform="translate(-5664.805 -10281.5)" fill="none" stroke="#ff4040" stroke-width="2" opacity="0.7"/>
+      <path id="Tracé_27" data-name="Tracé 27" d="M6743.118,10573l-10.747,10.746,10.747,10.748" transform="translate(-5686 -10281.5)" fill="none" stroke="#ff4040" stroke-width="1" opacity="0.4"/>
+    </g>
+    <g id="fleches-2" data-name="fleches" transform="translate(1602.198 490.247) rotate(180)">
+      <path id="Tracé_8-2" data-name="Tracé 8" d="M6743.118,10573l-10.747,10.746,10.747,10.748" transform="translate(-5643.61 -10281.5)" fill="none" stroke="#ff4040" stroke-width="4"/>
+      <path id="Tracé_26-2" data-name="Tracé 26" d="M6743.118,10573l-10.747,10.746,10.747,10.748" transform="translate(-5664.805 -10281.5)" fill="none" stroke="#ff4040" stroke-width="2" opacity="0.7"/>
+      <path id="Tracé_27-2" data-name="Tracé 27" d="M6743.118,10573l-10.747,10.746,10.747,10.748" transform="translate(-5686 -10281.5)" fill="none" stroke="#ff4040" stroke-width="1" opacity="0.4"/>
+    </g>
+    <g id="fleches-3" data-name="fleches" transform="translate(626.505 -1016.94) rotate(90)">
+      <path id="Tracé_8-3" data-name="Tracé 8" d="M6743.118,10573l-10.747,10.746,10.747,10.748" transform="translate(-5643.61 -10281.5)" fill="none" stroke="#ff4040" stroke-width="4"/>
+      <path id="Tracé_26-3" data-name="Tracé 26" d="M6743.118,10573l-10.747,10.746,10.747,10.748" transform="translate(-5664.805 -10281.5)" fill="none" stroke="#ff4040" stroke-width="2" opacity="0.7"/>
+      <path id="Tracé_27-3" data-name="Tracé 27" d="M6743.118,10573l-10.747,10.746,10.747,10.748" transform="translate(-5686 -10281.5)" fill="none" stroke="#ff4040" stroke-width="1" opacity="0.4"/>
+    </g>
+    <g id="fleches-4" data-name="fleches" transform="translate(22.011 1392.939) rotate(-90)">
+      <path id="Tracé_8-4" data-name="Tracé 8" d="M6743.118,10573l-10.747,10.746,10.747,10.748" transform="translate(-5643.61 -10281.5)" fill="none" stroke="#ff4040" stroke-width="4"/>
+      <path id="Tracé_26-4" data-name="Tracé 26" d="M6743.118,10573l-10.747,10.746,10.747,10.748" transform="translate(-5664.805 -10281.5)" fill="none" stroke="#ff4040" stroke-width="2" opacity="0.7"/>
+      <path id="Tracé_27-4" data-name="Tracé 27" d="M6743.118,10573l-10.747,10.746,10.747,10.748" transform="translate(-5686 -10281.5)" fill="none" stroke="#ff4040" stroke-width="1" opacity="0.4"/>
+    </g>
+  </g>
+</svg>

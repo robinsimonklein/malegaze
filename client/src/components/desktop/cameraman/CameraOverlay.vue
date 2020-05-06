@@ -1,16 +1,19 @@
 <template>
     <div class="camera-overlay" :class="{'aiming' : aiming}">
         <div class="camera-overlay__corner camera-overlay__corner--tl">
+
+        </div>
+        <div class="camera-overlay__corner camera-overlay__corner--tr">
             <div v-show="recording" class="camera-overlay__rec">
                 <i class="camera-overlay__rec-point"></i>REC
             </div>
         </div>
-        <div class="camera-overlay__corner camera-overlay__corner--tr">
+        <div class="camera-overlay__corner camera-overlay__corner--bl">
             <svg class="camera-overlay__battery" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 512 512" xml:space="preserve"><path class="st0" d="M496 208h-16v-16c0-8.8-7.2-16-16-16h-16v-16c0-17.7-14.3-32-32-32H32c-17.7 0-32 14.3-32 32v192c0 17.7 14.3 32 32 32h384c17.7 0 32-14.3 32-32v-16h16c8.8 0 16-7.2 16-16v-16h16c8.8 0 16-7.2 16-16v-64c0-8.8-7.2-16-16-16zm-80-16v160H32V160h384v32z"/><path class="st0" d="M64 192h32v128H64zm64 0h32v128h-32zm64 0h32v128h-32zm64 0h32v128h-32z"/></svg>
         </div>
-        <div class="camera-overlay__corner camera-overlay__corner--bl">
+        <div class="camera-overlay__corner camera-overlay__corner--br">
+            <img class="camera-overlay__corner-element" src="@/assets/svg/4K.svg"/>
         </div>
-        <div class="camera-overlay__corner camera-overlay__corner--br"></div>
         <div class="camera-overlay__target" :style="`width: ${targetSize.current}px; height: ${targetSize.current}px`">
             <div class="camera-overlay__target--center"></div>
             <div class="camera-overlay__target--corner camera-overlay__target--tl"></div>
@@ -21,11 +24,14 @@
         <div class="camera-overlay__progress">
             <div class="camera-overlay__progress-bar" :style="`width: ${progress}%`"></div>
         </div>
+
+        <div v-show="!started" class="camera-overlay__black-screen"></div>
     </div>
 </template>
 
 <script>
     import EventManager from "../../../js/event/EventManager";
+    import gsap from 'gsap'
 
     export default {
         name: "CameraOverlay",
@@ -40,6 +46,16 @@
                     max: 240,
                     current: 240
                 },
+
+                started: false,
+
+                timelines: {
+                    start: new gsap.timeline({
+                        onComplete: () => {
+                            EventManager.publish('camera:started')
+                        }
+                    })
+                }
             }
         },
         methods: {
@@ -53,9 +69,26 @@
                     x = 1
                 }
                 return x
+            },
+            start() {
+                this.timelines.start.pause(0)
+                this.timelines.start.play()
             }
         },
         mounted() {
+
+            this.timelines.start.pause(0)
+            this.timelines.start.to('.camera-overlay', {duration: 0, delay: .5, alpha: 0})
+            this.timelines.start.to('.camera-overlay', {duration: 0, delay: .2, alpha: 1})
+            this.timelines.start.to('.camera-overlay', {duration: 0, delay: .2, alpha: 0})
+            this.timelines.start.to('.camera-overlay', {duration: 0, delay: .2, alpha: 1})
+            this.timelines.start.to('.camera-overlay', {duration: 0, delay: .5, alpha: 1})
+
+            EventManager.subscribe('camera:start', () => {
+                this.start()
+                this.started = true
+            })
+
             EventManager.subscribe('camera:aiming', (data) => {
                 this.aiming = data.aiming
                 this.targetSize.current = ((this.targetSize.max - this.targetSize.min) * this.getNormalizedDistance(data.distance, data.threshold, 3)) + this.targetSize.min
@@ -63,6 +96,10 @@
             EventManager.subscribe('camera:progress', (value) => {
                 this.progress = Math.round(value)
             })
+            EventManager.subscribe('camera:rec', (value) => {
+                this.recording = value
+            })
+
         }
     }
 </script>
@@ -102,6 +139,10 @@
         font-weight: bold;
 
         transition: border .3s ease;
+
+        &-element {
+            position: absolute;
+        }
 
         &--tl {
             top: 5vh;
@@ -151,6 +192,11 @@
             .aiming &{
                 border-bottom: 4px solid $color-success;
                 border-right: 4px solid $color-success;
+            }
+
+            .camera-overlay__corner-element {
+                right: 1.5rem;
+                bottom: 1.5rem;
             }
         }
     }
@@ -278,15 +324,14 @@
     &__rec {
         display: inline-flex;
         align-items: center;
-        color: #dd2e2e;
-        font-family: Arial, sans-serif;
+        color: white;
         font-weight: bold;
-        font-size: 2.2rem;
+        font-size: 1.125rem;
 
         &-point {
-            height: 2.2rem;
-            width: 2.2rem;
-            margin-right: .7rem;
+            height: 1.5rem;
+            width: 1.5rem;
+            margin-right: .2rem;
             border-radius: 100%;
             background-color: #dd2e2e;
 
@@ -294,9 +339,14 @@
         }
     }
 
-    &__battery {
-        fill: white;
-        height: 3rem;
+    &__black-screen {
+        position: fixed;
+        z-index: 500;
+        top: 0;
+        left: 0;
+        background: black;
+        height: 100vh;
+        width: 100vw;
     }
 
 }

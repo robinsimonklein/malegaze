@@ -7,17 +7,19 @@
         -->
         <DesktopTutorial/>
         <CameraOverlay />
-        <div class=""></div>
+        <CameraTransition />
     </div>
 </template>
 
 <script>
     import CameraOverlay from "./CameraOverlay";
     import DesktopTutorial from "../DesktopTutorial";
+    import CameraTransition from "./CameraTransition";
+    import EventManager from "../../../js/event/EventManager";
 
     export default {
         name: "CameramanUI",
-        components: {DesktopTutorial, CameraOverlay},
+        components: {CameraTransition, DesktopTutorial, CameraOverlay},
         data() {
             return {
                 currentSubtitle: 0,
@@ -26,17 +28,22 @@
                     '&#171;&nbsp;Je sais que t’es nouveau dans le métier mais ne t’inquiète pas, t’as juste à suivre mes conseils…&nbsp;&#187;',
                     '&#171;&nbsp;Et franchement, vu le physique de l’actrice qu’on a dégoté, ça sera du gâteau&nbsp;!&nbsp;&#187;',
                 ],
+                timeline: null,
             }
         },
         methods: {
             nextText(){
                 if(this.subtitles.length > this.currentSubtitle) this.currentSubtitle += 1
-            }
+            },
         },
         mounted() {
-            // FIXME Utiliser autre chose que des setTimeOut comme ça
+            // FIXME Utiliser autre chose que des setTimeOut
             setTimeout(this.nextText, 5000)
             setTimeout(this.nextText, 10000)
+
+            EventManager.subscribe('mobile:interaction_enable', () => {
+                this.$socket.emit('mobile_interaction_enable')
+            })
         }
     }
 </script>
