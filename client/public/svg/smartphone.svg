@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="410.858" height="226.051" viewBox="0 0 410.858 226.051">
+  <g id="smartphone" transform="translate(410.858) rotate(90)">
+    <g id="Groupe_82" data-name="Groupe 82">
+      <rect id="Rectangle_76" data-name="Rectangle 76" width="403" height="221" rx="54" transform="translate(2.409 406.999) rotate(-90)"/>
+    </g>
+    <path id="Tracé_10" data-name="Tracé 10" d="M477.21,458.6a44.448,44.448,0,0,0,44.4-44.4V92.142a44.448,44.448,0,0,0-44.4-44.4H339.952a44.448,44.448,0,0,0-44.4,44.4V414.207a44.448,44.448,0,0,0,44.4,44.4Zm-171.948-44.4V92.142a34.731,34.731,0,0,1,34.691-34.691H477.21A34.731,34.731,0,0,1,511.9,92.142V414.207A34.731,34.731,0,0,1,477.21,448.9H339.952A34.731,34.731,0,0,1,305.261,414.207Z" transform="translate(-295.555 -47.745)" fill="#ff4040"/>
+    <path id="Tracé_12" data-name="Tracé 12" d="M555.752,950.6a16.706,16.706,0,1,0,16.7,16.708A16.705,16.705,0,0,0,555.752,950.6Zm0,26.123a9.417,9.417,0,1,1,9.415-9.415A9.4,9.4,0,0,1,555.752,976.718Z" transform="translate(-443.016 -604.371)" fill="#ff4040"/>
+    <rect id="Rectangle_63" data-name="Rectangle 63" width="9" height="64" rx="4.5" transform="translate(81.409 42.999) rotate(-90)" fill="#ff4040"/>
+    <g id="Groupe_59" data-name="Groupe 59" transform="translate(28.743 288.665) rotate(-90)">
+      <g id="Ellipse_6" data-name="Ellipse 6" transform="translate(-0.333 -0.334)" fill="none" stroke="#ff4040" stroke-width="1" opacity="0.6">
+        <circle cx="84.5" cy="84.5" r="84.5" stroke="none"/>
+        <circle cx="84.5" cy="84.5" r="84" fill="none"/>
+      </g>
+      <g id="Ellipse_7" data-name="Ellipse 7" transform="translate(11.667 11.666)" fill="none" stroke="#ff4040" stroke-width="2" opacity="0.8">
+        <circle cx="72.5" cy="72.5" r="72.5" stroke="none"/>
+        <circle cx="72.5" cy="72.5" r="71.5" fill="none"/>
+      </g>
+      <g id="Ellipse_8" data-name="Ellipse 8" transform="translate(26.667 26.666)" fill="none" stroke="#ff4040" stroke-width="3">
+        <circle cx="57.5" cy="57.5" r="57.5" stroke="none"/>
+        <circle cx="57.5" cy="57.5" r="56" fill="none"/>
+      </g>
+    </g>
+    <circle id="Ellipse_50" data-name="Ellipse 50" cx="37.5" cy="37.5" r="37.5" transform="translate(75.409 241.999) rotate(-90)" fill="#ff4040"/>
+  </g>
+</svg>

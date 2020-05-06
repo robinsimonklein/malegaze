@@ -1,6 +1,12 @@
 <template>
     <div class="actressScene">
-        <div class="actressScene__sight"></div>
+        <div class="actressScene__tuto">
+            <div class="actressScene__tuto__content">
+                <h2>Repousse les regards</h2>
+                <p>Vise puis tape dans la zone definie pour repousser les statues</p>
+            </div>
+        </div>
+        <!--<div class="actressScene__sight"></div>-->
     </div>
 </template>
 
@@ -13,6 +19,32 @@
 <style lang="scss" scoped>
 
     .actressScene {
+
+        &__tuto {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,.5);
+
+            &__content {
+                position: fixed;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+
+                h2 {
+                    //font-family: ;
+                }
+
+                p {
+
+                }
+
+                svg {
+
+                }
+            }
+        }
 
         &__sight {
             position: fixed;
