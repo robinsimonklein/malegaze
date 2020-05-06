@@ -9,9 +9,6 @@ import store from "../../../../store";
 import appStates from "../../../appStates";
 import * as THREE from "three";
 import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
-/*import { AfterimagePass } from 'three/examples/jsm/postprocessing/AfterimagePass.js';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';*/
 import * as Nodes from 'three/examples/jsm/nodes/Nodes.js';
 //import PositionalSound from "../../sound/PositionalSound";
 
@@ -20,7 +17,7 @@ export default new Scenery({
     cameras: [
         new Camera({
             type: cameraTypes.PERSPECTIVE,
-            properties: { fov: 180, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 3000 },
+            properties: { fov: 180, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 2000 },
             initialPosition: {x: 50, y: 180, z: 330},
         }),
     ],
@@ -46,13 +43,18 @@ export default new Scenery({
         }),
         new Light({
             name: 'pointLight',
-            light: new  THREE.PointLight(0xFF73EC, 10, 1000),
-            initialPosition: {x: 0, y: 800, z: -1100},
+            light: new  THREE.PointLight(0xFF73EC, 10, 500),
+            initialPosition: {x: 0, y: 800, z: -1500},
         }),
         new Light({
             name: 'pointLight2',
-            light: new  THREE.PointLight(0xFF73EC, 10, 1000),
-            initialPosition: {x: -500, y: 800, z: -1100},
+            light: new  THREE.PointLight(0xFF73EC, 10, 500),
+            initialPosition: {x: -500, y: 800, z: -1500},
+        }),
+        new Light({
+            name: 'pointLight2',
+            light: new  THREE.PointLight(0xFF73EC, 10, 500),
+            initialPosition: {x: -1000, y: 800, z: -1500},
         })
     ],
     sounds : [
@@ -68,19 +70,22 @@ export default new Scenery({
             isLoop : true,
             volume: 0,
         })
-      /*  new PositionalSound({
-            name : 'test',
-            path : 'sound/ostTest.mp3',
-            refDistance: 100
-        })*/
     ],
    onLoaded: (self) => {
 
-       self.scene.fog = new THREE.Fog(0x000000, 250, 3000);
+       self.renderer.logarithmicDepthBuffer = true;
+       //self.scene.fog = new THREE.Fog(0x000000, 250, 3000);
+
+       var spriteMap = new THREE.TextureLoader().load( "models/images/oeil.png" );
+       var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap } );
+       self.eyeSprite =  new THREE.Sprite( spriteMaterial );
+       self.eyeSprite.scale.set(10, 10, 1);
+
+       self.manSpeed = 0.001;
+       self.eyesSpeed = 0.0025;
 
        self.timer = 0;
        self.volume = 0;
-       self.manSpeed = 0.0005;
        self.whisperingVolume = 0;
        self.ambiantSoundVolume = 0.5;
 
@@ -90,27 +95,26 @@ export default new Scenery({
 
        self.group = new THREE.Group();
        self.raycaster =  new THREE.Raycaster();
-       /*var spriteMap = new THREE.TextureLoader().load( "models/images/oeil.png" );
-       var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap } );
-       self.eyeSprite =  new THREE.Sprite( spriteMaterial );
-       self.eyeSprite.scale.set(10, 10, 1);*/
 
-       self.nodepostFade = new Nodes.NodePostProcessing(self.renderer);
-       self.nodepostBlur = new Nodes.NodePostProcessing(self.renderer, self.nodepostFade.renderTarget);
+       self.nodepostBlur = new Nodes.NodePostProcessing(self.renderer);
        self.frame = new Nodes.NodeFrame();
        self.clock = new THREE.Clock();
 
        self.manModel = self.modelManager.getLoadedModelByName('hommes_geants');
        self.manModel.scene.children.shift();
-       console.log(self.manModel);
-       //self.manModel.scene.children[0].viaible = false;
+       console.log( self.manModel);
+       self.manModel.scene.position.set(0,0,-1000);
 
        self.ambiantSound = self.soundManager.getSoundObjectByName('ambiantSound').sound;
        self.whisperingSound = self.soundManager.getSoundObjectByName('whispering').sound;
 
-      /*self.pointLight = self.lightManager.getLightByName('pointLight');
+       self.smokeTexture = null;
+       self.smokeMaterial = null;
+       self.smokeGeo = null;
+       self.smokeParticles = [];
 
-       let pointLightHelper = new THREE.PointLightHelper( self.pointLight, 10 );
+
+       /*let pointLightHelper = new THREE.PointLightHelper( self.pointLight, 10 );
        self.scene.add( pointLightHelper );
 
        self.pointLight2 = self.lightManager.getLightByName('pointLight2');
@@ -118,34 +122,12 @@ export default new Scenery({
        let pointLightHelper2 = new THREE.PointLightHelper( self.pointLight2, 10 );
        self.scene.add( pointLightHelper2 );*/
 
-       /*self.composer = new EffectComposer(self.renderer);
-       self.composer.addPass(new RenderPass(self.scene, self.cameraManager.camera));
-
-       self.afterImagePass = new AfterimagePass();
-       self.composer.addPass(self.afterImagePass);*/
-
        self.createGUI = () => {
            let gui = new GUI( { name: 'Damp setting' } );
-           gui.add( self.percent, 'value', 0, 1 ).step( 0.01 );
            gui.add( self.blur.radius, 'x', 0, 5 ).step( 0.5 );
            gui.add( self.blur.radius, 'y', 0, 5 ).step( 0.5 );
        };
 
-        self.addFade = () => {
-
-            var color = new Nodes.ColorNode(0x000000);
-            self.percent = new Nodes.FloatNode(.5);
-
-            var fade = new Nodes.MathNode(
-                new Nodes.ScreenNode(),
-                color,
-                self.percent,
-                Nodes.MathNode.MIX
-            );
-
-            self.nodepostFade.output = fade;
-
-        };
 
         self.addBlur = () => {
 
@@ -161,6 +143,29 @@ export default new Scenery({
 
         };
 
+       self.generateSmoke = () => {
+           var position = {x: 0, y: 400, z: -500};
+
+           self.smokeTexture = new THREE.TextureLoader().load( "models/images/Smoke.png" );
+           self.smokeMaterial = new THREE.MeshLambertMaterial({color: 0x000000, opacity: .2, map: self.smokeTexture, transparent: true});
+
+
+
+           self.smokeGeo = new THREE.PlaneGeometry(300,300);
+
+           for (var p = 0; p < 1500; p++) {
+               var particle = new THREE.Mesh(self.smokeGeo, self.smokeMaterial);
+               //particle.position.set(Math.random()*500-250,Math.random()*500-250,Math.random()*1000-100);
+               particle.position.set(
+                   position.x + self.randomIntFromInterval(-1500, 1500),
+                   position.y + self.randomIntFromInterval(-100, 100),
+                   position.z + self.randomIntFromInterval(-200, 200));
+               particle.rotation.z = Math.random() * 360;
+               self.scene.add(particle);
+               self.smokeParticles.push(particle);
+           }
+       };
+
        self.randomIntFromInterval = (min, max) => {
            return Math.floor(Math.random() * (max - min + 1) + min);
        };
@@ -168,7 +173,17 @@ export default new Scenery({
        self.menAttraction = () => {
           let menAttractionFrame = requestAnimationFrame(self.menAttraction);
 
-           self.manModel.scene.children.forEach((child) => {
+           var numberz = self.manModel.scene.position.z + (self.cameraManager.camera.position.z - self.manModel.scene.position.z) * self.manSpeed;
+           var distZ = Math.round(numberz * 1000) / 1000;
+           var diffZ = Math.abs( distZ - self.cameraManager.camera.position.z );
+
+           if(diffZ < 10) {
+               cancelAnimationFrame(menAttractionFrame);
+           } else {
+               self.manModel.scene.position.z = distZ;
+           }
+
+           /*self.manModel.scene.children.forEach((child) => {
 
                var numberz = child.position.z + (self.cameraManager.camera.position.z - child.position.z) * self.manSpeed;
                var distZ = Math.round(numberz * 1000) / 1000;
@@ -181,10 +196,10 @@ export default new Scenery({
                } else {
                    child.position.z = distZ;
                }
-           })
+           })*/
        };
 
-     /*  self.generateEye = (number) => {
+       self.generateEye = (number) => {
 
            for(var i = 0; i < number; i++) {
                var x = self.randomIntFromInterval(-100 , 100);
@@ -197,9 +212,9 @@ export default new Scenery({
                self.group.add(clonedSprite);
                self.scene.add(self.group)
            }
-       };*/
+       };
 
-      /* self.eyesAttraction = () => {
+       self.eyesAttraction = () => {
            let eyesAttractionFrame = requestAnimationFrame(self.eyesAttraction);
 
            self.group.children.forEach((child) => {
@@ -217,7 +232,6 @@ export default new Scenery({
                var diffY = Math.abs( distY - self.cameraManager.camera.position.y );
                var diffZ = Math.abs( distZ - self.cameraManager.camera.position.z );
 
-               //console.log(diffX, diffY, diffZ);
 
                if(diffX < 10.5 && diffY < 3.15 && diffZ < 34.2) {
                    cancelAnimationFrame(eyesAttractionFrame);
@@ -231,9 +245,9 @@ export default new Scenery({
                }
 
            })
-       };*/
+       };
 
-       self.shoot = (self) => {
+      /* self.shoot = (self) => {
            self.raycaster.setFromCamera({x: 0.0,y: 0.0}, self.cameraManager.camera);
            let intersects = self.raycaster.intersectObjects(self.manModel.scene.children, true);
 
@@ -249,6 +263,21 @@ export default new Scenery({
                })
            }
 
+       };*/
+
+       self.shoot = (self) => {
+           self.raycaster.setFromCamera({x: 0.0,y: 0.0}, self.cameraManager.camera);
+           let intersects = self.raycaster.intersectObjects(self.group.children);
+
+           if (intersects.length > 0) {
+               if(self.whisperingVolume < 1) {
+                   self.whisperingVolume += 0.01;
+                   self.whisperingSound.setVolume(self.whisperingVolume);
+               }
+               self.group.remove(intersects[0].object);
+               self.generateEye(self.randomIntFromInterval(1, 2));
+           }
+
        };
 
        self.playAmbiantSound = () => {
@@ -256,10 +285,11 @@ export default new Scenery({
            self.whisperingSound.play();
        };
 
-       window.addEventListener('keypress', () => {self.menAttraction()});
 
-       self.addFade();
+       self.generateEye(5);
+
        self.addBlur();
+       self.generateSmoke();
       //self.createGUI();
     },
 
@@ -269,42 +299,26 @@ export default new Scenery({
         self.timer ++;
 
          if(self.timer === 500) {
-            console.log('man attraction')
-            self.playAmbiantSound();
-            self.menAttraction();
-        } else if(self.timer === 1000) {
-            console.log('whispering1')
-             self.whisperingVolume += 0.15;
-            self.whisperingSound.setVolume(self.whisperingVolume)
-           // self.whisperingSound.volume
-        } else if(self.timer === 2000) {
-            console.log('whispering2')
-             self.whisperingVolume += 0.30;
-             self.whisperingSound.setVolume(self.whisperingVolume)
 
-        } else if(self.timer === 3000) {
-             self.whisperingVolume += 0.50;
-             self.whisperingSound.setVolume(self.whisperingVolume)
-         }
-         else if(self.timer === 4000) {
-             self.manSpeed = 0.001;
-             self.whisperingVolume += 0.60;
-             self.whisperingSound.setVolume(self.whisperingVolume)
-         }
-         else if(self.timer === 5000) {
-             console.log('acceleration')
-             self.manSpeed = 0.005;
-             self.whisperingVolume += 0.70;
+             self.eyesAttraction();
+             self.playAmbiantSound();
+             self.menAttraction();
+
+       } else if(self.timer === 4000) {
+           self.blur.radius.x = .5;
+           self.blur.radius.y = .5;
+       } else if(self.timer === 5000) {
+
              self.ambiantSoundVolume += 0.70;
-             self.whisperingSound.setVolume(self.whisperingVolume);
-             self.ambiantSound.setVolume(self.ambiantSoundVolume)
+             self.ambiantSound.setVolume(self.ambiantSoundVolume);
 
-             //grand max  self.manSpeed = 0.005;
-         }
+             self.eyesSpeed = 0.005;
+             self.blur.radius.x = 2;
+             self.blur.radius.y = 2;
+       }
 
         var delta = self.clock.getDelta();
         self.frame.update( delta );
-        //self.nodepostFade.render(self.scene, self.cameraManager.camera, self.frame);
         self.nodepostBlur.render(self.scene, self.cameraManager.camera, self.frame);
 
         //self.composer.render();
