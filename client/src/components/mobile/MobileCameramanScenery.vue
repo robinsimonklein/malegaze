@@ -22,7 +22,7 @@
         components: {MobileOrientation, MobileInteractionFraming, MobileInteractionTraveling, MobileInteractionZoom, MobileInteractionRotation},
         data() {
             return {
-                interaction : 'rotation'
+                interaction : null
             }
         },
         sockets: {

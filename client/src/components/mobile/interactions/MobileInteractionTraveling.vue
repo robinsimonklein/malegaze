@@ -18,6 +18,11 @@
                 draggable: null
             }
         },
+        sockets: {
+            mobile_interaction_enable() {
+                this.draggable[0].enable()
+            }
+        },
         methods: {
             done() {
                 this.$emit('done')
@@ -29,7 +34,7 @@
             gsap.set(this.$refs.wheel, {rotation: 360})
 
             console.log(this.$refs.wheel)
-            let draggable = Draggable.create(this.$refs.wheel, {
+            this.draggable = Draggable.create(this.$refs.wheel, {
                 type:"rotation",
                 bounds:{minRotation:0, maxRotation:360},
                 onDrag: function() {
@@ -39,10 +44,12 @@
                 }
             });
 
+            this.draggable[0].disable()
+
             EventManager.subscribe('drag', (progress) => {
                 if(progress === 1) {
                     this.done()
-                    draggable[0].kill()
+                    this.draggable[0].kill()
                 }
             })
         }

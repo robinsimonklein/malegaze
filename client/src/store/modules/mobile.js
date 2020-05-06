@@ -41,6 +41,9 @@ export const mobile = {
         },
         SOCKET_mobile_interaction_set({commit}, interaction) { // eslint-disable-line
             EventManager.publish('mobile:interaction_set', interaction)
+        },
+        SOCKET_mobile_interaction_enable({commit}) { // eslint-disable-line
+            EventManager.publish('mobile:interaction_enable')
         }
     },
 }

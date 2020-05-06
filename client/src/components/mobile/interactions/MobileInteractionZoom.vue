@@ -13,7 +13,12 @@
             return {
                 min: 0,
                 max: 1,
-                disabled: false
+                disabled: true
+            }
+        },
+        sockets: {
+            mobile_interaction_enable() {
+                this.disabled = false
             }
         },
         methods: {

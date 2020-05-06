@@ -15,6 +15,7 @@
     import CameraOverlay from "./CameraOverlay";
     import DesktopTutorial from "../DesktopTutorial";
     import CameraTransition from "./CameraTransition";
+    import EventManager from "../../../js/event/EventManager";
 
     export default {
         name: "CameramanUI",
@@ -36,9 +37,13 @@
             },
         },
         mounted() {
-            // FIXME Utiliser autre chose que des setTimeOut comme ça
+            // FIXME Utiliser autre chose que des setTimeOut
             setTimeout(this.nextText, 5000)
             setTimeout(this.nextText, 10000)
+
+            EventManager.subscribe('mobile:interaction_enable', () => {
+                this.$socket.emit('mobile_interaction_enable')
+            })
         }
     }
 </script>

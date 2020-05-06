@@ -5,7 +5,7 @@ import MobileDetect from 'mobile-detect';
 export const app = {
     namespaced: true,
     state: {
-        appState: process.env.VUE_APP_SKIP_MOBILE_SETUP === "true" ? appStates.ACTRESS : appStates.INDEX,
+        appState: process.env.VUE_APP_SKIP_MOBILE_SETUP === "true" ? appStates.CAMERAMAN : appStates.INDEX,
         isMobile: false
     },
     getters: {
@@ -42,13 +42,13 @@ export const app = {
             }
             commit('setAppState', value)
         },
-        requestState({commit}, value) { // eslint-disable-line
-            this._vm.$socket.emit('state_request', value)
-        },
         SOCKET_mobile_shoot({state}) {
             if (state.appState === appStates.ACTRESS) {
                 ThreeEntryPoint.sceneManager.sceneryManager.scenery.shoot(ThreeEntryPoint.sceneManager.sceneryManager.scenery)
             }
+        },
+        requestState({commit}, value) { // eslint-disable-line
+            this._vm.$socket.emit('state_request', value)
         },
         checkMobile({commit}){
             const md = new MobileDetect(window.navigator.userAgent);
