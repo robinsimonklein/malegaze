@@ -20,4 +20,4 @@ const lightTypes = {
     VOLUMETRIC: 'volumetric',
 }
 
-export default lightTypes
+export default lightTypes;
