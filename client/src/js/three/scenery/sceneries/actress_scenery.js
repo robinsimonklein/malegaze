@@ -5,8 +5,8 @@ import cameraTypes from "../../camera/cameraTypes";
 import controlsTypes from "../../controls/controlsTypes";
 import Light from "../../light/Light";
 import Sound from "../../sound/Sound"
-/*import store from "../../../../store";
-import appStates from "../../../appStates";*/
+import store from "../../../../store";
+import appStates from "../../../appStates";
 import * as THREE from "three";
 import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
 /*import { AfterimagePass } from 'three/examples/jsm/postprocessing/AfterimagePass.js';
@@ -177,7 +177,7 @@ export default new Scenery({
                if(diffZ < 600) {
                   cancelAnimationFrame(menAttractionFrame);
                    self.soundManager.stopAll();
-                   //store.dispatch('app/requestState', appStates.SPECTATOR)
+                   store.dispatch('app/requestState', appStates.SPECTATOR)
                } else {
                    child.position.z = distZ;
                }
