@@ -1,6 +1,6 @@
 <template>
     <div id="scene-container" class="scene-container" ref="sceneContainer">
-        <CameraOverlay v-if="appState === 'cameraman'" />
+        <CameramanUI v-if="appState === 'cameraman'" />
         <ActressComponent v-if="appState === 'actress'"/>
         <SpectatorComponent v-if="appState === 'spectator'"/>
     </div>
@@ -11,13 +11,13 @@
     import { mapState } from 'vuex'
     import ActressComponent from './actress/actressComponent';
     import SpectatorComponent from "./spectator/spectatorComponent";
-    //import CameramanUI from "./cameraman/CameramanUI";
+    import CameramanUI from "./cameraman/CameramanUI";
 
     export default {
         name: 'DesktopScene',
         components: {
             SpectatorComponent,
-//CameramanUI,
+            CameramanUI,
             ActressComponent},
         computed: {
             ...mapState('app', ['appState']),

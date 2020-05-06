@@ -20,7 +20,7 @@ export default new Scenery({ // TODO: Nouveau concept pending
             initialPosition: {x: -20, y: 200, z: 390},
         }),
     ],
-    controls: controlsTypes.ORBIT,
+    controls: controlsTypes.MOBILE,
     models: [
         new Model({
             name: 'cinema',
