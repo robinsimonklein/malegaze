@@ -19,6 +19,7 @@
     import DesktopEnd from "../../components/desktop/DesktopEnd";
     import appStates from "../../js/appStates";
     import DesktopLoader from "../../components/desktop/loader/DesktopLoader";
+    import EventManager from "../../js/event/EventManager";
 
     export default {
         name: 'Desktop',
@@ -65,6 +66,11 @@
         beforeMount() {
             this.$socket.emit('join_mobile_room', this.$store.state.mobile.mobileId)
         },
+        mounted() {
+            EventManager.subscribe('mobile:interaction_set', (interaction) => {
+                this.$socket.emit('mobile_interaction_set', interaction)
+            })
+        }
     }
 </script>
 <style lang="scss" scoped>

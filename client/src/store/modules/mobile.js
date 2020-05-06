@@ -1,4 +1,5 @@
 import {ID} from "../../js/helpers/Utils";
+import EventManager from "../../js/event/EventManager";
 
 export const mobile = {
     namespaced: true,
@@ -7,9 +8,6 @@ export const mobile = {
         orientationPermission: false,
         orientation: {},
         screenOrientation: 0,
-        controls: {
-            focalLength: 24
-        }
     },
     getters: {
         mobileUrl: (state) => {
@@ -33,11 +31,6 @@ export const mobile = {
         setScreenOrientation(state, screenOrientation) {
             state.screenOrientation = screenOrientation
         },
-        setControls(state, controls) {
-            Object.keys(controls).forEach((key) => {
-                state.controls[key] = controls[key]
-            });
-        }
     },
     actions: {
         SOCKET_mobile_orientation({commit}, orientation) {
@@ -46,8 +39,8 @@ export const mobile = {
         SOCKET_mobile_screen_orientation({commit}, screenOrientation) {
             commit('setScreenOrientation', screenOrientation)
         },
-        SOCKET_mobile_controls({commit}, controls) {
-            commit('setControls', controls)
+        SOCKET_mobile_interaction_set({commit}, interaction) { // eslint-disable-line
+            EventManager.publish('mobile:interaction_set', interaction)
         }
     },
 }

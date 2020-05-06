@@ -1,3 +1,5 @@
+import EventManager from "../../js/event/EventManager";
+
 export const desktop = {
     namespaced: true,
     state: {
@@ -16,6 +18,8 @@ export const desktop = {
         }
     },
     actions: {
-
+        SOCKET_mobile_interaction_done() {
+            EventManager.publish('mobile:interaction_done')
+        }
     },
 }

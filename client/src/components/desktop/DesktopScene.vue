@@ -7,18 +7,15 @@
 
 <script>
     import ThreeEntryPoint from '../../js/three/ThreeEntryPoint';
-    import CameraOverlay from "./scene1/CameraOverlay";
     import { mapState } from 'vuex'
     import ActressComponent from "./actress/actressComponent";
+    import CameramanUI from "./cameraman/CameramanUI";
 
     export default {
         name: 'DesktopScene',
-        components: {ActressComponent, CameraOverlay},
+        components: {CameramanUI, ActressComponent},
         computed: {
             ...mapState('app', ['appState']),
-            appState() {
-                return this.$store.state.app.appState
-            }
         },
         mounted() {
             ThreeEntryPoint.init(this.$refs.sceneContainer, `${this.appState}_scenery`)
