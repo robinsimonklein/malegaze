@@ -13,34 +13,34 @@
 </template>
 
 <script>
-    import QRCode from "./mobileConnection/QRCode";
-    import CalibrationScreen from "./mobileConnection/CalibrationScreen";
-    import appStates from "../../js/appStates";
+    import QRCode from './mobileConnection/QRCode';
+    import CalibrationScreen from './mobileConnection/CalibrationScreen';
+    import appStates from '../../js/appStates';
 
     export default {
-        name: "DesktopSetup",
+        name: 'DesktopSetup',
         components: {CalibrationScreen, QRCode},
         data() {
             return {
                 mode: 'connection'
-            }
+            };
         },
         computed: {
             mobileUrl() {
-                return this.$store.getters['mobile/mobileUrl']
+                return this.$store.getters['mobile/mobileUrl'];
             }
         },
         sockets: {
             mobile_calibrate() {
-                this.mode = 'calibration'
+                this.mode = 'calibration';
             },
             mobile_ready() {
-                this.next()
+                this.next();
             }
         },
         methods: {
             next() {
-                this.$socket.emit('state_request', appStates.INTRO)
+                this.$socket.emit('state_request', appStates.INTRO);
             }
         },
     }

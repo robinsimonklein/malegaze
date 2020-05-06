@@ -5,12 +5,12 @@ import Light from '../../light/Light';
 import cameraTypes from '../../camera/cameraTypes';
 import controlsTypes from '../../controls/controlsTypes';
 import * as THREE from 'three';
-import THREEx from '../../light/VolumetricLight';
+import THREEx from '../../light/VolumetricLightMaterial';
 import Sound from '../../sound/Sound';
 import store from '../../../../store';
 import appStates from '../../../appStates';
 
-export default new Scenery({
+export default new Scenery({ // TODO: Nouveau concept pending
     name: 'spectator_scenery',
     orbitControls: null,
     cameras: [
@@ -20,11 +20,11 @@ export default new Scenery({
             initialPosition: {x: -20, y: 200, z: 390},
         }),
     ],
-    controls: controlsTypes.MOBILE,
+    controls: controlsTypes.ORBIT,
     models: [
         new Model({
             name: 'cinema',
-            path: 'models/glb/spectator_scenery.glb',
+            path: 'models/glb/spectator_scenery_cone.glb',
             type: 'glb'
         })
     ],
@@ -44,7 +44,7 @@ export default new Scenery({
         }),
     ],
     sounds: [
-        new Sound({ // TODO: Son du lampadaire, son des voix
+        new Sound({ // TODO: Son du lampadaire, voix
             name: 'ambiance',
             path: 'sound/ambianceScene3.mp3',
             isLoop: true,
@@ -58,33 +58,29 @@ export default new Scenery({
         self.volumetricLights = [];
         self.ghosts = [];
 
+        self.debug = true;
+
         /**
          * @param {*} self
-         * @param position
+         * @param {*} mesh
          */
-        self.buildVolumetricLight = (self, position) => { // TODO: Animer les lampadaires
-            const lightColor = 0xffaa44;
-            const geometry = new THREE.CylinderGeometry(25., 200., 340, 32 * 2, 20, true);
+        self.replaceConeByVolumetric = (self, mesh) => { // TODO: Animer les lampadaires
+            const lightColor = 0xffeeee;
 
-            geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(0, 55, 0));
-            geometry.applyMatrix4(new THREE.Matrix4().makeRotationX(-0.15));
-
-            const material = new THREEx.VolumetricSpotLightMaterial(4.5, 15., position, new THREE.Color(lightColor), 1.);
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.set(position.x, position.y, position.z);
-            mesh.lookAt(new THREE.Vector3(0, 0, 0));
-            self.scene.add(mesh);
-            self.volumetricLights.push(mesh);
+            mesh.material = new THREEx.VolumetricSpotLightMaterial(2.8, 5., mesh.position, new THREE.Color(lightColor), 1.);
+            mesh.geometry = new THREE.CylinderGeometry(18., 200., 300, 32 * 2, 20, true);
+            mesh.geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(0, 50, 0));
 
             const spotLight = new THREE.SpotLight();
-            spotLight.position.set(position.x, position.y, position.z);
+            spotLight.position.set(mesh.position.x, mesh.position.y, mesh.position.z);
             spotLight.color = new THREE.Color(lightColor);
             spotLight.exponent = 30;
             spotLight.angle = 0.9;
             spotLight.intensity = 1;
             spotLight.decay = 0.5;
             spotLight.penumbra = 0.5;
-            spotLight.target.position.set(position.x, 0, position.z);
+            spotLight.castShadow = true;
+            spotLight.target.position.set(mesh.position.x, 0, mesh.position.z);
             self.scene.add(spotLight);
             self.scene.add(spotLight.target);
         }
@@ -130,14 +126,6 @@ export default new Scenery({
             self.eyes.push(objects);
         }
 
-        // TODO
-
-        self.buildGhost = (self, position) => {
-            // self.ghosts.push();
-            const ghost = new THREE.Object3D();
-            ghost.position.set(position.x, position.y, position.z);
-        }
-
         /**
          * Build video
          * @param {*} self
@@ -180,6 +168,7 @@ export default new Scenery({
 
             self.scene.add(mesh);
 
+            self.video.volume = 0;
             self.video.play();
         }
 
@@ -195,15 +184,19 @@ export default new Scenery({
         spotlight.shadow.camera.fov = 30;
 
         self.soundManager.addToCamera(self.cameraManager.camera);
-        self.soundManager.sound.play();
+        // self.soundManager.sound.play();
+        window.addEventListener('keypress', () => self.soundManager.sound.play());
 
-        // Create actors
-        self.createActress(self, {position: [850, 270]});
-        self.createActress(self, {position: [-850, 270]});
-        // self.createActress(self, {position: [850, -620]});
-        // self.createActress(self, {position: [-850, -620]});
-        // self.createActress(self, {position: [850, -1600]});
-        // self.createActress(self, {position: [-850, -1600]});
+        if (self.debug) {
+            self.scene.traverse((child) => {
+                child.receiveShadow = true
+                child.castShadow = true
+                if (child.name.toLowerCase().includes('cones')) {
+                    self.replaceConeByVolumetric(self, child); // Create lights
+                    self.createActress(self, {position: [child.position.x, child.position.z]}); // Create eyes
+                }
+            });
+        }
 
         // Create cinema screen
         self.buildVideo(self, {src: '/video/cinema-vid.mp4'});
@@ -217,13 +210,10 @@ export default new Scenery({
             });
         });
 
+        if (self.debug) {
+            return;
+        }
         switch (self.time) {
-            case 1500:
-                self.buildVolumetricLight(self, new THREE.Vector3(860, 95, 200));
-                break;
-            case 2000:
-                self.buildVolumetricLight(self, new THREE.Vector3(-875, 95, 210));
-                break;
             case 4000:
                 self.video.pause();
                 store.dispatch('app/requestState', appStates.END);
@@ -233,4 +223,4 @@ export default new Scenery({
             self.time++;
         }
     }
-})
+});
