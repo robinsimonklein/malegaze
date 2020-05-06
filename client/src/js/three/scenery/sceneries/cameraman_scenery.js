@@ -112,6 +112,9 @@ export default new Scenery({
         self.cameraProgres = 0;
 
         self.currentSequence = 0
+
+        // TODO : A l'aide
+
         self.sequences = [
             // Intro
             {
