@@ -14,10 +14,12 @@
     import EventManager from "../../js/event/EventManager";
     import MobileInteractionFraming from "./interactions/MobileInteractionFraming";
     import MobileInteractionTraveling from "./interactions/MobileInteractionTraveling";
+    import MobileInteractionZoom from "./interactions/MobileInteractionZoom";
+    import MobileInteractionRotation from "./interactions/MobileInteractionRotation";
 
     export default {
         name: "MobileCameramanScenery",
-        components: {MobileOrientation, MobileInteractionFraming, MobileInteractionTraveling},
+        components: {MobileOrientation, MobileInteractionFraming, MobileInteractionTraveling, MobileInteractionZoom, MobileInteractionRotation},
         data() {
             return {
                 interaction : null
@@ -41,6 +43,10 @@
                         return 'MobileInteractionFraming'
                     case 'traveling':
                         return 'MobileInteractionTraveling'
+                    case 'zoom':
+                        return 'MobileInteractionZoom'
+                    case 'rotation':
+                        return 'MobileInteractionRotation'
                     default:
                         return null
                 }

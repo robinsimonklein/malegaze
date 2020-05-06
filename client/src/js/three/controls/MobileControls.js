@@ -9,7 +9,7 @@ class MobileControls {
     controls = {};
 
     /**
-     * @param {THREE.Object} object - The object to control
+     * @param {*} object - The object to control
      */
     constructor(object) {
         this.object = object
