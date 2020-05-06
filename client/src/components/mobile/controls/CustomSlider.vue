@@ -1,45 +1,76 @@
 <template>
-    <div class="zoom-slider">
-        <input class="zoom-slider__input" v-model="zoom" type="range" min="12" max="50" step="0.1" />
+    <div class="custom-slider">
+        <input class="custom-slider__input" :disabled="disabled" type="range" v-model="sliderValue" :min="min" :max="max" :step="step" />
     </div>
 </template>
 
 <script>
     export default {
-        name: "ZoomSlider",
+        name: "CustomSlider",
+        props: {
+            min: {
+                type: Number,
+                default: 0
+            },
+            max: {
+                type: Number,
+                default: 100
+            },
+            step: {
+                type: Number,
+                default: 1
+            },
+            disabled: {
+                type: Boolean,
+                default: false
+            }
+        },
         data() {
             return {
-                zoom: 12
+                sliderValue: 0,
             };
         },
         methods: {
-            emitZoom() {
-                this.$socket.emit('camera_zoom', this.zoom);
+            emitChange(value) {
+                this.$emit('change', value)
             }
         },
         watch: {
-            zoom() {
-                this.emitZoom();
+            sliderValue(value) {
+                this.emitChange(value)
             }
         }
     }
 </script>
 
 <style lang="scss" scoped>
-.zoom-slider {
-    height: 100%;
-    width: 1rem;
+.custom-slider {
+    height: 1rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    &.vertical {
+        height: 100%;
+        width: 1rem;
+        .custom-slider__input {
+            width: 50vh;
+            transform: rotate(-90deg);
+        }
+    }
+
 
     &__input {
-        width: 50vh;
+        width: 50vw;
         height: 1rem;
         transform-origin: 35vh 35vh;
-        transform: rotate(-90deg);
+        transform: rotate(0deg);
         -webkit-appearance: none;
         background: transparent;
         outline: none;
         border: 1px solid rgba(white, .5);
         border-radius: .1rem;
+
 
         &::-webkit-slider-thumb {
             -webkit-appearance: none;
