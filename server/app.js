@@ -100,6 +100,10 @@ io.on('connection', function (socket) {
         socket.in(socket.mobileRoom).emit('mobile_interaction_set', interaction)
     });
 
+    socket.on('mobile_interaction_enable', () => {
+        socket.in(socket.mobileRoom).emit('mobile_interaction_enable')
+    });
+
     socket.on('mobile_interaction_done', () => {
         socket.in(socket.mobileRoom).emit('mobile_interaction_done')
     });
