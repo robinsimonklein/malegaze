@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import LoaderManager from './../loader/LoaderManager'
 
 /**
  *
@@ -36,7 +37,7 @@ class Sound {
         this.audioListener = new THREE.AudioListener();
 
         this.sound = new THREE.Audio(this.audioListener);
-        let loader = new THREE.AudioLoader();
+        let loader = new THREE.AudioLoader(LoaderManager.loadingManager);
 
         loader.load(this.path,
             (audioBuffer) => {
