@@ -16,7 +16,7 @@
         name: "actressComponent",
         methods: {
             init() {
-                var overlay = document.getElementById('actressScene__tuto');
+               var overlay = document.getElementById('actressScene__tuto');
                 var sight = document.getElementById('actressScene__sight');
 
                 setTimeout(() => {
