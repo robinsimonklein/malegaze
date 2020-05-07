@@ -60,20 +60,24 @@ export default new Scenery({ // TODO: Nouveau concept pending
 
         self.debug = true;
 
+        self.lightColor = 0xffeeee;
+
         /**
          * @param {*} self
          * @param {*} mesh
          */
-        self.replaceConeByVolumetric = (self, mesh) => { // TODO: Animer les lampadaires
-            const lightColor = 0xffeeee;
-
-            mesh.material = new THREEx.VolumetricSpotLightMaterial(2.8, 5., mesh.position, new THREE.Color(lightColor), 1.);
+        self.replaceConeByCylinder = (self, mesh) => { // TODO: Animer les lampadaires
+            mesh.material = new THREEx.VolumetricSpotLightMaterial(2.8, 5., mesh.position, new THREE.Color(self.lightColor), 0.);
             mesh.geometry = new THREE.CylinderGeometry(18., 200., 300, 32 * 2, 20, true);
             mesh.geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(0, 50, 0));
+        }
+
+        self.lightUp = (self, mesh, eyes) => {
+            mesh.material = new THREEx.VolumetricSpotLightMaterial(2.8, 5., mesh.position, new THREE.Color(self.lightColor), 1.);
 
             const spotLight = new THREE.SpotLight();
             spotLight.position.set(mesh.position.x, mesh.position.y, mesh.position.z);
-            spotLight.color = new THREE.Color(lightColor);
+            spotLight.color = new THREE.Color(self.lightColor);
             spotLight.exponent = 30;
             spotLight.angle = 0.9;
             spotLight.intensity = 1;
@@ -83,6 +87,12 @@ export default new Scenery({ // TODO: Nouveau concept pending
             spotLight.target.position.set(mesh.position.x, 0, mesh.position.z);
             self.scene.add(spotLight);
             self.scene.add(spotLight.target);
+
+            eyes.forEach((eye, index) => {
+                if (index !== 0) {
+                    eye.material.opacity = 1;
+                }
+            });
         }
 
         /**
@@ -94,7 +104,8 @@ export default new Scenery({ // TODO: Nouveau concept pending
             const objects = [];
 
             const sphereGeometry = new THREE.SphereGeometry(20, 100, 100);
-            const material = new THREE.MeshPhongMaterial({color: 0xffffff});
+            const material = new THREE.MeshPhongMaterial({opacity: 0}); // TODO: Load a texture
+            material.transparent = true;
 
             const actress = new THREE.Object3D();
             self.scene.add(actress);
@@ -192,11 +203,16 @@ export default new Scenery({ // TODO: Nouveau concept pending
                 child.receiveShadow = true
                 child.castShadow = true
                 if (child.name.toLowerCase().includes('cones')) {
-                    self.replaceConeByVolumetric(self, child); // Create lights
+                    self.volumetricLights.push(child);
+                    self.replaceConeByCylinder(self, child); // Create lights
                     self.createActress(self, {position: [child.position.x, child.position.z]}); // Create eyes
                 }
             });
         }
+
+        console.log(self.eyes);
+
+        self.volumetricLights.reverse();
 
         // Create cinema screen
         self.buildVideo(self, {src: '/video/cinema-vid.mp4'});
@@ -210,11 +226,23 @@ export default new Scenery({ // TODO: Nouveau concept pending
             });
         });
 
-        if (self.debug) {
-            return;
-        }
         switch (self.time) {
+            case 1000:
+                self.lightUp(self, self.volumetricLights[2], self.eyes[2]);
+                self.lightUp(self, self.volumetricLights[3], self.eyes[3]);
+                break;
+            case 1100:
+                self.lightUp(self, self.volumetricLights[0], self.eyes[1]);
+                self.lightUp(self, self.volumetricLights[4], self.eyes[5]);
+                break;
+            case 1200:
+                self.lightUp(self, self.volumetricLights[1], self.eyes[0]);
+                self.lightUp(self, self.volumetricLights[5], self.eyes[4]);
+                break;
             case 4000:
+                if (self.debug) {
+                    return;
+                }
                 self.video.pause();
                 store.dispatch('app/requestState', appStates.END);
                 break;
