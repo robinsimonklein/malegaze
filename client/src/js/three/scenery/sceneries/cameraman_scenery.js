@@ -13,6 +13,7 @@ import {Vector3} from "three";
 import gsap from 'gsap'
 import store from "../../../../store";
 import appStates from "../../../appStates";
+import THREEx from "../../light/VolumetricLightMaterial";
 
 export default new Scenery({
     name: 'cameraman_scenery',
@@ -92,6 +93,7 @@ export default new Scenery({
             initialPosition: {x: 0, y: 300, z: 0},
             debug: true
         }),
+        /*
         new Light({
             name: 'spotlights',
             light: new THREE.DirectionalLight(0xff4444, 1),
@@ -101,6 +103,8 @@ export default new Scenery({
             },
             debug: true
         }),
+
+         */
     ],
     sounds: [
         new Sound({
@@ -547,12 +551,43 @@ export default new Scenery({
             self.scene.add(splineObject)
         }
 
+        self.buildVolumetricLight = (self, {mesh, color}) => {
+            const lightColor = color ?? 0xff0000;
+            console.log('color', lightColor)
+            mesh.translateY(-100)
+            mesh.material = new THREEx.VolumetricSpotLightMaterial(2.8, 5., mesh.position, new THREE.Color(lightColor), 1.);
+            mesh.geometry = new THREE.CylinderGeometry(18., 200., 300, 32 * 2, 20, true);
+            mesh.geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(0, 50, 0));
+
+            const spotLight = new THREE.SpotLight(lightColor);
+            spotLight.position.set(mesh.position.x, mesh.position.y, mesh.position.z);
+            spotLight.color = new THREE.Color(lightColor);
+            spotLight.exponent = 30;
+            spotLight.angle = 0.9;
+            spotLight.intensity = 1;
+            spotLight.decay = 0.5;
+            spotLight.penumbra = 0.5;
+            spotLight.castShadow = true;
+            spotLight.target.position.set(mesh.position.x, 0, mesh.position.z);
+            self.scene.add(spotLight);
+            self.scene.add(spotLight.target);
+        }
+
     },
     onLoaded: (self) => {
         console.log('self', self)
 
         // self.cameraManager.changeCamera(4)
         // self.cameraManager.controls.object = self.cameraManager.cameraObjects[4].camera
+
+        // ---------------- //
+        // Lights
+        // ---------------- //
+
+        // Build volumetric lights
+        self.buildVolumetricLight(self, {mesh: self.scene.getObjectByName('LAMPE_ACTRICE'), color: 0xFFE5A3})
+        self.buildVolumetricLight(self, {mesh: self.scene.getObjectByName('PROJECTEUR_01'), color: 0xDE2900})
+        self.buildVolumetricLight(self, {mesh: self.scene.getObjectByName('PROJECTEUR_02'), color: 0xDE2900})
 
         // ---------------- //
         // Camera curves
@@ -589,7 +624,7 @@ export default new Scenery({
         self.soundManager.addToCamera(self.cameraManager.camera);
 
         // Fog
-        self.scene.fog = new THREE.Fog(0x1d1428, 200, 1000);
+        self.scene.fog = new THREE.Fog(0x000000, 200, 1000);
 
 
         // --- METHODS
