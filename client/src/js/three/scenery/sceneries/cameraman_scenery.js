@@ -62,11 +62,21 @@ export default new Scenery({
             initialPosition: {x: 0, y: 300, z: 0},
         })
     ],
-    controls: null,
+    controls: controlsTypes.ORBIT,
     models: [
         new Model({
-            name: 'film_set',
+            name: 'cameraman_scenery',
             path: 'models/glb/cameraman_scenery.glb',
+            type: 'glb'
+        }),
+        new Model({
+            name: 'actress_scenery',
+            path: 'models/glb/actress_scenery.glb',
+            type: 'glb'
+        }),
+        new Model({
+            name: 'cones_cameraman_scenery',
+            path: 'models/glb/cones_cameraman_scenery.glb',
             type: 'glb'
         }),
         new Model({
