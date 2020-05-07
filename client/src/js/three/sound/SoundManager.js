@@ -5,6 +5,17 @@ class SoundManager {
     soundObjects = [];
     currentSound = 0;
 
+    /**
+     * @param {Sound[]} sounds - Array of sounds
+     */
+    constructor({sounds}) {
+        if(sounds) {
+            sounds.forEach((sound) => {
+                this.addSound(sound)
+            })
+        }
+    }
+
     // --- GETTERS
 
     /**
@@ -47,17 +58,9 @@ class SoundManager {
     // --- METHODS
 
     /**
-     * @param {Sound[]} sounds - Array of sounds
+     * Load all the sounds
      */
-    constructor({sounds}) {
-        if(sounds) {
-            sounds.forEach((sound) => {
-                this.addSound(sound)
-            })
-        }
-    }
-
-    loadSound() {
+    loadSounds() {
         this.soundObjects.forEach((sound) => {
             sound.loadSound()
         })

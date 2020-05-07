@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import LoaderManager from "../loader/LoaderManager";
 
 /**
  * A Positional sound is affected to an object position
@@ -35,7 +36,7 @@ class PositionalSound {
         this.audioListener = new THREE.AudioListener();
         this.sound = new THREE.PositionalAudio(this.audioListener);
 
-        let loader = new THREE.AudioLoader();
+        let loader = new THREE.AudioLoader(LoaderManager.loadingManager);
 
         loader.load(this.path, (buffer) => {
             this.sound.setBuffer(buffer);
