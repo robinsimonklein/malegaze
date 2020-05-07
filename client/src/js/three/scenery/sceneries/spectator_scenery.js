@@ -9,8 +9,9 @@ import THREEx from '../../light/VolumetricLightMaterial';
 import Sound from '../../sound/Sound';
 import store from '../../../../store';
 import appStates from '../../../appStates';
+import modelTypes from "../../model/modelTypes";
 
-export default new Scenery({ // TODO: Nouveau concept pending
+export default new Scenery({
     name: 'spectator_scenery',
     orbitControls: null,
     cameras: [
@@ -20,12 +21,23 @@ export default new Scenery({ // TODO: Nouveau concept pending
             initialPosition: {x: -20, y: 200, z: 390},
         }),
     ],
+    renderer: null,
     controls: controlsTypes.ORBIT,
     models: [
         new Model({
             name: 'cinema',
+            path: 'models/glb/spectator_scenery.glb',
+            type: modelTypes.GLB
+        }),
+        new Model({
+            name: 'cones',
             path: 'models/glb/spectator_scenery_cone.glb',
-            type: 'glb'
+            type: modelTypes.GLB
+        }),
+        new Model({
+            name: 'eye',
+            path: 'models/glb/eye.glb',
+            type: modelTypes.GLB
         })
     ],
     lights: [
@@ -33,13 +45,19 @@ export default new Scenery({ // TODO: Nouveau concept pending
             name: 'ambient',
             light: new THREE.HemisphereLight(0xffb8c6, 0x080820),
         }),
+        /* new Light({
+            name: 'directional',
+            light: new  THREE.DirectionalLight(0xff4444, 1),
+            initialPosition: {x: 0, y: 20, z: 50},
+        }), */
         new Light({
             name: 'spotlight',
             light: new THREE.SpotLight(0xff4444),
             initialPosition: {x: 0, y: 100, z: -780},
             properties: {
                 castShadow: true,
-                penumbra: 0.3
+                penumbra: 0.3,
+                angle: 0.7
             }
         }),
     ],
@@ -52,6 +70,7 @@ export default new Scenery({ // TODO: Nouveau concept pending
         }),
     ],
     onCreated: (self) => {
+        self.eyeModel = null;
         self.eyes = [];
         self.video = null;
         self.time = 0;
@@ -90,9 +109,13 @@ export default new Scenery({ // TODO: Nouveau concept pending
 
             eyes.forEach((eye, index) => {
                 if (index !== 0) {
-                    eye.material.opacity = 1;
+                    eye.visible = true;
                 }
             });
+        }
+
+        self.generateFog = (self) => { // TODO
+            console.log(self.scene);
         }
 
         /**
@@ -103,8 +126,7 @@ export default new Scenery({ // TODO: Nouveau concept pending
         self.createActress = (self, {position}) => {
             const objects = [];
 
-            const sphereGeometry = new THREE.SphereGeometry(20, 100, 100);
-            const material = new THREE.MeshPhongMaterial({opacity: 0}); // TODO: Load a texture
+            const material = new THREE.MeshPhongMaterial({opacity: 0});
             material.transparent = true;
 
             const actress = new THREE.Object3D();
@@ -116,20 +138,22 @@ export default new Scenery({ // TODO: Nouveau concept pending
             actress.position.z = position[1];
 
             for (let i = 0; i < 3; i++) {
-                const eye = new THREE.Mesh(sphereGeometry, material);
-                eye.castShadow = true;
+                const eye = self.eyeModel.clone();
                 switch (i) {
                     case 0:
-                        eye.position.x = 50;
-                        eye.position.y = 100;
+                        eye.rotateZ(Math.PI / 2);
+                        eye.position.x = 75;
+                        eye.position.y = 70;
                         break;
                     case 1:
-                        eye.position.x = -50;
-                        eye.position.y = 100;
+                        eye.rotateZ(-Math.PI / 2);
+                        eye.position.x = -75;
+                        eye.position.y = 70;
                         break;
                     case 2:
-                        eye.position.x = 100;
+                        eye.rotateZ(Math.PI);
                         eye.position.z = 75;
+                        break;
                 }
                 actress.add(eye);
                 objects.push(eye);
@@ -190,39 +214,48 @@ export default new Scenery({ // TODO: Nouveau concept pending
         spotlight.shadow.mapSize.width = 1024;
         spotlight.shadow.mapSize.height = 1024;
 
-        spotlight.shadow.camera.near = 500;
-        spotlight.shadow.camera.far = 4000;
-        spotlight.shadow.camera.fov = 30;
-
         self.soundManager.addToCamera(self.cameraManager.camera);
-        // self.soundManager.sound.play();
-        window.addEventListener('keypress', () => self.soundManager.sound.play());
-
-        if (self.debug) {
-            self.scene.traverse((child) => {
-                child.receiveShadow = true
-                child.castShadow = true
-                if (child.name.toLowerCase().includes('cones')) {
-                    self.volumetricLights.push(child);
-                    self.replaceConeByCylinder(self, child); // Create lights
-                    self.createActress(self, {position: [child.position.x, child.position.z]}); // Create eyes
-                }
-            });
+        if (!self.debug) {
+            self.soundManager.sound.play();
+        } else {
+            window.addEventListener('keypress', () => self.soundManager.sound.play());
         }
 
-        console.log(self.eyes);
+        self.scene.traverse((child) => {
+            if (child.name === 'eye') {
+                child.receiveShadow = true;
+                child.castShadow = true;
+                child.rotateX(Math.PI / 2);
+                child.visible = false;
+                self.eyeModel = child;
+            }
+        });
 
+        let i = 0;
+        self.scene.traverse((child) => {
+            if (child.name.toLowerCase().includes('cones')) {
+                if (i === 0) {
+                    i++;
+                    return;
+                }
+                self.volumetricLights.push(child);
+                self.replaceConeByCylinder(self, child); // Create lights
+                self.createActress(self, {position: [child.position.x, child.position.z]}); // Create eyes
+                i++;
+            }
+        });
         self.volumetricLights.reverse();
 
         // Create cinema screen
         self.buildVideo(self, {src: '/video/cinema-vid.mp4'});
         self.buildScreen(self);
-
     },
     onUpdate: (self) => {
         self.eyes.forEach((objects) => {
-            objects.forEach((item) => {
-                item.rotation.y += 0.02;
+            objects.forEach((item, index) => {
+                if (index % 3 === 0) {
+                    item.rotation.y += 0.02;
+                }
             });
         });
 
