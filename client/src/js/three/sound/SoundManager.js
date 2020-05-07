@@ -57,6 +57,9 @@ class SoundManager {
 
     // --- METHODS
 
+    /**
+     * Load all the sounds
+     */
     loadSounds() {
         this.soundObjects.forEach((sound) => {
             sound.loadSound()
