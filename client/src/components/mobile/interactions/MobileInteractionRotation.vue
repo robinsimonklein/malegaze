@@ -23,7 +23,14 @@
         },
         methods: {
             checkValue(value) {
+
+                this.$socket.emit('mobile_interaction', {
+                    type: 'rotation',
+                    value: value
+                })
+
                 if(Number(value )=== 1) this.done()
+
             },
             done() {
                 this.disabled = true

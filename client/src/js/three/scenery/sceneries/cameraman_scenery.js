@@ -283,30 +283,38 @@ export default new Scenery({
                 ready: false,
                 init: () => {
                     EventManager.publish('mobile:interaction_enable')
+                    EventManager.publish('camera:rec', true)
+                    const curve = self.cameraCurves.find(curve => curve.name === 'P1_TRAVEL')
+                    const finalPosition = curve.getPointAt(1)
+
+                    const interactionEvent = EventManager.subscribe('mobile:interaction', (data) => {
+                        // Check if traveling
+                        if(data.type !== 'traveling') return
+                        data.value *= 0.2
+                        const position = curve.getPointAt(data.value)
+                        self.cameraManager.camera.position.set(position.x, position.y, position.z)
+
+                    })
+
                     // On interaciton done
                     const travelingEvent = EventManager.subscribe('mobile:interaction_done', () => {
                         self.sequences[self.currentSequence].ready = true
-                        EventManager.publish('camera:rec', true)
-                        // Unsubscribe the event
-                        travelingEvent.unsubscribe();
-                    })
-                },
-                update: (self) => {
-                    const sequence = self.sequences[self.currentSequence]
-
-                    // When ready
-                    if(!sequence.ready) return
-
-                    self.followCurve(self, {
-                            curveName: "P1_TRAVEL",
-                            cameraIndex: 1,
-                            duration: 600,
-                        },
-                        (self) => {
+                        gsap.to(self.cameraManager.camera.position, {
+                            duration: 5,
+                            ease: 'power1.out',
+                            x: finalPosition.x,
+                            y: finalPosition.y,
+                            z: finalPosition.z,
+                        }).then(() => {
                             EventManager.publish('camera:rec', false)
                             self.nextSequence(self)
                         })
-                }
+
+                        // Unsubscribe the events
+                        interactionEvent.unsubscribe()
+                        travelingEvent.unsubscribe();
+                    })
+                },
             },
             {
                 name: 'transition to zoom',
@@ -317,7 +325,6 @@ export default new Scenery({
                     })
 
                     self.nextSequence(self)
-
                 }
             },
 
@@ -388,31 +395,41 @@ export default new Scenery({
                 init: (self) => {
                     self.cameraManager.controls = null
 
+                    const curve = self.cameraCurves.find(curve => curve.name === 'P2_ZOOM')
+                    const finalPosition = curve.getPointAt(1)
+
                     EventManager.publish('mobile:interaction_enable')
+                    EventManager.publish('camera:rec', true)
+
+                    // On interaction
+                    const interactionEvent = EventManager.subscribe('mobile:interaction', (data) => {
+                        // Check if traveling
+                        if(data.type !== 'zoom') return
+                        data.value *= 0.2
+                        const position = curve.getPointAt(data.value)
+                        self.cameraManager.camera.position.set(position.x, position.y, position.z)
+                    })
+
                     // On interaction done
                     const travelingEvent = EventManager.subscribe('mobile:interaction_done', () => {
                         self.sequences[self.currentSequence].ready = true
-                        EventManager.publish('camera:rec', true)
-                        // Unsubscribe the event
-                        travelingEvent.unsubscribe();
-                    })
-                },
-                update: (self) => {
-                    const sequence = self.sequences[self.currentSequence]
 
-                    // When ready
-                    if(!sequence.ready) return
-
-                    self.followCurve(self, {
-                            curveName: "P2_ZOOM",
-                            cameraIndex: 2,
-                            duration: 600,
-                        },
-                        (self) => {
+                        gsap.to(self.cameraManager.camera.position, {
+                            duration: 6,
+                            ease: 'power1.out',
+                            x: finalPosition.x,
+                            y: finalPosition.y,
+                            z: finalPosition.z,
+                        }).then(() => {
                             EventManager.publish('camera:rec', false)
                             self.nextSequence(self)
                         })
-                }
+
+                        // Unsubscribe the event
+                        travelingEvent.unsubscribe();
+                        interactionEvent.unsubscribe();
+                    })
+                },
             },
             {
                 name: 'transition to rotation',
@@ -423,7 +440,6 @@ export default new Scenery({
                     })
 
                     self.nextSequence(self)
-
                 }
             },
 
@@ -488,25 +504,37 @@ export default new Scenery({
                 }
             },
             {
-                name: 'rotate',
+                name: 'rotation',
                 cameraIndex: 3,
                 ready: false,
                 init: (self) => {
                     EventManager.publish('mobile:interaction_enable')
+                    EventManager.publish('camera:rec', true)
+
+                    const y = self.cameraManager.camera.rotation.y
+                    const finalRotation = y + MathUtils.degToRad(20)
+
+                    // On interaction
+                    const interactionEvent = EventManager.subscribe('mobile:interaction', (data) => {
+                        // Check if traveling
+                        if(data.type !== 'rotation') return
+                        data.value *= 0.2
+                        self.cameraManager.camera.rotation.y = y + (data.value * (finalRotation - y))
+                    })
+
                     // On interaction done
                     const travelingEvent = EventManager.subscribe('mobile:interaction_done', () => {
 
                         self.sequences[self.currentSequence].ready = true
 
-                        const y = self.cameraManager.camera.rotation.y
-
-                        EventManager.publish('camera:rec', true)
-                        gsap.to(self.cameraManager.camera.rotation, {y:y + MathUtils.degToRad(20), duration: 6}).then(() => {
+                        gsap.to(self.cameraManager.camera.rotation, {y: finalRotation, duration: 6}).then(() => {
                             EventManager.publish('camera:rec', false)
                             self.nextSequence(self)
                         })
-                        // Unsubscribe the event
+
+                        // Unsubscribe events
                         travelingEvent.unsubscribe();
+                        interactionEvent.unsubscribe();
                     })
                 },
             },
@@ -551,9 +579,15 @@ export default new Scenery({
             self.scene.add(splineObject)
         }
 
+        /**
+         * Build volumetric lights
+         * @param self
+         * @param mesh
+         * @param color
+         */
         self.buildVolumetricLight = (self, {mesh, color}) => {
             const lightColor = color ?? 0xff0000;
-            console.log('color', lightColor)
+
             mesh.translateY(-100)
             mesh.material = new THREEx.VolumetricSpotLightMaterial(2.8, 5., mesh.position, new THREE.Color(lightColor), 1.);
             mesh.geometry = new THREE.CylinderGeometry(18., 200., 300, 32 * 2, 20, true);
