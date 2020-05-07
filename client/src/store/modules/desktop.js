@@ -20,6 +20,9 @@ export const desktop = {
     actions: {
         SOCKET_mobile_interaction_done() {
             EventManager.publish('mobile:interaction_done')
+        },
+        SOCKET_mobile_interaction({commit}, data) { // eslint-disable-line
+            EventManager.publish('mobile:interaction', data)
         }
     },
 }

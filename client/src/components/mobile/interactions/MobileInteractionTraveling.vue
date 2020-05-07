@@ -33,7 +33,6 @@
 
             gsap.set(this.$refs.wheel, {rotation: 360})
 
-            console.log(this.$refs.wheel)
             this.draggable = Draggable.create(this.$refs.wheel, {
                 type:"rotation",
                 bounds:{minRotation:0, maxRotation:360},
@@ -51,6 +50,10 @@
                     this.done()
                     this.draggable[0].kill()
                 }
+                this.$socket.emit('mobile_interaction', {
+                    type: 'traveling',
+                    value: progress
+                })
             })
         }
     }
