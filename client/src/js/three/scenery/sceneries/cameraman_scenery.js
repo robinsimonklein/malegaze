@@ -63,7 +63,7 @@ export default new Scenery({
             initialPosition: {x: 0, y: 300, z: 0},
         })
     ],
-    controls: controlsTypes.ORBIT,
+    // controls: controlsTypes.ORBIT,
     models: [
         new Model({
             name: 'cameraman_scenery',
@@ -93,7 +93,6 @@ export default new Scenery({
             initialPosition: {x: 0, y: 300, z: 0},
             debug: true
         }),
-        /*
         new Light({
             name: 'spotlights',
             light: new THREE.DirectionalLight(0xff4444, 1),
@@ -103,8 +102,6 @@ export default new Scenery({
             },
             debug: true
         }),
-
-         */
     ],
     sounds: [
         new Sound({
@@ -125,7 +122,7 @@ export default new Scenery({
         self.cameraCurves = [];
         self.cameraProgres = 0;
 
-        self.currentSequence = 0
+        self.currentSequence = 1
 
         // TODO : A l'aide
 
@@ -152,6 +149,8 @@ export default new Scenery({
 
                         startEvent.unsubscribe()
                     })
+
+                    // self.nextSequence(self) // TODO : Remove
                 },
                 update: null
             },
@@ -174,7 +173,7 @@ export default new Scenery({
                     self.followCurve(self, {
                             curveName: "P0_TRAVEL",
                             cameraIndex: 0,
-                            duration: 1000, // 1000
+                            duration: 10, // 1000
                         },
                         (self) => {
                             EventManager.publish('camera:rec', false)
@@ -233,6 +232,7 @@ export default new Scenery({
                 cameraIndex: 1,
                 ready: false,
                 init: () => {
+                    EventManager.publish('camera:instructions', 'Cadre l\'image')
                     self.sequences[self.currentSequence].ready = true
                 },
                 update: (self) => {
@@ -246,6 +246,7 @@ export default new Scenery({
                         threshold: .1,
                         camera: self.cameraManager.camera,
                         onComplete: (self) => {
+                            EventManager.publish('camera:instructions', null)
                             self.nextSequence(self)
                         }
                     })
@@ -284,6 +285,7 @@ export default new Scenery({
                 init: () => {
                     EventManager.publish('mobile:interaction_enable')
                     EventManager.publish('camera:rec', true)
+                    EventManager.publish('camera:instructions', 'Effectue un traveling')
                     const curve = self.cameraCurves.find(curve => curve.name === 'P1_TRAVEL')
                     const finalPosition = curve.getPointAt(1)
 
@@ -307,6 +309,7 @@ export default new Scenery({
                             z: finalPosition.z,
                         }).then(() => {
                             EventManager.publish('camera:rec', false)
+                            EventManager.publish('camera:instructions', null)
                             self.nextSequence(self)
                         })
 
@@ -342,6 +345,7 @@ export default new Scenery({
                     EventManager.publish('mobile:interaction_set', 'framing')
 
                     let transitionEvent = EventManager.subscribe('transition:ended', () => {
+                        EventManager.publish('camera:instructions', 'Cadre l\'image')
                         self.sequences[self.currentSequence].ready = true
 
                         transitionEvent.unsubscribe()
@@ -358,6 +362,7 @@ export default new Scenery({
                         threshold: .1,
                         camera: self.cameraManager.camera,
                         onComplete: (self) => {
+                            EventManager.publish('camera:instructions', null)
                             self.nextSequence(self)
                         }
                     })
@@ -394,7 +399,7 @@ export default new Scenery({
                 ready: false,
                 init: (self) => {
                     self.cameraManager.controls = null
-
+                    EventManager.publish('camera:instructions', 'Effectue un zoom')
                     const curve = self.cameraCurves.find(curve => curve.name === 'P2_ZOOM')
                     const finalPosition = curve.getPointAt(1)
 
@@ -422,6 +427,7 @@ export default new Scenery({
                             z: finalPosition.z,
                         }).then(() => {
                             EventManager.publish('camera:rec', false)
+                            EventManager.publish('camera:instructions', null)
                             self.nextSequence(self)
                         })
 
@@ -436,7 +442,7 @@ export default new Scenery({
                 cameraIndex: 2,
                 init: (self) => {
                     EventManager.publish('transition:start', {
-                        text: 'Un zoom en contre plongé assure un côté dominateur à tout les coups !'
+                        text: 'Un zoom en contre plongée assure un côté dominateur à tout les coups !'
                     })
 
                     self.nextSequence(self)
@@ -458,7 +464,7 @@ export default new Scenery({
 
                     let transitionEvent = EventManager.subscribe('transition:ended', () => {
                         self.sequences[self.currentSequence].ready = true
-
+                        EventManager.publish('camera:instructions', 'Cadre l\'image')
                         transitionEvent.unsubscribe()
                     })
                 },
@@ -473,6 +479,7 @@ export default new Scenery({
                         threshold: .1,
                         camera: self.cameraManager.camera,
                         onComplete: (self) => {
+                            EventManager.publish('camera:instructions', null)
                             self.nextSequence(self)
                         }
                     })
@@ -510,6 +517,7 @@ export default new Scenery({
                 init: (self) => {
                     EventManager.publish('mobile:interaction_enable')
                     EventManager.publish('camera:rec', true)
+                    EventManager.publish('camera:instructions', 'Effectue une rotation')
 
                     const y = self.cameraManager.camera.rotation.y
                     const finalRotation = y + MathUtils.degToRad(20)
@@ -529,6 +537,7 @@ export default new Scenery({
 
                         gsap.to(self.cameraManager.camera.rotation, {y: finalRotation, duration: 6}).then(() => {
                             EventManager.publish('camera:rec', false)
+                            EventManager.publish('camera:instructions', null)
                             self.nextSequence(self)
                         })
 

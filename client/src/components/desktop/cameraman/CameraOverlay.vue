@@ -1,7 +1,10 @@
 <template>
     <div class="camera-overlay" :class="{'aiming' : aiming}">
         <div class="camera-overlay__corner camera-overlay__corner--tl">
-
+            <div v-show="instructions" class="camera-overlay__instructions">
+                <img class="camera-overlay__instructions-img" src=""/>
+                <span class="camera-overlay__instructions-text">{{ instructions }}</span>
+            </div>
         </div>
         <div class="camera-overlay__corner camera-overlay__corner--tr">
             <div v-show="recording" class="camera-overlay__rec">
@@ -37,9 +40,12 @@
         name: "CameraOverlay",
         data() {
             return {
+                started: true,
                 progress: 0,
                 recording: false,
                 aiming: false,
+
+                instructions: null,
 
                 targetSize: {
                     min: 130,
@@ -47,7 +53,6 @@
                     current: 240
                 },
 
-                started: false,
 
                 timelines: {
                     start: new gsap.timeline({
@@ -55,7 +60,9 @@
                             EventManager.publish('camera:started')
                         }
                     })
-                }
+                },
+
+                events: []
             }
         },
         methods: {
@@ -75,8 +82,7 @@
                 this.timelines.start.play()
             }
         },
-        mounted() {
-
+        beforeMount() {
             this.timelines.start.pause(0)
             this.timelines.start.to('.camera-overlay', {duration: 0, delay: .5, alpha: 0})
             this.timelines.start.to('.camera-overlay', {duration: 0, delay: .2, alpha: 1})
@@ -84,22 +90,32 @@
             this.timelines.start.to('.camera-overlay', {duration: 0, delay: .2, alpha: 1})
             this.timelines.start.to('.camera-overlay', {duration: 0, delay: .5, alpha: 1})
 
-            EventManager.subscribe('camera:start', () => {
+            this.events.push(EventManager.subscribe('camera:start', () => {
                 this.start()
                 this.started = true
-            })
+            }))
 
-            EventManager.subscribe('camera:aiming', (data) => {
+            this.events.push(EventManager.subscribe('camera:aiming', (data) => {
                 this.aiming = data.aiming
                 this.targetSize.current = ((this.targetSize.max - this.targetSize.min) * this.getNormalizedDistance(data.distance, data.threshold, 3)) + this.targetSize.min
-            })
-            EventManager.subscribe('camera:progress', (value) => {
-                this.progress = Math.round(value)
-            })
-            EventManager.subscribe('camera:rec', (value) => {
-                this.recording = value
-            })
+            }))
 
+            this.events.push(EventManager.subscribe('camera:progress', (value) => {
+                this.progress = Math.round(value)
+            }))
+
+            this.events.push(EventManager.subscribe('camera:rec', (value) => {
+                this.recording = value
+            }))
+
+            this.events.push(EventManager.subscribe('camera:instructions', (instructions) => {
+                this.instructions = instructions
+            }))
+
+        },
+        beforeDestroy() {
+            // Unsubscribe all events before destroy component
+            this.events.forEach((event) => event.unsubscribe())
         }
     }
 </script>
@@ -134,7 +150,6 @@
         height: 3.75rem;
         width: 3.75rem;
         padding: 2rem;
-        font-family: Arial, sans-serif;
         font-size: 1.5rem;
         font-weight: bold;
 
@@ -319,6 +334,18 @@
             transition: width .2s linear;
         }
 
+    }
+
+    &__instructions {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        width: 40vw;
+
+        &-text {
+            text-transform: uppercase;
+            letter-spacing: .2rem;
+        }
     }
 
     &__rec {
