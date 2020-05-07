@@ -79,9 +79,7 @@ class SoundManager {
      */
     addToCamera(camera) {
         this.soundObjects.forEach((soundObject) => {
-            if(soundObject instanceof Audio) {
-                soundObject.addToCamera(camera)
-            }
+            soundObject.addToCamera(camera);
         })
     }
 

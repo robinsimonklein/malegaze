@@ -10,6 +10,7 @@ import appStates from "../../../appStates";
 import * as THREE from "three";
 import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
 import * as Nodes from 'three/examples/jsm/nodes/Nodes.js';
+import PositionalSound from "../../sound/PositionalSound";
 //import PositionalSound from "../../sound/PositionalSound";
 
 export default new Scenery({
@@ -69,6 +70,13 @@ export default new Scenery({
             path : 'sound/whispering.mp3',
             isLoop : true,
             volume: 0,
+        }),
+        new PositionalSound({
+            name : 'eyesSound',
+            path: 'sound/eyesSound.mp3',
+            refDistance: 100,
+            volume: 1,
+            isLoop: true
         })
     ],
    onLoaded: (self) => {
@@ -82,7 +90,8 @@ export default new Scenery({
        self.eyeSprite.scale.set(10, 10, 1);
 
        self.manSpeed = 0.001;
-       self.eyesSpeed = 0.0025;
+       self.eyesSpeed = 0.0015;
+       //self.eyesSpeed = 0.01;
 
        self.timer = 0;
        self.volume = 0;
@@ -90,6 +99,8 @@ export default new Scenery({
        self.ambiantSoundVolume = 0.5;
 
        self.soundManager.addToCamera(self.cameraManager.camera);
+       self.eyesSound = self.soundManager.getSoundObjectByName('eyesSound');
+
        self.percent = null;
        self.blur = null;
 
@@ -102,6 +113,8 @@ export default new Scenery({
 
        self.manModel = self.modelManager.getLoadedModelByName('hommes_geants');
        self.manModel.scene.children.shift();
+
+
        console.log( self.manModel);
        self.manModel.scene.position.set(0,0,-1000);
 
@@ -209,6 +222,8 @@ export default new Scenery({
                var clonedSprite = self.eyeSprite.clone();
                clonedSprite.position.set(x,y,z);
 
+               self.eyesSound.addToMesh(clonedSprite);
+
                self.group.add(clonedSprite);
                self.scene.add(self.group)
            }
@@ -274,8 +289,14 @@ export default new Scenery({
                    self.whisperingVolume += 0.01;
                    self.whisperingSound.setVolume(self.whisperingVolume);
                }
-               self.group.remove(intersects[0].object);
-               self.generateEye(self.randomIntFromInterval(1, 2));
+               var position = intersects[0].object.position;
+               position.set(
+                   position.x + self.randomIntFromInterval(-5,5),
+                   position.y +self.randomIntFromInterval(-5,5),
+                   position.z - 30
+               );
+             /*  self.group.remove(intersects[0].object);
+               self.generateEye(self.randomIntFromInterval(1, 2));*/
            }
 
        };
@@ -283,11 +304,12 @@ export default new Scenery({
        self.playAmbiantSound = () => {
            self.ambiantSound.play();
            self.whisperingSound.play();
+           self.eyesSound.sound.play();
        };
 
 
+       window.addEventListener('keypress', () => {self.eyesAttraction()})
        self.generateEye(5);
-
        self.addBlur();
        self.generateSmoke();
       //self.createGUI();

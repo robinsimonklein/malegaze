@@ -1,12 +1,12 @@
 <template>
     <div class="actressScene">
-        <div class="actressScene__tuto" id="actressScene__tuto">
+        <!--<div class="actressScene__tuto" id="actressScene__tuto">
             <div class="actressScene__tuto__content">
                 <h2>Repousse les regards</h2>
                 <p>Vise puis tape dans la zone definie pour repousser les statues</p>
                 <img src="icon/tutorial/tutorial_icon_hit.svg" alt="phone"/>
             </div>
-        </div>
+        </div>-->
         <div class="actressScene__sight" id="actressScene__sight"></div>
     </div>
 </template>
@@ -16,11 +16,11 @@
         name: "actressComponent",
         methods: {
             init() {
-                var overlay = document.getElementById('actressScene__tuto');
+               //var overlay = document.getElementById('actressScene__tuto');
                 var sight = document.getElementById('actressScene__sight');
 
                 setTimeout(() => {
-                    overlay.style.display = 'none';
+                   // overlay.style.display = 'none';
                     sight.style.display = 'block';
                 },5000);
 

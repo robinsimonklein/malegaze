@@ -9,23 +9,30 @@ class PositionalSound {
     name;
     path;
     refDistance;
+    volume;
+    isLoop;
     audioListener;
 
     /**
      * @param {string} name - Name of the sound
      * @param {string} path - Path of the sound file
      * @param {number} refDistance - Ref distance
+     * @param {volume} volume - Value of volume
+     * @param {boolean} isLoop - Bool for sound looping
      */
     constructor({
         name,
         path,
-        refDistance
+        refDistance,
+        volume,
+        isLoop
     }) {
 
         this.name = name;
         this.path = path;
         this.refDistance = refDistance;
-
+        this.volume = volume;
+        this.isLoop = isLoop
     }
 
     /**
@@ -40,6 +47,9 @@ class PositionalSound {
         loader.load(this.path, (buffer) => {
             this.sound.setBuffer(buffer);
             this.sound.setRefDistance(this.refDistance);
+            this.sound.setVolume(this.volume);
+            this.sound.setLoop(this.isLoop);
+
         })
 
     }
@@ -51,6 +61,15 @@ class PositionalSound {
     addToMesh(mesh) {
         mesh.add(this.sound);
     }
+
+    /**
+     * Add the sound to camera
+     * @param camera - The camera in which we want to add the sound
+     */
+    addToCamera(camera) {
+        camera.add(this.audioListener);
+    }
+
 
     /**
      * Stop the sound
