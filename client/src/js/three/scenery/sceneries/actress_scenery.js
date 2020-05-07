@@ -40,23 +40,43 @@ export default new Scenery({
         new Light({
             name: 'directionnal',
             light: new  THREE.DirectionalLight(0xffffff, 1),
-            initialPosition: {x: 0, y: 20, z: 50},
+            initialPosition: {x: 0, y: 0, z: 50},
+        }),
+        new Light({
+            name: 'directionnal',
+            light: new  THREE.DirectionalLight(0xffffff, 1),
+            initialPosition: {x: 0, y: 0, z: 0},
         }),
         new Light({
             name: 'pointLight',
-            light: new  THREE.PointLight(0xFF73EC, 10, 500),
+            light: new  THREE.PointLight(0xFF73EC, 10, 1000),
             initialPosition: {x: 0, y: 800, z: -1500},
         }),
         new Light({
             name: 'pointLight2',
-            light: new  THREE.PointLight(0xFF73EC, 10, 500),
+            light: new  THREE.PointLight(0xFF73EC, 10, 1000),
             initialPosition: {x: -500, y: 800, z: -1500},
         }),
         new Light({
-            name: 'pointLight2',
-            light: new  THREE.PointLight(0xFF73EC, 10, 500),
+            name: 'pointLight3',
+            light: new  THREE.PointLight(0xFF73EC, 10, 1000),
             initialPosition: {x: -1000, y: 800, z: -1500},
-        })
+        }),
+        new Light({
+            name: 'pointLight4',
+            light: new  THREE.PointLight(0xFF73EC, 10, 1000),
+            initialPosition: {x: 500, y: 800, z: -1500},
+        }),
+        new Light({
+            name: 'pointLight5',
+            light: new  THREE.PointLight(0xFF73EC, 10, 1000),
+            initialPosition: {x: -1500, y: 800, z: -1500},
+        }),
+        new Light({
+            name: 'pointLight6',
+            light: new  THREE.PointLight(0xFF73EC, 10, 1000),
+            initialPosition: {x: -2000, y: 800, z: -1500},
+        }),
     ],
     sounds : [
         new Sound({
@@ -82,7 +102,7 @@ export default new Scenery({
    onLoaded: (self) => {
 
        self.renderer.logarithmicDepthBuffer = true;
-       //self.scene.fog = new THREE.Fog(0x000000, 250, 3000);
+       self.scene.fog = new THREE.Fog(0x000000, 250, 2000);
 
        var spriteMap = new THREE.TextureLoader().load( "models/images/oeil.png" );
        var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap } );
@@ -90,8 +110,8 @@ export default new Scenery({
        self.eyeSprite.scale.set(10, 10, 1);
 
        self.manSpeed = 0.001;
+      // self.manSpeed = 0.04;
        self.eyesSpeed = 0.0015;
-       //self.eyesSpeed = 0.01;
 
        self.timer = 0;
        self.volume = 0;
@@ -126,14 +146,22 @@ export default new Scenery({
        self.smokeGeo = null;
        self.smokeParticles = [];
 
-
-       /*let pointLightHelper = new THREE.PointLightHelper( self.pointLight, 10 );
+      /* self.pointLight = self.lightManager.getLightByName('pointLight');
+       let pointLightHelper = new THREE.PointLightHelper( self.pointLight, 10 );
        self.scene.add( pointLightHelper );
 
        self.pointLight2 = self.lightManager.getLightByName('pointLight2');
-
        let pointLightHelper2 = new THREE.PointLightHelper( self.pointLight2, 10 );
-       self.scene.add( pointLightHelper2 );*/
+       self.scene.add( pointLightHelper2 );
+
+       self.pointLight3 = self.lightManager.getLightByName('pointLight3');
+       let pointLightHelper3 = new THREE.PointLightHelper( self.pointLight3, 10 );
+       self.scene.add( pointLightHelper3 );*/
+
+       //hemisphere
+     /*  self.hemisphere = self.lightManager.getLightByName('hemisphere');
+       var helper = new THREE.HemisphereLightHelper( self.hemisphere, 5 );
+       self.scene.add( helper );*/
 
        self.createGUI = () => {
            let gui = new GUI( { name: 'Damp setting' } );
@@ -157,16 +185,19 @@ export default new Scenery({
         };
 
        self.generateSmoke = () => {
-           var position = {x: 0, y: 400, z: -500};
+           var position = {x: 0, y: 400, z: -250};
 
            self.smokeTexture = new THREE.TextureLoader().load( "models/images/Smoke.png" );
-           self.smokeMaterial = new THREE.MeshLambertMaterial({color: 0x000000, opacity: .2, map: self.smokeTexture, transparent: true});
+           self.smokeMaterial = new THREE.MeshLambertMaterial({color: 0x000000, opacity: .3, map: self.smokeTexture, transparent: true});
 
-
-
+           self.smokeMaterial.polygonOffset = true;
+           self.smokeMaterial.depthTest = true;
            self.smokeGeo = new THREE.PlaneGeometry(300,300);
 
-           for (var p = 0; p < 1500; p++) {
+           for (var p = 0; p < 2500; p++) {
+
+               self.smokeMaterial.polygonOffsetFactor = p;
+               self.smokeMaterial.polygonOffsetUnits = p/10;
                var particle = new THREE.Mesh(self.smokeGeo, self.smokeMaterial);
                //particle.position.set(Math.random()*500-250,Math.random()*500-250,Math.random()*1000-100);
                particle.position.set(
@@ -308,7 +339,7 @@ export default new Scenery({
        };
 
 
-       window.addEventListener('keypress', () => {self.eyesAttraction()})
+       //window.addEventListener('keypress', () => {self.playAmbiantSound()})
        self.generateEye(5);
        self.addBlur();
        self.generateSmoke();
@@ -327,10 +358,12 @@ export default new Scenery({
              self.menAttraction();
 
        } else if(self.timer === 4000) {
+             self.generateEye(5);
            self.blur.radius.x = .5;
            self.blur.radius.y = .5;
        } else if(self.timer === 5000) {
 
+             self.generateEye(5);
              self.ambiantSoundVolume += 0.70;
              self.ambiantSound.setVolume(self.ambiantSoundVolume);
 
