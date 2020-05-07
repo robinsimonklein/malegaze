@@ -20,7 +20,7 @@
                 var sight = document.getElementById('actressScene__sight');
 
                 setTimeout(() => {
-                    overlay.style.display = 'none';
+                   overlay.style.display = 'none';
                     sight.style.display = 'block';
                 },5000);
 
