@@ -15,7 +15,6 @@
 
 <script>
     import MobileOrientation from './orientation/MobileOrientation';
-
     export default {
         name: "MobileScene2",
         components: {MobileOrientation},
