@@ -23,7 +23,7 @@ export default new Scenery({
         }),
     ],
     renderer: null,
-    controls: controlsTypes.ORBIT,
+    controls: controlsTypes.MOBILE,
     models: [
         new Model({
             name: 'cinema',
@@ -79,7 +79,7 @@ export default new Scenery({
         self.video = null;
         self.volumetricLights = [];
 
-        self.debug = true;
+        self.debug = false;
 
         self.spotLights = [];
         self.lightColor = 0xffeeee;
