@@ -17,12 +17,18 @@
 
     export default {
         name: "actressComponent",
+        data() {
+            return {
+                sightWrapper: null,
+                timeout : null
+            }
+        },
         methods: {
             init() {
                 this.sightWrapper = this.$refs.sightWrapper;
                 this.numberOfCircle = 2;
 
-               var overlay = document.getElementById('actressScene__tuto');
+                var overlay = document.getElementById('actressScene__tuto');
                 var sight = document.getElementById('actressScene__sight');
 
                 setTimeout(() => {
@@ -36,6 +42,16 @@
                             this.sightWrapper.children[i].remove();
                         }
                     }
+
+                    if(self.timeout !== null) {
+                        clearTimeout(self.timeout)
+                    }
+
+                    this.sightWrapper.classList.add('actressScene__sight__active');
+                    self.timeout = setTimeout(() => {
+                        this.sightWrapper.classList.remove('actressScene__sight__active')
+                    }, 1000);
+
                     for (let i = 0; i < this.numberOfCircle; i++) {
                         this.generateCircle(i)
                     }
@@ -55,7 +71,7 @@
     }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
     .actressScene {
 
@@ -97,31 +113,49 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 25px;
-            height: 25px;
+            width: 29px;
+            height: 29px;
             border-radius: 100%;
             background-color: #ffff;
 
             &__active {
-                width: 25px;
-                height: 25px;
+
+                position: fixed;
                 top: 50%;
                 left: 50%;
-                border-radius: 100%;
-                background-color: transparent;
-                border: .5px solid #FF4040;
-                position: fixed;
                 transform: translate(-50%, -50%);
+                width: 29px;
+                height: 29px;
+                border-radius: 100%;
+                background-color: #FF4040;
 
                 &--0 {
-                    width: 100%;
-                    height: 100%;
+                    opacity: 0;
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+
+                    border-radius: 100%;
+                    width: 29px;
+                    height: 29px;
+                    background-color: transparent;
+                    transform-origin: center;
                     animation: sonar-effect .5s ease-in-out;
                 }
 
                 &--1 {
-                    width: 100%;
-                    height: 100%;
+                    opacity: 0;
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+
+                    transform-origin: center;
+                    border-radius: 100%;
+                    width: 29px;
+                    height: 29px;
+                    background-color: transparent;
                     animation: sonar-effect 1s ease-in-out;
                 }
 
@@ -160,7 +194,9 @@
 
     @keyframes sonar-effect {
         0% {
-            transform: translate(-50%, -50%) scale3d(0, 0, 1);
+            border: .5px solid #FF4040;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale3d(1, 1, 1);
         }
 
         75% {
@@ -168,7 +204,8 @@
         }
 
         100% {
-            transform: translate(-50%, -50%) scale3d(2, 2, 1);
+            border: .5px solid #FF4040;
+            transform: translate(-50%, -50%) scale3d(3, 3, 1);
             opacity: 0;
         }
 
