@@ -1,8 +1,8 @@
 <template>
     <div class="mobile-index">
-        <h1>Mobile Index</h1>
+        <h1>Male Gaze</h1>
 
-        <p>Ouvrez <a :href="siteUrl">{{ siteUrl }}</a> sur votre ordinateur et scannez le QR Code qui s'affiche avec votre mobile.</p>
+        <p>Ouvrez <strong>{{ siteUrl }}</strong> sur votre ordinateur et entrez le code qui s'affiche à l'écran.</p>
     </div>
 </template>
 
@@ -15,7 +15,8 @@
             }
         },
         beforeMount() {
-            this.siteUrl = window.location.origin
+            console.log(window.location)
+            this.siteUrl = window.location.host
         }
     }
 </script>
