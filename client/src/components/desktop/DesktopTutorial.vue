@@ -87,6 +87,7 @@
             font-weight: bold;
             letter-spacing: 1rem;
             color: $color-primary;
+            text-align: center;
         }
 
         &__subtitle {
@@ -95,6 +96,7 @@
             font-weight: normal;
             letter-spacing: .5rem;
             color: $color-primary;
+            text-align: center;
         }
 
         &__icon {

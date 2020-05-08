@@ -3,14 +3,11 @@
         <div class="mobile-cameraman-scenery__interactions">
             <component :is="interactionComponent" @done="emitInteractionDone"></component>
         </div>
-        <!-- Track the mobile orientation -->
-        <MobileOrientation :debug="false"/>
     </div>
 </template>
 
 <script>
     import appStates from '../../js/appStates';
-    import MobileOrientation from './orientation/MobileOrientation';
     import EventManager from "../../js/event/EventManager";
     import MobileInteractionFraming from "./interactions/MobileInteractionFraming";
     import MobileInteractionTraveling from "./interactions/MobileInteractionTraveling";
@@ -19,7 +16,7 @@
 
     export default {
         name: "MobileCameramanScenery",
-        components: {MobileOrientation, MobileInteractionFraming, MobileInteractionTraveling, MobileInteractionZoom, MobileInteractionRotation},
+        components: {MobileInteractionFraming, MobileInteractionTraveling, MobileInteractionZoom, MobileInteractionRotation},
         data() {
             return {
                 interaction : null

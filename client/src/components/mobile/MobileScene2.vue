@@ -8,16 +8,13 @@
         </div>
         <!--<button @click="next" class="btn mobile-scene-2__button">Next</button>-->
 
-        <!-- Track the mobile orientation -->
-        <MobileOrientation :debug="false"/>
     </div>
 </template>
 
 <script>
-    import MobileOrientation from './orientation/MobileOrientation';
     export default {
         name: "MobileScene2",
-        components: {MobileOrientation},
+        components: {},
         data() {
             return {
                 isClicked: false,

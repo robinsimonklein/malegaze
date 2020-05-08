@@ -6,7 +6,7 @@
                 <li>Alpha : {{ orientation.alpha }}</li>
                 <li>Beta : {{ orientation.beta }}</li>
                 <li>Gamma : {{ orientation.gamma }}</li>
-                <li>Screen orient. : {{ screenOrientation }}</li>
+                <li>Screen orient. : {{ orientation.screen }}</li>
             </ul>
         </div>
         <div v-if="!orientationPermission" class="mobile-orientation__permission">
@@ -38,8 +38,8 @@
                     alpha: 0,
                     beta: 0,
                     gamma: 0,
+                    screen: 0
                 },
-                screenOrientation: 0,
             }
         },
         computed: {
@@ -56,20 +56,17 @@
                 window.removeEventListener( 'deviceorientation', this.onDeviceOrientationChangeEvent, false );
             },
             onScreenOrientationChangeEvent() {
-                this.screenOrientation = window.orientation || 0
-                this.emitScreenOrientation()
+                this.orientation.screen = window.orientation || 0
             },
             onDeviceOrientationChangeEvent(e) {
                 this.orientation.alpha = e.alpha;
                 this.orientation.beta = e.beta;
                 this.orientation.gamma = e.gamma;
+                this.orientation.screen = window.orientation || 0
                 this.emitOrientation();
             },
             emitOrientation() {
                 this.$socket.emit('mobile_orientation', this.orientation)
-            },
-            emitScreenOrientation() {
-                this.$socket.emit('mobile_screen_orientation', this.screenOrientation)
             },
         },
         created() {
