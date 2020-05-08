@@ -497,7 +497,7 @@ export default new Scenery({
                     // Start tutorial
                     EventManager.publish('tutorial:display', {
                         title: 'EFFECTUE UNE ROTATION',
-                        subtitle: 'PIVOTE LE Téléphone vers la droite pour effectuer une rotation',
+                        subtitle: 'Pivote le téléphone vers la gauche pour effectuer une rotation',
                         icon: 'tutorial_icon_rotation.svg',
                     })
 
