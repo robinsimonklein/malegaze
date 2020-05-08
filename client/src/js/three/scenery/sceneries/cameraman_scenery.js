@@ -198,6 +198,7 @@ export default new Scenery({
                     const cameraPosition = self.cameraCurves.find(curve => curve.name === 'P1_TRAVEL').getPointAt(0)
                     self.cameraManager.camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
 
+
                     EventManager.publish('mobile:interaction_set', 'framing')
 
                     self.soundManager.getSoundByName('04_real_cadrage_traveling').play()
@@ -493,7 +494,6 @@ export default new Scenery({
                             self.soundManager.getSoundByName('09_real_transition_rotation').source.onended = () => {
                                 setTimeout(() => {
                                     self.soundManager.getSoundByName('10_real_rotation').source.onended = () => {
-                                        console.log('ici')
                                         self.sequences[self.currentSequence].ready = true
                                         EventManager.publish('camera:instructions', 'Cadre l\'image')
                                     }
@@ -617,6 +617,8 @@ export default new Scenery({
                 cameraIndex: 3,
                 init: (self) => { // eslint-disable-line
 
+                    self.cameraManager.controls = null
+
                     EventManager.publish('camera:stop')
 
                     setTimeout(() => {
@@ -685,6 +687,12 @@ export default new Scenery({
     },
     onLoaded: (self) => {
         console.log('self', self)
+        /*
+        store.dispatch('app/requestState', appStates.ACTRESS)
+        console.log('change scenery')
+        return
+
+         */
 
         // self.cameraManager.changeCamera(4)
         // self.cameraManager.controls.object = self.cameraManager.cameraObjects[4].camera

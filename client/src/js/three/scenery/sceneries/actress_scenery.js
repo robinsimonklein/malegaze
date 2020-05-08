@@ -21,6 +21,9 @@ export default new Scenery({
             type: cameraTypes.PERSPECTIVE,
             properties: { fov: 180, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 3000 },
             initialPosition: {x: 50, y: 180, z: 330},
+            settings: {
+                alphaOffset: 0
+            }
         }),
     ],
     renderer: null,
@@ -106,6 +109,9 @@ export default new Scenery({
         })
     ],
     onLoaded: (self) => {
+
+        // self.cameraManager.setControls(controlsTypes.MOBILE)
+        // self.cameraManager.controls.alphaOffset = 0
 
         self.renderer.logarithmicDepthBuffer = true;
 

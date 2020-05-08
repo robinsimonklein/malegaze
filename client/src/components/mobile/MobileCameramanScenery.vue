@@ -4,7 +4,7 @@
             <component :is="interactionComponent" @done="emitInteractionDone"></component>
         </div>
         <!-- Track the mobile orientation -->
-        <MobileOrientation :debug="false"/>
+        <!-- <MobileOrientation :debug="false"/> -->
     </div>
 </template>
 
