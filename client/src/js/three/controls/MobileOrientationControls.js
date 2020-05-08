@@ -12,31 +12,23 @@ import {
     Vector3
 } from "three";
 
-import store from './../../../store/index'
+import EventManager from "../../event/EventManager";
 
 class MobileOrientationControls {
 
     object;
 
     deviceOrientation = {};
-    screenOrientation = 0;
+
+    orientationEvent = EventManager.subscribe('mobile:orientation', (orientation) => {
+        this.deviceOrientation = orientation
+    })
 
     alphaOffset = 0; // radians
 
     constructor(object) {
         this.object = object
         this.object.rotation.reorder('YXZ');
-    }
-
-    setScreenOrientation(screenOrientation) {
-        this.screenOrientation = screenOrientation || 0;
-    }
-
-    getDeviceOrientation() {
-        return JSON.parse(JSON.stringify(store.state.mobile.orientation))
-    }
-    getScreenOrientation() {
-        return JSON.parse(JSON.stringify(store.state.mobile.screenOrientation))
     }
 
     // The angles alpha, beta and gamma form a set of intrinsic Tait-Bryan angles of type Z-X'-Y''
@@ -64,16 +56,13 @@ class MobileOrientationControls {
      * Update loop
      */
     update() {
-        this.deviceOrientation = this.getDeviceOrientation()
-        this.screenOrientation = this.getScreenOrientation()
-
         var alpha = this.deviceOrientation.alpha ? MathUtils.degToRad(this.deviceOrientation.alpha) + this.alphaOffset : 0; // Z
 
         var beta = this.deviceOrientation.beta ? MathUtils.degToRad(this.deviceOrientation.beta) : 0; // X'
 
         var gamma = this.deviceOrientation.gamma ? MathUtils.degToRad(this.deviceOrientation.gamma) : 0; // Y''
 
-        var orient = this.screenOrientation ? MathUtils.degToRad(this.screenOrientation) : 0; // O
+        var orient = this.deviceOrientation.screen ? MathUtils.degToRad(this.deviceOrientation.screen) : 0; // O
 
         this.setObjectQuaternion(this.object.quaternion, alpha, beta, gamma, orient);
     }

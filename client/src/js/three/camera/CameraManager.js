@@ -68,7 +68,7 @@ class CameraManager {
      */
     get cameras() {
         let cameras = [];
-        this.cameraObjects.map((cameraObject) => {
+        this.cameraObjects.forEach((cameraObject) => {
             cameras.push(cameraObject.camera);
         });
         return cameras;
@@ -114,6 +114,7 @@ class CameraManager {
             default:
                 break;
         }
+        console.log(this.controls)
     }
 
     setControls(type){

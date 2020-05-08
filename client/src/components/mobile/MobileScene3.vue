@@ -4,7 +4,7 @@
         <button @click="next" class="btn">Next</button>
 
         <!-- Track the mobile orientation -->
-        <MobileOrientation :debug="false" />
+        <!-- <MobileOrientation :debug="false" /> -->
     </div>
 </template>
 

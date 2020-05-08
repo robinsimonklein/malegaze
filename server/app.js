@@ -74,10 +74,6 @@ io.on('connection', function (socket) {
         socket.in(socket.mobileRoom).emit('mobile_orientation', orientation)
     });
 
-    socket.on('mobile_screen_orientation', (screenOrientation) => {
-        socket.in(socket.mobileRoom).emit('mobile_screen_orientation', screenOrientation)
-    });
-
     // --- CAMERA CONTROLS
 
     socket.on('camera_zoom', (value) => {

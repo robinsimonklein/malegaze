@@ -9,7 +9,7 @@
         <!--<button @click="next" class="btn mobile-scene-2__button">Next</button>-->
 
         <!-- Track the mobile orientation -->
-        <MobileOrientation :debug="false"/>
+        <!-- <MobileOrientation :debug="false"/> -->
     </div>
 </template>
 

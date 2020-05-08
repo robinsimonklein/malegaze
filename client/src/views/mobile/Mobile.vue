@@ -3,6 +3,7 @@
         <p v-if="debug" class="mobile__debug">ID : {{ this.mobileId }}</p>
 
         <component :is="currentComponent" />
+        <MobileOrientation v-if="mobileOrientation" />
     </div>
 </template>
 
@@ -14,10 +15,12 @@
     import MobileScene3 from "../../components/mobile/MobileScene3";
     import MobileEnd from "../../components/mobile/MobileEnd";
     import appStates from "../../js/appStates";
+    import MobileOrientation from "../../components/mobile/orientation/MobileOrientation";
 
     export default {
         name: "Mobile",
         components: {
+            MobileOrientation,
             MobileSetup,
             MobileIntro,
             MobileCameramanScenery,
@@ -53,7 +56,20 @@
                     default:
                         return null
                 }
+            },
+            mobileOrientation() {
+                switch(this.$store.state.app.appState) {
+                    case appStates.CAMERAMAN:
+                        return true
+                    case appStates.ACTRESS:
+                        return true
+                    case appStates.SPECTATOR:
+                        return true
+                    default:
+                        return false
+                }
             }
+
         },
         created() {
             // Get the mobile ID in route

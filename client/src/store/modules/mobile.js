@@ -7,7 +7,6 @@ export const mobile = {
         mobileId: null,
         orientationPermission: false,
         orientation: {},
-        screenOrientation: 0,
     },
     getters: {
         mobileUrl: (state) => {
@@ -28,16 +27,11 @@ export const mobile = {
         setOrientation(state, orientation) {
             state.orientation = orientation
         },
-        setScreenOrientation(state, screenOrientation) {
-            state.screenOrientation = screenOrientation
-        },
     },
     actions: {
         SOCKET_mobile_orientation({commit}, orientation) {
+            EventManager.publish('mobile:orientation', orientation)
             commit('setOrientation', orientation)
-        },
-        SOCKET_mobile_screen_orientation({commit}, screenOrientation) {
-            commit('setScreenOrientation', screenOrientation)
         },
         SOCKET_mobile_interaction_set({commit}, interaction) { // eslint-disable-line
             EventManager.publish('mobile:interaction_set', interaction)
