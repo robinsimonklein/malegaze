@@ -326,12 +326,12 @@ export default new Scenery({
 
             if(self.endingTimer !== 500) {
                 self.percent.value += 0.01;
+                self.endingTimer++;
             } else {
                 cancelAnimationFrame(endingAttractionFrame);
                 self.soundManager.stopAll();
-                store.dispatch('app/requestState', appStates.SPECTATOR)
+                store.dispatch('app/requestState', appStates.SPECTATOR);
             }
-            self.endingTimer++;
         };
 
         /* self.shoot = (self) => {
@@ -364,7 +364,7 @@ export default new Scenery({
                 var position = intersects[0].object.position;
                 position.set(
                     position.x + self.randomIntFromInterval(-10,10),
-                    position.y +self.randomIntFromInterval(-10,10),
+                    position.y + self.randomIntFromInterval(-10,10),
                     position.z - 30
                 );
                 /*  self.group.remove(intersects[0].object);

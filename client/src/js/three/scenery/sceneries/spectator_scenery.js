@@ -11,6 +11,7 @@ import store from '../../../../store';
 import appStates from '../../../appStates';
 import modelTypes from '../../model/modelTypes';
 import lightTypes from '../../light/lightTypes';
+import EventManager from '../../../event/EventManager';
 
 export default new Scenery({
     name: 'spectator_scenery',
@@ -37,7 +38,7 @@ export default new Scenery({
         }),
         new Model({
             name: 'eye',
-            path: 'models/glb/eye.glb',
+            path: 'models/glb/eyeye.glb',
             type: modelTypes.GLB
         })
     ],
@@ -79,8 +80,6 @@ export default new Scenery({
         self.video = null;
         self.volumetricLights = [];
 
-        self.debug = false;
-
         self.spotLights = [];
         self.lightColor = 0xffeeee;
 
@@ -114,11 +113,13 @@ export default new Scenery({
                     eye.visible = true;
                 }
             });
+
+            // TODO: Jouer un son de lampadaire qui s'allume
         }
 
         self.smokeParticles = [];
 
-        self.generateFog = (smokePosition, intervals, number, opacity) => { // TODO
+        self.generateFog = (smokePosition, intervals, number, opacity) => {
             const smokeTexture = new THREE.TextureLoader().load('models/images/Smoke.png');
             const smokeMaterial = new THREE.MeshLambertMaterial({
                 color: 0x444444,
@@ -129,7 +130,7 @@ export default new Scenery({
 
             smokeMaterial.polygonOffset = true;
             smokeMaterial.depthTest = true;
-            const smokeGeo = new THREE.PlaneGeometry(500, 500);
+            const smokeGeo = new THREE.PlaneGeometry(800, 800);
 
             const particles = [];
             for (let p = 0; p < number; p++) {
@@ -138,7 +139,7 @@ export default new Scenery({
                 const particle = new THREE.Mesh(smokeGeo, smokeMaterial);
                 particle.position.set(
                     smokePosition.x + self.randomIntFromInterval(intervals.minX, intervals.maxX),
-                    smokePosition.y + self.randomIntFromInterval(100, 200),
+                    smokePosition.y + self.randomIntFromInterval(intervals.minY, intervals.maxY),
                     smokePosition.z + self.randomIntFromInterval(intervals.minZ, intervals.maxZ)
                 );
                 particle.rotation.z = Math.random() * 360;
@@ -239,16 +240,14 @@ export default new Scenery({
             self.video.play().then(() => self.video.volume = 0);
         }
 
+        self.endingTimer = 0;
+
     },
     onLoaded: (self) => {
         self.timer = 0;
         self.clock = new THREE.Clock();
 
-        if (!self.debug) {
-            self.soundManager.sound.play();
-        } else {
-            window.addEventListener('keypress', () => self.soundManager.sound.play());
-        }
+        self.soundManager.sound.play();
 
         self.scene.traverse((child) => {
             if (child.name === 'eye') {
@@ -275,8 +274,14 @@ export default new Scenery({
         // Create cinema screen
         self.buildVideo({src: '/video/cinema-vid.mp4'});
         self.buildScreen();
-        // self.generateFog({x: 0, y: 0, z: 1000}, {minX: -1000, maxX: 1000, minZ: 0, maxZ: 200}, 20, 1);
-        // self.generateFog({x: 0, y: 0, z: 0}, {minX: -1000, maxX: 1000, minZ: 0, maxZ: 200}, 20, 0.3);
+        self.generateFog({x: 0, y: 100, z: 0}, {
+            minX: -1000,
+            maxX: 1000,
+            minY: 0,
+            maxY: 500,
+            minZ: -500,
+            maxZ: 200
+        }, 20, 0.);
     },
     onUpdate: (self) => {
         const delta = self.clock.getDelta();
@@ -284,15 +289,15 @@ export default new Scenery({
         self.eyes.forEach((objects) => {
             objects.forEach((item, index) => {
                 if (index % 3 === 0) {
-                    item.rotation.y += delta * 0.2;
+                    item.rotation.y += delta;
                 }
             });
         });
 
         self.smokeParticles.forEach((particles) => {
             let sp = particles.length;
-            while(sp--) {
-                particles[sp].position.z += (delta * 0.1);
+            while (sp--) {
+                particles[sp].rotation.z += (delta * 0.2);
             }
         });
 
@@ -308,13 +313,26 @@ export default new Scenery({
             self.lightUp(0);
             self.lightUp(4);
         }
-        if (self.timer === 4000) {
-            if (self.debug) {
-                return;
-            }
-            store.dispatch('app/requestState', appStates.END).then(() => self.video.pause());
+        if (self.timer > 3000) {
+            self.smokeParticles.forEach((particles) => {
+                let sp = particles.length;
+                while (sp--) {
+                    if (particles[sp].material.opacity < 1.) {
+                        particles[sp].material.opacity += 1/3000;
+                    }
+                }
+            });
         }
-        if (self.timer < 4000) {
+        if (self.timer === 6000) {
+            EventManager.publish('fadeEnding');
+        }
+        if (self.timer === 6150) {
+            store.dispatch('app/requestState', appStates.END).then(() => {
+                self.video.pause();
+                self.soundManager.stopAll();
+            });
+        }
+        if (self.timer < 6000) {
             self.timer++;
         }
     }
