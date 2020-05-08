@@ -7,15 +7,21 @@
                 <img src="icon/tutorial/tutorial_icon_hit.svg" alt="phone"/>
             </div>
         </div>
-        <div class="actressScene__sight" id="actressScene__sight"></div>
+        <div class="actressScene__sight" id="actressScene__sight" ref="sightWrapper"></div>
     </div>
 </template>
 
 <script>
+
+    import EventManager from "../../../js/event/EventManager";
+
     export default {
         name: "actressComponent",
         methods: {
             init() {
+                this.sightWrapper = this.$refs.sightWrapper;
+                this.numberOfCircle = 2;
+
                var overlay = document.getElementById('actressScene__tuto');
                 var sight = document.getElementById('actressScene__sight');
 
@@ -24,6 +30,23 @@
                     sight.style.display = 'block';
                 },5000);
 
+                EventManager.subscribe('actress:click:animation', () => {
+                    if (this.sightWrapper.children.length > this.numberOfCircle *2) {
+                        for (let i = 0; i < this.numberOfCircle; i++) {
+                            this.sightWrapper.children[i].remove();
+                        }
+                    }
+                    for (let i = 0; i < this.numberOfCircle; i++) {
+                        this.generateCircle(i)
+                    }
+                });
+
+            },
+            generateCircle(number) {
+
+                let node = document.createElement('div');
+                node.className = 'actressScene__sight__active--'+number;
+                this.sightWrapper.appendChild(node);
             }
         },
         mounted() {
@@ -74,22 +97,81 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 5px;
+            width: 25px;
             height: 25px;
-            background-color: darkred;
+            border-radius: 100%;
+            background-color: #ffff;
 
-            &::after {
-                content : '';
-                width: 5px;
+            &__active {
+                width: 25px;
                 height: 25px;
-                background-color: darkred;
-                transform: rotate(90deg);
+                top: 50%;
+                left: 50%;
+                border-radius: 100%;
+                background-color: transparent;
+                border: .5px solid #FF4040;
                 position: fixed;
-                top: 0;
-                left: 0;
+                transform: translate(-50%, -50%);
+                
+                &--0 {
+                    width: 100%;
+                    height: 100%;
+                    animation: sonar-effect .5s ease-in-out;
+                }
+
+                &--1 {
+                    width: 100%;
+                    height: 100%;
+                    animation: sonar-effect 1s ease-in-out;
+                }
+
+              /*  &:before {
+                    content: '';
+                    width: 25px;
+                    height: 25px;
+                    top: 50%;
+                    left: 50%;
+                    border-radius: 100%;
+                    background-color: transparent;
+                    border: .5px solid #FF4040;
+                    position: fixed;
+                    transform: translate(-50%, -50%);
+                    animation: sonar-effect .5s ease-in-out;
+                }
+
+                &:after {
+                    content: '';
+                    width: 25px;
+                    height: 25px;
+                    top: 50%;
+                    left: 50%;
+                    border-radius: 100%;
+                    background-color: transparent;
+                    border: .5px solid #FF4040;
+                    position: fixed;
+                    transform: translate(-50%, -50%);
+                    animation: sonar-effect 1s ease-in-out;
+                }*/
+
             }
 
         }
+    }
+
+    @keyframes sonar-effect {
+        0% {
+            transform: translate(-50%, -50%) scale3d(0, 0, 1);
+        }
+
+        75% {
+            opacity: 1;
+        }
+
+        100% {
+            transform: translate(-50%, -50%) scale3d(2, 2, 1);
+            opacity: 0;
+        }
+
     }
 
 </style>

@@ -45,6 +45,7 @@ export const app = {
         },
         SOCKET_mobile_shoot() {
             EventManager.publish('actress:click')
+            EventManager.publish('actress:click:animation')
         },
         requestState({commit}, value) { // eslint-disable-line
             this._vm.$socket.emit('state_request', value)
