@@ -21,7 +21,7 @@ class ModelManager {
      * @param {boolean} debug - Enable/Disable debug mode
      */
     constructor({models, debug = false}) { // eslint-disable-line
-        if(models) {
+        if (models) {
             models.forEach((models) => {
                 this.addModel(models)
             })
@@ -36,7 +36,7 @@ class ModelManager {
      * @returns {*}
      */
     getLoadedModelByName(name) {
-        if(this.loadedModels.length <= 0) return undefined
+        if (this.loadedModels.length <= 0) return undefined
         return this.loadedModels.find((loadedModel) => {
             return loadedModel.name === name
         })
@@ -67,7 +67,7 @@ class ModelManager {
      */
     loadModels() {
         // Build loader if not built yet
-        if(!this.loadersReady) {
+        if (!this.loadersReady) {
             this.buildLoaders()
             this.loadersReady = true
         }
@@ -107,7 +107,7 @@ class ModelManager {
      * @param {THREE.Scene} scene - The scene in which we want to add the {@link ModelManager} models
      */
     addToScene(scene) {
-        if(this.loadedModels.length <= 0){
+        if (this.loadedModels.length <= 0) {
             console.error('Error : there is no loaded models')
             return
         }

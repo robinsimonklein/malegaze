@@ -9,8 +9,10 @@ import THREEx from '../../light/VolumetricLightMaterial';
 import Sound from '../../sound/Sound';
 import store from '../../../../store';
 import appStates from '../../../appStates';
+import modelTypes from '../../model/modelTypes';
+import lightTypes from '../../light/lightTypes';
 
-export default new Scenery({ // TODO: Nouveau concept pending
+export default new Scenery({
     name: 'spectator_scenery',
     orbitControls: null,
     cameras: [
@@ -20,31 +22,51 @@ export default new Scenery({ // TODO: Nouveau concept pending
             initialPosition: {x: -20, y: 200, z: 390},
         }),
     ],
+    renderer: null,
     controls: controlsTypes.MOBILE,
     models: [
         new Model({
             name: 'cinema',
+            path: 'models/glb/spectator_scenery.glb',
+            type: modelTypes.GLB
+        }),
+        new Model({
+            name: 'cones',
             path: 'models/glb/spectator_scenery_cone.glb',
-            type: 'glb'
+            type: modelTypes.GLB
+        }),
+        new Model({
+            name: 'eye',
+            path: 'models/glb/eye.glb',
+            type: modelTypes.GLB
         })
     ],
     lights: [
         new Light({
             name: 'ambient',
+            type: lightTypes.AMBIENT,
             light: new THREE.HemisphereLight(0xffb8c6, 0x080820),
         }),
+        /* new Light({
+            name: 'directional',
+            type: lightTypes.DIRECTIONAL,
+            light: new THREE.DirectionalLight(0xff4444, 0.5),
+            initialPosition: {x: 0, y: 0, z: 0},
+        }), */
         new Light({
             name: 'spotlight',
+            type: lightTypes.SPOT,
             light: new THREE.SpotLight(0xff4444),
             initialPosition: {x: 0, y: 100, z: -780},
             properties: {
                 castShadow: true,
-                penumbra: 0.3
+                penumbra: 0.3,
+                angle: 0.7
             }
-        }),
+        })
     ],
     sounds: [
-        new Sound({ // TODO: Son du lampadaire, voix
+        new Sound({
             name: 'ambiance',
             path: 'sound/ambianceScene3.mp3',
             isLoop: true,
@@ -52,49 +74,95 @@ export default new Scenery({ // TODO: Nouveau concept pending
         }),
     ],
     onCreated: (self) => {
+        self.eyeModel = null;
         self.eyes = [];
         self.video = null;
-        self.time = 0;
         self.volumetricLights = [];
-        self.ghosts = [];
 
-        self.debug = true;
+        self.debug = false;
+
+        self.spotLights = [];
+        self.lightColor = 0xffeeee;
 
         /**
-         * @param {*} self
          * @param {*} mesh
          */
-        self.replaceConeByVolumetric = (self, mesh) => { // TODO: Animer les lampadaires
-            const lightColor = 0xffeeee;
-
-            mesh.material = new THREEx.VolumetricSpotLightMaterial(2.8, 5., mesh.position, new THREE.Color(lightColor), 1.);
+        self.replaceConeByCylinder = (mesh) => {
+            mesh.material = new THREEx.VolumetricSpotLightMaterial(2.8, 5., mesh.position, new THREE.Color(self.lightColor), 1.);
+            mesh.material.visible = false;
             mesh.geometry = new THREE.CylinderGeometry(18., 200., 300, 32 * 2, 20, true);
             mesh.geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(0, 50, 0));
 
-            const spotLight = new THREE.SpotLight();
+            const spotLight = new THREE.SpotLight(new THREE.Color(self.lightColor), 1., 0., 0.9, 0.5, 0.5);
             spotLight.position.set(mesh.position.x, mesh.position.y, mesh.position.z);
-            spotLight.color = new THREE.Color(lightColor);
-            spotLight.exponent = 30;
-            spotLight.angle = 0.9;
-            spotLight.intensity = 1;
-            spotLight.decay = 0.5;
-            spotLight.penumbra = 0.5;
-            spotLight.castShadow = true;
+            spotLight.visible = false;
             spotLight.target.position.set(mesh.position.x, 0, mesh.position.z);
+
+            self.spotLights.push(spotLight);
+            self.spotLights.push(spotLight.target);
             self.scene.add(spotLight);
             self.scene.add(spotLight.target);
+
         }
+
+        self.lightUp = (index) => {
+            self.volumetricLights[index].material.visible = true;
+            self.spotLights[index * 2].visible = true;
+
+            self.eyes[index].forEach((eye, index) => {
+                if (index !== 0) {
+                    eye.visible = true;
+                }
+            });
+        }
+
+        self.smokeParticles = [];
+
+        self.generateFog = (smokePosition, intervals, number, opacity) => { // TODO
+            const smokeTexture = new THREE.TextureLoader().load('models/images/Smoke.png');
+            const smokeMaterial = new THREE.MeshLambertMaterial({
+                color: 0x444444,
+                map: smokeTexture,
+                transparent: true,
+                opacity: opacity
+            });
+
+            smokeMaterial.polygonOffset = true;
+            smokeMaterial.depthTest = true;
+            const smokeGeo = new THREE.PlaneGeometry(500, 500);
+
+            const particles = [];
+            for (let p = 0; p < number; p++) {
+                smokeMaterial.polygonOffsetFactor = p;
+                smokeMaterial.polygonOffsetUnits = p / 10.;
+                const particle = new THREE.Mesh(smokeGeo, smokeMaterial);
+                particle.position.set(
+                    smokePosition.x + self.randomIntFromInterval(intervals.minX, intervals.maxX),
+                    smokePosition.y + self.randomIntFromInterval(100, 200),
+                    smokePosition.z + self.randomIntFromInterval(intervals.minZ, intervals.maxZ)
+                );
+                particle.rotation.z = Math.random() * 360;
+
+                self.scene.add(particle);
+                particles.push(particle);
+            }
+
+            self.smokeParticles.push(particles);
+        }
+
+        self.randomIntFromInterval = (min, max) => {
+            return Math.floor(Math.random() * (max - min + 1) + min);
+        };
 
         /**
          * Create actor
-         * @param {*} self
          * @param {number[]} position
          */
-        self.createActress = (self, {position}) => {
+        self.generateEyes = ({position}) => {
             const objects = [];
 
-            const sphereGeometry = new THREE.SphereGeometry(20, 100, 100);
-            const material = new THREE.MeshPhongMaterial({color: 0xffffff});
+            const material = new THREE.MeshPhongMaterial({opacity: 0});
+            material.transparent = true;
 
             const actress = new THREE.Object3D();
             self.scene.add(actress);
@@ -105,20 +173,22 @@ export default new Scenery({ // TODO: Nouveau concept pending
             actress.position.z = position[1];
 
             for (let i = 0; i < 3; i++) {
-                const eye = new THREE.Mesh(sphereGeometry, material);
-                eye.castShadow = true;
+                const eye = self.eyeModel.clone();
                 switch (i) {
                     case 0:
-                        eye.position.x = 50;
-                        eye.position.y = 100;
+                        eye.rotateZ(Math.PI / 2);
+                        eye.position.x = 75;
+                        eye.position.y = 70;
                         break;
                     case 1:
-                        eye.position.x = -50;
-                        eye.position.y = 100;
+                        eye.rotateZ(-Math.PI / 2);
+                        eye.position.x = -75;
+                        eye.position.y = 70;
                         break;
                     case 2:
-                        eye.position.x = 100;
+                        eye.rotateZ(Math.PI);
                         eye.position.z = 75;
+                        break;
                 }
                 actress.add(eye);
                 objects.push(eye);
@@ -128,10 +198,9 @@ export default new Scenery({ // TODO: Nouveau concept pending
 
         /**
          * Build video
-         * @param {*} self
-         * @param {string} path
+         * @param {string} src - Link to the video
          */
-        self.buildVideo = (self, {src}) => {
+        self.buildVideo = ({src}) => {
             self.video = document.createElement('video');
             self.video.setAttribute('style', 'display: none');
             const source = document.createElement('source');
@@ -143,9 +212,8 @@ export default new Scenery({ // TODO: Nouveau concept pending
 
         /**
          * Build screen
-         * @param {*} self
          */
-        self.buildScreen = (self) => {
+        self.buildScreen = () => {
             const geometry = new THREE.BoxGeometry(615, 330, 10);
 
             const videoTexture = new THREE.VideoTexture(self.video);
@@ -168,59 +236,86 @@ export default new Scenery({ // TODO: Nouveau concept pending
 
             self.scene.add(mesh);
 
-            self.video.volume = 0;
-            self.video.play();
+            self.video.play().then(() => self.video.volume = 0);
         }
 
     },
     onLoaded: (self) => {
-        // Light settings
-        const spotlight = self.lightManager.getLightByName('spotlight');
-        spotlight.shadow.mapSize.width = 1024;
-        spotlight.shadow.mapSize.height = 1024;
+        self.timer = 0;
+        self.clock = new THREE.Clock();
 
-        spotlight.shadow.camera.near = 500;
-        spotlight.shadow.camera.far = 4000;
-        spotlight.shadow.camera.fov = 30;
-
-        self.soundManager.addToCamera(self.cameraManager.camera);
-        // self.soundManager.sound.play();
-        window.addEventListener('keypress', () => self.soundManager.sound.play());
-
-        if (self.debug) {
-            self.scene.traverse((child) => {
-                child.receiveShadow = true
-                child.castShadow = true
-                if (child.name.toLowerCase().includes('cones')) {
-                    self.replaceConeByVolumetric(self, child); // Create lights
-                    self.createActress(self, {position: [child.position.x, child.position.z]}); // Create eyes
-                }
-            });
+        if (!self.debug) {
+            self.soundManager.sound.play();
+        } else {
+            window.addEventListener('keypress', () => self.soundManager.sound.play());
         }
 
-        // Create cinema screen
-        self.buildVideo(self, {src: '/video/cinema-vid.mp4'});
-        self.buildScreen(self);
+        self.scene.traverse((child) => {
+            if (child.name === 'eye') {
+                child.rotateX(Math.PI / 2);
+                child.visible = false;
+                self.eyeModel = child;
+            }
+        });
 
+        let i = 0;
+        self.scene.traverse((child) => {
+            if (child.name.toLowerCase().includes('cones')) {
+                if (i === 0) {
+                    i++;
+                    return;
+                }
+                self.volumetricLights.push(child);
+                self.replaceConeByCylinder(child); // Create lights
+                self.generateEyes({position: [child.position.x, child.position.z]}); // Create eyes
+                i++;
+            }
+        });
+
+        // Create cinema screen
+        self.buildVideo({src: '/video/cinema-vid.mp4'});
+        self.buildScreen();
+        // self.generateFog({x: 0, y: 0, z: 1000}, {minX: -1000, maxX: 1000, minZ: 0, maxZ: 200}, 20, 1);
+        // self.generateFog({x: 0, y: 0, z: 0}, {minX: -1000, maxX: 1000, minZ: 0, maxZ: 200}, 20, 0.3);
     },
     onUpdate: (self) => {
+        const delta = self.clock.getDelta();
+
         self.eyes.forEach((objects) => {
-            objects.forEach((item) => {
-                item.rotation.y += 0.02;
+            objects.forEach((item, index) => {
+                if (index % 3 === 0) {
+                    item.rotation.y += delta * 0.2;
+                }
             });
         });
 
-        if (self.debug) {
-            return;
+        self.smokeParticles.forEach((particles) => {
+            let sp = particles.length;
+            while(sp--) {
+                particles[sp].position.z += (delta * 0.1);
+            }
+        });
+
+        if (self.timer === 1000) {
+            self.lightUp(2);
+            self.lightUp(3);
         }
-        switch (self.time) {
-            case 4000:
-                self.video.pause();
-                store.dispatch('app/requestState', appStates.END);
-                break;
+        if (self.timer === 1050) {
+            self.lightUp(1);
+            self.lightUp(5);
         }
-        if (self.time < 4000) {
-            self.time++;
+        if (self.timer === 1100) {
+            self.lightUp(0);
+            self.lightUp(4);
+        }
+        if (self.timer === 4000) {
+            if (self.debug) {
+                return;
+            }
+            store.dispatch('app/requestState', appStates.END).then(() => self.video.pause());
+        }
+        if (self.timer < 4000) {
+            self.timer++;
         }
     }
 });
