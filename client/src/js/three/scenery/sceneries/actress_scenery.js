@@ -403,7 +403,7 @@ export default new Scenery({
 
     onUpdate: (self) => {
 
-        self.timer = 0;
+        self.timer ++;
 
         if(self.timer === 500) {
 

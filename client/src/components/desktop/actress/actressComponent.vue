@@ -112,7 +112,7 @@
                 border: .5px solid #FF4040;
                 position: fixed;
                 transform: translate(-50%, -50%);
-                
+
                 &--0 {
                     width: 100%;
                     height: 100%;
