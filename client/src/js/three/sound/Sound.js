@@ -19,11 +19,11 @@ class Sound {
      * @param {number} volume - the volume of the sound
      */
     constructor({
-        name,
-        path,
-        isLoop = false,
-        volume,
-    }) {
+                    name,
+                    path,
+                    isLoop = false,
+                    volume,
+                }) {
         this.name = name;
         this.path = path;
         this.isLoop = isLoop;
@@ -41,14 +41,13 @@ class Sound {
 
         loader.load(this.path,
             (audioBuffer) => {
-            this.sound.setBuffer( audioBuffer );
-            this.sound.setLoop( this.isLoop );
-            this.sound.setVolume(this.volume)
-        },(xhr) => {
-                console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+                this.sound.setBuffer(audioBuffer);
+                this.sound.setLoop(this.isLoop);
+                this.sound.setVolume(this.volume)
+            }, () => {
             }, (err) => {
-                console.log( err );
-        })
+                console.log(err);
+            })
     }
 
     /**

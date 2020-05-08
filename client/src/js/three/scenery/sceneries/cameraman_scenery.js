@@ -2,9 +2,9 @@ import Scenery from "../Scenery";
 import Camera from "../../camera/Camera";
 import Model from "../../model/Model";
 import Light from "../../light/Light";
-import Sound from "../../sound/Sound";
 import cameraTypes from "../../camera/cameraTypes";
 import controlsTypes from "../../controls/controlsTypes";
+import cameraman_sounds from "../../sound/cameraman/cameraman_sounds";
 import * as THREE from "three";
 import {lineToCurve} from "../../../helpers/Utils";
 import {MathUtils} from "three";
@@ -103,14 +103,7 @@ export default new Scenery({
             debug: true
         }),
     ],
-    sounds: [
-        new Sound({
-            name: 'tuto_intro',
-            path: 'sound/cameraman/tuto_intro.mp3',
-            isLoop: false,
-            volume: 1,
-        }),
-    ],
+    sounds: cameraman_sounds,
     onCreated: (self) => {
 
         // --------------------- //
@@ -122,35 +115,28 @@ export default new Scenery({
         self.cameraCurves = [];
         self.cameraProgres = 0;
 
-        self.currentSequence = 1
+        self.currentSequence = 0
 
         // TODO : A l'aide
 
         self.sequences = [
             // Intro
             {
-                name: 'run sound intro',
+                name: 'intro',
                 cameraIndex: 0,
                 init: (self) => {
 
                     const cameraPosition = self.cameraCurves.find(curve => curve.name === 'P0_TRAVEL').getPointAt(0)
                     self.cameraManager.camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
 
-                    // FIXME: load sounds globally
                     setTimeout(() => {
-                        self.soundManager.getSoundByName('tuto_intro').source.onended = () => {
+                        self.soundManager.getSoundByName('01_real_intro').source.onended = () => {
                             EventManager.publish('camera:start')
+                            self.nextSequence(self)
                         }
                     }, 0)
-                    self.soundManager.getSoundByName('tuto_intro').play()
+                    self.soundManager.getSoundByName('01_real_intro').play()
 
-                    let startEvent = EventManager.subscribe('camera:started', () => {
-                        self.nextSequence(self)
-
-                        startEvent.unsubscribe()
-                    })
-
-                    // self.nextSequence(self) // TODO : Remove
                 },
                 update: null
             },
@@ -173,7 +159,7 @@ export default new Scenery({
                     self.followCurve(self, {
                             curveName: "P0_TRAVEL",
                             cameraIndex: 0,
-                            duration: 10, // 1000
+                            duration: 1000, // 1000
                         },
                         (self) => {
                             EventManager.publish('camera:rec', false)
@@ -185,15 +171,20 @@ export default new Scenery({
                 name: 'transition to traveling',
                 cameraIndex: 0,
                 init: (self) => {
-                    EventManager.publish('transition:start', {
-                        text: ''
-                    })
+                    self.soundManager.getSoundByName('02_real_intro_traveling').play()
 
-                    let transitionEvent = EventManager.subscribe('transition:ended', () => {
-                        self.nextSequence(self)
+                    setTimeout(() => {
+                        self.soundManager.getSoundByName('02_real_intro_traveling').source.onended = () => {
 
-                        transitionEvent.unsubscribe()
-                    })
+                            setTimeout(() => {
+                                self.soundManager.getSoundByName('03_real_transition_traveling').source.onended = () => {
+                                    self.nextSequence(self)
+                                }
+                            }, 0)
+
+                            self.soundManager.getSoundByName('03_real_transition_traveling').play()
+                        }
+                    }, 0)
 
                 }
             },
@@ -208,6 +199,8 @@ export default new Scenery({
                     self.cameraManager.camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
 
                     EventManager.publish('mobile:interaction_set', 'framing')
+
+                    self.soundManager.getSoundByName('04_real_cadrage_traveling').play()
 
                     // Start tutorial
                     EventManager.publish('tutorial:display', {
@@ -246,8 +239,18 @@ export default new Scenery({
                         threshold: .1,
                         camera: self.cameraManager.camera,
                         onComplete: (self) => {
+
                             EventManager.publish('camera:instructions', null)
-                            self.nextSequence(self)
+                            sequence.ready = false
+
+                            setTimeout(() => {
+                                self.soundManager.getSoundByName('05_real_traveling').source.onended = () => {
+                                    self.nextSequence(self)
+                                }
+                            }, 0)
+
+                            self.cameraManager.controls = null
+                            self.soundManager.getSoundByName('05_real_traveling').play()
                         }
                     })
 
@@ -310,7 +313,15 @@ export default new Scenery({
                         }).then(() => {
                             EventManager.publish('camera:rec', false)
                             EventManager.publish('camera:instructions', null)
-                            self.nextSequence(self)
+
+
+                            setTimeout(() => {
+                                self.soundManager.getSoundByName('06_real_traveling_fin').source.onended = () => {
+                                    self.nextSequence(self)
+                                }
+                            }, 0)
+
+                            self.soundManager.getSoundByName('06_real_traveling_fin').play()
                         })
 
                         // Unsubscribe the events
@@ -345,8 +356,16 @@ export default new Scenery({
                     EventManager.publish('mobile:interaction_set', 'framing')
 
                     let transitionEvent = EventManager.subscribe('transition:ended', () => {
-                        EventManager.publish('camera:instructions', 'Cadre l\'image')
-                        self.sequences[self.currentSequence].ready = true
+
+                        setTimeout(() => {
+                            self.soundManager.getSoundByName('07_real_zoom').source.onended = () => {
+                                EventManager.publish('camera:instructions', 'Cadre l\'image')
+                                self.sequences[self.currentSequence].ready = true
+
+                            }
+                        }, 0)
+
+                        self.soundManager.getSoundByName('07_real_zoom').play()
 
                         transitionEvent.unsubscribe()
                     })
@@ -417,7 +436,6 @@ export default new Scenery({
 
                     // On interaction done
                     const travelingEvent = EventManager.subscribe('mobile:interaction_done', () => {
-                        self.sequences[self.currentSequence].ready = true
 
                         gsap.to(self.cameraManager.camera.position, {
                             duration: 6,
@@ -428,7 +446,14 @@ export default new Scenery({
                         }).then(() => {
                             EventManager.publish('camera:rec', false)
                             EventManager.publish('camera:instructions', null)
-                            self.nextSequence(self)
+
+                            setTimeout(() => {
+                                self.soundManager.getSoundByName('08_real_zoom_fin').source.onended = () => {
+                                    self.nextSequence(self)
+                                }
+                            }, 0)
+
+                            self.soundManager.getSoundByName('08_real_zoom_fin').play()
                         })
 
                         // Unsubscribe the event
@@ -442,7 +467,7 @@ export default new Scenery({
                 cameraIndex: 2,
                 init: (self) => {
                     EventManager.publish('transition:start', {
-                        text: 'Un zoom en contre plongée assure un côté dominateur à tout les coups !'
+                        text: 'Un zoom en contre plongée assure un côté dominateur à tous les coups !'
                     })
 
                     self.nextSequence(self)
@@ -463,8 +488,23 @@ export default new Scenery({
                     EventManager.publish('mobile:interaction_set', 'framing')
 
                     let transitionEvent = EventManager.subscribe('transition:ended', () => {
-                        self.sequences[self.currentSequence].ready = true
-                        EventManager.publish('camera:instructions', 'Cadre l\'image')
+
+                        setTimeout(() => {
+                            self.soundManager.getSoundByName('09_real_transition_rotation').source.onended = () => {
+                                setTimeout(() => {
+                                    self.soundManager.getSoundByName('10_real_rotation').source.onended = () => {
+                                        console.log('ici')
+                                        self.sequences[self.currentSequence].ready = true
+                                        EventManager.publish('camera:instructions', 'Cadre l\'image')
+                                    }
+                                }, 0)
+
+                                self.soundManager.getSoundByName('10_real_rotation').play()
+                            }
+                        }, 0)
+
+                        self.soundManager.getSoundByName('09_real_transition_rotation').play()
+
                         transitionEvent.unsubscribe()
                     })
                 },
@@ -538,7 +578,14 @@ export default new Scenery({
                         gsap.to(self.cameraManager.camera.rotation, {y: finalRotation, duration: 6}).then(() => {
                             EventManager.publish('camera:rec', false)
                             EventManager.publish('camera:instructions', null)
-                            self.nextSequence(self)
+
+                            setTimeout(() => {
+                                self.soundManager.getSoundByName('11_real_rotation_fin').source.onended = () => {
+                                    self.nextSequence(self)
+                                }
+                            }, 0)
+
+                            self.soundManager.getSoundByName('11_real_rotation_fin').play()
                         })
 
                         // Unsubscribe events
@@ -548,7 +595,7 @@ export default new Scenery({
                 },
             },
             {
-                name: 'transition to actress scenery',
+                name: '',
                 cameraIndex: 3,
                 init: (self) => { // eslint-disable-line
                     EventManager.publish('transition:start', {
@@ -556,10 +603,29 @@ export default new Scenery({
                     })
 
                     let transitionEvent = EventManager.subscribe('transition:ended', () => {
-                        store.dispatch('app/requestState', appStates.ACTRESS)
+
+                        EventManager.publish('camera:stop')
+
+                        self.nextSequence(self)
 
                         transitionEvent.unsubscribe()
                     })
+                }
+            },
+            {
+                name: 'transition to actress scenery',
+                cameraIndex: 3,
+                init: (self) => { // eslint-disable-line
+
+                    EventManager.publish('camera:stop')
+
+                    setTimeout(() => {
+                        self.soundManager.getSoundByName('12_real_fin').source.onended = () => {
+                            store.dispatch('app/requestState', appStates.ACTRESS)
+                        }
+                    }, 0)
+
+                    self.soundManager.getSoundByName('12_real_fin').play()
                 }
             },
         ]

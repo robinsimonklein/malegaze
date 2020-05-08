@@ -28,7 +28,7 @@
             <div class="camera-overlay__progress-bar" :style="`width: ${progress}%`"></div>
         </div>
 
-        <div v-show="!started" class="camera-overlay__black-screen"></div>
+        <div class="camera-overlay__black-screen"></div>
     </div>
 </template>
 
@@ -40,7 +40,7 @@
         name: "CameraOverlay",
         data() {
             return {
-                started: true,
+                started: false,
                 progress: 0,
                 recording: false,
                 aiming: false,
@@ -53,11 +53,15 @@
                     current: 240
                 },
 
-
                 timelines: {
                     start: new gsap.timeline({
                         onComplete: () => {
                             EventManager.publish('camera:started')
+                        }
+                    }),
+                    stop: new gsap.timeline({
+                        onComplete: () => {
+                            EventManager.publish('camera:stopped')
                         }
                     })
                 },
@@ -80,19 +84,32 @@
             start() {
                 this.timelines.start.pause(0)
                 this.timelines.start.play()
+            },
+            stop() {
+                this.timelines.stop.pause(0)
+                this.timelines.stop.play()
+            },
+            buildStartTimeline() {
+                this.timelines.start.pause(0)
+                this.timelines.start.to('.camera-overlay__black-screen', {duration: 1, delay: 0, alpha: 0})
+                this.timelines.start.to('.camera-overlay', {duration: 1, delay: .5, alpha: 1})
+            },
+            buildStopTimeline() {
+                this.timelines.stop.pause(0)
+                this.timelines.stop.to('.camera-overlay', {duration: 1, delay: 0, alpha: 0})
+                this.timelines.stop.to('.camera-overlay__black-screen', {duration: 1, delay: 0, alpha: 1})
             }
         },
         beforeMount() {
-            this.timelines.start.pause(0)
-            this.timelines.start.to('.camera-overlay', {duration: 0, delay: .5, alpha: 0})
-            this.timelines.start.to('.camera-overlay', {duration: 0, delay: .2, alpha: 1})
-            this.timelines.start.to('.camera-overlay', {duration: 0, delay: .2, alpha: 0})
-            this.timelines.start.to('.camera-overlay', {duration: 0, delay: .2, alpha: 1})
-            this.timelines.start.to('.camera-overlay', {duration: 0, delay: .5, alpha: 1})
 
             this.events.push(EventManager.subscribe('camera:start', () => {
                 this.start()
                 this.started = true
+            }))
+
+            this.events.push(EventManager.subscribe('camera:stop', () => {
+                this.stop()
+                this.started = false
             }))
 
             this.events.push(EventManager.subscribe('camera:aiming', (data) => {
@@ -111,7 +128,10 @@
             this.events.push(EventManager.subscribe('camera:instructions', (instructions) => {
                 this.instructions = instructions
             }))
-
+        },
+        mounted() {
+            this.buildStartTimeline()
+            this.buildStopTimeline()
         },
         beforeDestroy() {
             // Unsubscribe all events before destroy component
