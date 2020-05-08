@@ -11,6 +11,7 @@ import * as THREE from "three";
 import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
 import * as Nodes from 'three/examples/jsm/nodes/Nodes.js';
 import PositionalSound from "../../sound/PositionalSound";
+import EventManager from "../../../event/EventManager";
 //import PositionalSound from "../../sound/PositionalSound";
 
 export default new Scenery({
@@ -107,6 +108,10 @@ export default new Scenery({
     onLoaded: (self) => {
 
         self.renderer.logarithmicDepthBuffer = true;
+
+        self.clickEvent = EventManager.subscribe('actress:click', () => {
+            self.shoot();
+        });
 
         var spriteMap = new THREE.TextureLoader().load( "models/images/oeil.png" );
         var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap } );
@@ -298,6 +303,7 @@ export default new Scenery({
 
                 if(diffX < 10.5 && diffY < 3.15 && diffZ < 34.2) {
                     cancelAnimationFrame(eyesAttractionFrame);
+                    self.clickEvent.unsubscribe();
                     self.endingScene();
                 } else {
                     position.x = distX;
@@ -307,6 +313,19 @@ export default new Scenery({
                 }
 
             })
+        };
+
+        self.endingScene = () => {
+            let endingAttractionFrame = requestAnimationFrame(self.endingScene);
+
+            if(self.endingTimer !== 500) {
+                self.percent.value += 0.01;
+            } else {
+                cancelAnimationFrame(endingAttractionFrame);
+                self.soundManager.stopAll();
+                store.dispatch('app/requestState', appStates.SPECTATOR)
+            }
+            self.endingTimer++;
         };
 
         /* self.shoot = (self) => {
@@ -327,7 +346,7 @@ export default new Scenery({
 
          };*/
 
-        self.shoot = (self) => {
+        self.shoot = () => {
             self.raycaster.setFromCamera({x: 0.0,y: 0.0}, self.cameraManager.camera);
             let intersects = self.raycaster.intersectObjects(self.group.children);
 
@@ -346,19 +365,6 @@ export default new Scenery({
                   self.generateEye(self.randomIntFromInterval(1, 2));*/
             }
 
-        };
-
-        self.endingScene = () => {
-            let endingAttractionFrame = requestAnimationFrame(self.endingScene);
-
-            if(self.endingTimer !== 500) {
-                self.percent.value += 0.01;
-            } else {
-                cancelAnimationFrame(endingAttractionFrame);
-                self.soundManager.stopAll();
-                store.dispatch('app/requestState', appStates.SPECTATOR)
-            }
-            self.endingTimer++;
         };
 
         self.playAmbiantSound = () => {
