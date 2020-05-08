@@ -78,7 +78,7 @@ class SceneManager {
      * @returns {THREE.WebGLRenderer}
      */
     buildRenderer({width, height}) {
-        const renderer = new THREE.WebGLRenderer({canvas: this.canvas, antialias: true, alpha: true});
+        const renderer = new THREE.WebGLRenderer({canvas: this.canvas, antialias: true, alpha: true, powerPreference: 'high-performance'});
         const DPR = (window.devicePixelRatio) ? window.devicePixelRatio : 1;
         renderer.setPixelRatio(DPR);
         renderer.setSize(width, height);
