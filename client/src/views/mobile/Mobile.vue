@@ -88,8 +88,9 @@
         align-items: center;
         justify-content: center;
         height: 100vh;
-        max-height: 100vh;
-        overflow: hidden;
+       /* max-height: 100vh;
+        overflow: hidden;*/
+
 
         &__debug {
             position: fixed;
