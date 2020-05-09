@@ -12,19 +12,24 @@ import appStates from '../../../appStates';
 import modelTypes from '../../model/modelTypes';
 import lightTypes from '../../light/lightTypes';
 import EventManager from '../../../event/EventManager';
-
+import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer';
+import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass';
+import {BloomPass} from 'three/examples/jsm/postprocessing/BloomPass';
+import {FilmPass} from 'three/examples/jsm/postprocessing/FilmPass';
 export default new Scenery({
-    name: 'spectator_scenery',
-    orbitControls: null,
+    name: `${appStates.SPECTATOR}_scenery`,
     cameras: [
         new Camera({
             type: cameraTypes.PERSPECTIVE,
-            properties: {fov: 60, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 8000},
+            properties: {fov: 180, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 3500},
             initialPosition: {x: -20, y: 200, z: 390},
+            settings: {
+                alphaOffset: 0
+            }
         }),
     ],
     renderer: null,
-    controls: controlsTypes.MOBILE,
+    controls: controlsTypes.ORBIT,
     models: [
         new Model({
             name: 'cinema',
@@ -38,7 +43,7 @@ export default new Scenery({
         }),
         new Model({
             name: 'eye',
-            path: 'models/glb/eyeye.glb',
+            path: 'models/glb/eye.glb',
             type: modelTypes.GLB
         })
     ],
@@ -46,21 +51,21 @@ export default new Scenery({
         new Light({
             name: 'ambient',
             type: lightTypes.AMBIENT,
-            light: new THREE.HemisphereLight(0xffb8c6, 0x080820),
+            // light: new THREE.HemisphereLight(0xffb8c6, 0x080820),
+            light: new THREE.HemisphereLight(0xffffff, 0xffffff),
         }),
-        /* new Light({
+        new Light({
             name: 'directional',
             type: lightTypes.DIRECTIONAL,
-            light: new THREE.DirectionalLight(0xff4444, 0.5),
+            light: new THREE.DirectionalLight(0xffffff, 0.5),
             initialPosition: {x: 0, y: 0, z: 0},
-        }), */
+        }),
         new Light({
             name: 'spotlight',
             type: lightTypes.SPOT,
             light: new THREE.SpotLight(0xff4444),
             initialPosition: {x: 0, y: 100, z: -780},
             properties: {
-                castShadow: true,
                 penumbra: 0.3,
                 angle: 0.7
             }
@@ -73,14 +78,23 @@ export default new Scenery({
             isLoop: true,
             volume: 0.4,
         }),
+        new Sound({
+            name: 'light',
+            path: 'sound/spectator/soundLight.mp3',
+            isLoop: false,
+            volume: 0.4,
+        }),
     ],
     onCreated: (self) => {
         self.eyeModel = null;
         self.eyes = [];
         self.video = null;
-        self.volumetricLights = [];
 
+        self.raycaster = new THREE.Raycaster();
+
+        self.volumetricLights = [];
         self.spotLights = [];
+
         self.lightColor = 0xffeeee;
 
         /**
@@ -92,9 +106,8 @@ export default new Scenery({
             mesh.geometry = new THREE.CylinderGeometry(18., 200., 300, 32 * 2, 20, true);
             mesh.geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(0, 50, 0));
 
-            const spotLight = new THREE.SpotLight(new THREE.Color(self.lightColor), 1., 0., 0.9, 0.5, 0.5);
+            const spotLight = new THREE.SpotLight(new THREE.Color(self.lightColor), 0., 0., 0.9, 0.5, 0.5);
             spotLight.position.set(mesh.position.x, mesh.position.y, mesh.position.z);
-            spotLight.visible = false;
             spotLight.target.position.set(mesh.position.x, 0, mesh.position.z);
 
             self.spotLights.push(spotLight);
@@ -104,9 +117,35 @@ export default new Scenery({
 
         }
 
+        self.playVoice = () => {
+
+        }
+
+        self.cooldown = 0;
+
+        self.spectatorListener = () => { // TODO
+            self.raycaster.setFromCamera({x: 0.0,y: 0.0}, self.cameraManager.camera);
+            const intersects = self.raycaster.intersectObjects(self.spectators, true);
+
+            if (intersects.length > 0 && self.cooldown === 0) {
+                EventManager.publish('spectatorDetected');
+                self.playVoice();
+                self.cooldown = 200;
+            }
+
+            if (self.cooldown > 0) {
+                EventManager.publish('spectatorNotDetected');
+                self.cooldown--;
+            }
+        }
+
+        self.moveCameraToScreen = () => {
+
+        }
+
         self.lightUp = (index) => {
             self.volumetricLights[index].material.visible = true;
-            self.spotLights[index * 2].visible = true;
+            self.spotLights[index * 2].intensity = 1;
 
             self.eyes[index].forEach((eye, index) => {
                 if (index !== 0) {
@@ -114,7 +153,7 @@ export default new Scenery({
                 }
             });
 
-            // TODO: Jouer un son de lampadaire qui s'allume
+            self.lightSound.play();
         }
 
         self.smokeParticles = [];
@@ -237,18 +276,41 @@ export default new Scenery({
 
             self.scene.add(mesh);
 
-            self.video.play().then(() => self.video.volume = 0);
+            self.video.play().then(() => self.video.volume = 0.02);
         }
 
-        self.endingTimer = 0;
+        self.addBlur = () => {
+            self.composer = new EffectComposer(self.renderer);
+            self.composer.addPass(new RenderPass(self.scene, self.cameraManager.camera));
 
+            self.bloomPass = new BloomPass(
+                1,
+                25,
+                20,
+                256
+            );
+            self.composer.addPass(self.bloomPass);
+
+            const filmPass = new FilmPass(
+                0.1,
+                0.025,
+                648,
+                0,
+            );
+            filmPass.renderToScreen = true;
+            self.composer.addPass(filmPass);
+        }
     },
     onLoaded: (self) => {
+        console.log(self.scene);
         self.timer = 0;
         self.clock = new THREE.Clock();
 
-        self.soundManager.sound.play();
+        self.lightSound = self.soundManager.getSoundByName('light');
 
+        self.soundManager.getSoundByName('ambiance').play();
+
+        // Set street lamp & eyes next to women
         self.scene.traverse((child) => {
             if (child.name === 'eye') {
                 child.rotateX(Math.PI / 2);
@@ -256,6 +318,9 @@ export default new Scenery({
                 self.eyeModel = child;
             }
         });
+
+
+        self.spectators = [];
 
         let i = 0;
         self.scene.traverse((child) => {
@@ -269,19 +334,39 @@ export default new Scenery({
                 self.generateEyes({position: [child.position.x, child.position.z]}); // Create eyes
                 i++;
             }
+
+            if (child.name.toLowerCase().includes('persos')) {
+                child.children.forEach((spectator) => {
+                    if (spectator.type.toLowerCase() === 'mesh') {
+                        self.spectators.push(spectator);
+                    } else {
+                        spectator.children.forEach((spec) => {
+                            if (spec.type.toLowerCase() === 'mesh') {
+                                self.spectators.push(spec);
+                            }
+                        });
+                    }
+                });
+            }
         });
+
+        console.log(self.spectators);
 
         // Create cinema screen
         self.buildVideo({src: '/video/cinema-vid.mp4'});
         self.buildScreen();
-        self.generateFog({x: 0, y: 100, z: 0}, {
+
+        // TODO: Generate fog
+        /* self.generateFog({x: 0, y: 100, z: 0}, {
             minX: -1000,
             maxX: 1000,
             minY: 0,
             maxY: 500,
             minZ: -500,
             maxZ: 200
-        }, 20, 0.);
+        }, 50, 0.); */
+
+        self.addBlur();
     },
     onUpdate: (self) => {
         const delta = self.clock.getDelta();
@@ -301,6 +386,11 @@ export default new Scenery({
             }
         });
 
+        if (self.timer > 100) {
+            self.bloomPass.enabled = false;
+            self.spectatorListener();
+        }
+
         if (self.timer === 1000) {
             self.lightUp(2);
             self.lightUp(3);
@@ -318,7 +408,7 @@ export default new Scenery({
                 let sp = particles.length;
                 while (sp--) {
                     if (particles[sp].material.opacity < 1.) {
-                        particles[sp].material.opacity += 1/3000;
+                        particles[sp].material.opacity += 1 / 3000;
                     }
                 }
             });
@@ -335,5 +425,7 @@ export default new Scenery({
         if (self.timer < 6000) {
             self.timer++;
         }
+
+        self.composer.render(delta);
     }
 });
