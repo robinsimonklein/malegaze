@@ -1,12 +1,7 @@
 <template>
-    <div class="mobile-scene-2" id="mobile-scene-2" ref="mobileScene2" @click="shoot">
-        <p>Tap the screen</p>
-        <div class="mobile-scene-2__wrapper" ref="circleWrapper">
-            <div class=""></div>
-            <div class=""></div>
-            <div class=""></div>
-        </div>
-        <!--<button @click="next" class="btn mobile-scene-2__button">Next</button>-->
+    <div class="mobile-scene-2" id="mobile-scene-2" ref="mobileScene2" >
+        <p class="mobile-scene-2__text">Tape ici</p>
+        <div class="mobile-scene-2__wrapper" ref="circleWrapper" @click="shoot"></div>
 
     </div>
 </template>
@@ -17,9 +12,8 @@
         components: {},
         data() {
             return {
-                isClicked: false,
-                wrapperDiv: null,
-                compter: 0
+                timeout : null,
+                circleWrapper : null
             }
         },
         methods: {
@@ -28,52 +22,31 @@
             },*/
             shoot() {
                this.$socket.emit('mobile_shoot')
+                this.circleAnimation();
             },
             init() {
-                this.sceneDiv = this.$refs.circleWrapper;
-                this.circleAnimation();
-                window.addEventListener('click', () => {
-                    this.resetCircleAnimation()
-                });
-                window.addEventListener('click', () => {
-                    this.createCircle()
-                });
-            },
-
-            resetCircleAnimation() {
-                if (!this.isClicked) {
-                    this.isClicked = true;
-                    this.sceneDiv.innerHTML = '';
-                }
-            },
-            createCircle() {
-                if (this.sceneDiv.children.length > 10) {
-                    for (let i = 0; i < 5; i++) {
-                        this.sceneDiv.children[i].remove();
-                    }
-                }
-                let node = document.createElement('div');
-                node.className = 'mobile-scene-2__circle';
-                this.sceneDiv.appendChild(node);
-                //this.sceneDiv.appendChild();
+                this.circleWrapper = this.$refs.circleWrapper;
+                this.numberOfCircle = 3;
             },
             circleAnimation() {
-                let counter = 0;
-                setInterval(() => {
-                    if (!this.isClicked) {
-                        if (counter < this.sceneDiv.children.length + 1) {
-                            if (this.sceneDiv.children[counter] !== undefined) {
-                                this.sceneDiv.children[counter].classList.add('mobile-scene-2__circle')
-                            }
-                            counter++;
-                        } else {
-                            this.sceneDiv.children.forEach(function (el) {
-                                el.classList.remove('mobile-scene-2__circle')
-                            });
-                            counter = 0;
-                        }
+                if (this.circleWrapper.children.length > this.numberOfCircle *2) {
+                    for (let i = 0; i < this.numberOfCircle; i++) {
+                        this.circleWrapper.children[i].remove();
                     }
-                }, 500);
+                }
+                if(this.timeout !== null) {
+                    clearTimeout(this.timeout)
+                }
+                this.circleWrapper.classList.add('actressScene__sight__active');
+                this.timeout = setTimeout(() => {
+                    this.circleWrapper.classList.remove('actressScene__sight__active')
+                }, 1000);
+
+                for (let i = 0; i < this.numberOfCircle; i++) {
+                    let node = document.createElement('div');
+                    node.className = 'mobile-scene-2__wrapper__circle--'+i;
+                    this.circleWrapper.appendChild(node);
+                }
             }
         },
         mounted() {
@@ -94,45 +67,92 @@
         height: 100%;
         position: relative;
 
-        p {
-            color: darkred;
+        &__text {
+            z-index: 2;
+            color: #202020;
             text-transform: uppercase;
+            font-family: "Roboto Mono", sans-serif;
+            font-size: 18px;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
         }
 
-        &__circle {
-            width: 10rem;
-            height: 10rem;
-            background-color: transparent;
-            border-radius: 100%;
+        &__wrapper {
+
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: scale3d(0, 0, 0);
-            transform-origin: center;
-            border: .05rem solid darkred;
-            // transform: translate(-50%, -50%) scale(1.5);
-            animation: circleAnimation 1s ease-out;
-        }
+            transform: translate(-50%, -50%);
 
-        &__button {
-            position: absolute;
-            top: 1%;
-            right: 1%;
+            height: 220px;
+            width: 220px;
+            background-color: #FF4040;
+            border-radius: 100%;
+
+            &__circle {
+                &--0 {
+                    opacity: 0;
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+
+                    border-radius: 100%;
+                    height: 220px;
+                    width: 220px;
+                    background-color: transparent;
+                    transform-origin: center;
+                    animation: sonar-effect .5s ease-in-out;
+                }
+
+                &--1 {
+                    opacity: 0;
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+
+                    transform-origin: center;
+                    border-radius: 100%;
+                    height: 220px;
+                    width: 220px;
+                    background-color: transparent;
+                    animation: sonar-effect 1s ease-in-out;
+                }
+
+                &--2 {
+                    opacity: 0;
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+
+                    transform-origin: center;
+                    border-radius: 100%;
+                    height: 220px;
+                    width: 220px;
+                    background-color: transparent;
+                    animation: sonar-effect 1.5s ease-in-out;
+                }
+            }
+
         }
 
     }
 
-    @keyframes circleAnimation {
+    @keyframes sonar-effect {
         0% {
-            transform: translate(-50%, -50%) scale3d(0, 0, 1);
+            border: .5px solid #FF4040;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale3d(1, 1, 1);
         }
 
         100% {
-            transform: translate(-50%, -50%) scale3d(5, 5, 1);
+            border: .5px solid #FF4040;
+            transform: translate(-50%, -50%) scale3d(4, 4, 1);
+            opacity: 0;
         }
 
     }
