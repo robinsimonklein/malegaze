@@ -1,6 +1,6 @@
 <template>
     <div class="spectatorScene">
-        <div class="spectatorScene__sight" id="spectatorScene__sight"></div>
+        <div ref="sight" class="spectatorScene__sight" id="spectatorScene__sight"></div>
         <div ref="fadingOut" class="fading-out"></div>
     </div>
 </template>
@@ -13,6 +13,14 @@
         created() {
             EventManager.subscribe('fadeEnding', () => {
                 this.$refs.fadingOut.classList.add('active');
+            });
+
+            EventManager.subscribe('spectatorDetected', () => {
+                this.$refs.sight.classList.add('active');
+            });
+
+            EventManager.subscribe('spectatorNotDetected', () => {
+                this.$refs.sight.classList.remove('active');
             });
         }
     }
@@ -39,6 +47,14 @@
                 position: fixed;
                 top: 0;
                 left: 0;
+            }
+
+            &.active {
+                background-color: #2fff00;
+
+                &::after {
+                    background-color: #2fff00;
+                }
             }
         }
         .fading-out {
