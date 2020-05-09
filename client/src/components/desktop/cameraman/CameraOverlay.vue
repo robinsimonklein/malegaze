@@ -2,7 +2,7 @@
     <div class="camera-overlay" :class="{'aiming' : aiming}">
         <div class="camera-overlay__corner camera-overlay__corner--tl">
             <div v-show="instructions" class="camera-overlay__instructions">
-                <img class="camera-overlay__instructions-img" src=""/>
+                <img class="camera-overlay__instructions-img" src="icon/tutorial/smartphone.svg"/>
                 <span class="camera-overlay__instructions-text">{{ instructions }}</span>
             </div>
         </div>
@@ -366,6 +366,7 @@
         &-text {
             text-transform: uppercase;
             letter-spacing: .2rem;
+            margin-left: 1rem;
         }
     }
 
