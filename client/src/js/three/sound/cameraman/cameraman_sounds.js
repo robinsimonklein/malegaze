@@ -2,6 +2,13 @@ import Sound from "../Sound";
 
 export default [
     new Sound({
+        name: 'cameraman_ambiance',
+        path: 'sound/cameraman/cameraman_ambiance.mp3',
+        isLoop: true,
+        volume: .2,
+    }),
+    // Real
+    new Sound({
         name: '01_real_intro',
         path: 'sound/cameraman/real/01_real_intro.mp3',
         isLoop: false,
