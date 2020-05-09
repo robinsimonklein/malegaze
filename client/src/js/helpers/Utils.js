@@ -4,13 +4,19 @@ import {CatmullRomCurve3} from "three";
 /**
  * Generate a unique ID
  * @param {number} [length=9] - Max length of the ID
+ * @param {boolean} [includeZero=true] - Include 0 in generated numbers ?
  * @return {string}
  * @example
  * const id = ID()
  * console.log(id) // _bg4bka7yx
  */
-export function ID(length= 9) {
-    return '_' + Math.random().toString(36).substr(2, length);
+export function ID(length= 9, includeZero = true) {
+    const numbers = []
+    for(let i = 0; i<length; i++){
+        const random = Math.round(Math.random() * 9)
+        numbers.push(random)
+    }
+    return '_' + numbers.join('');
 }
 
 /**
