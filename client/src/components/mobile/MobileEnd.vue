@@ -3,6 +3,8 @@
         <MobileEndIntro/>
         <MobileEndExplication/>
         <MobileEndImpact/>
+        <MobileEndBetchdel/>
+        <MobileEndConclusion/>
     </div>
 </template>
 
@@ -10,9 +12,11 @@
     import MobileEndIntro from "./end/MobileEndIntro";
     import MobileEndExplication from "./end/MobileEndExplication";
     import MobileEndImpact from "./end/MobileEndImpact";
+    import MobileEndBetchdel from "./end/MobileEndBetchdel";
+    import MobileEndConclusion from "./end/MobileEndConclusion";
     export default {
         name: "MobileEnd",
-        components: {MobileEndImpact, MobileEndExplication, MobileEndIntro},
+        components: {MobileEndBetchdel, MobileEndImpact, MobileEndExplication, MobileEndIntro, MobileEndConclusion},
     }
 </script>
 
