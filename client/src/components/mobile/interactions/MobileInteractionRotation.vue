@@ -13,7 +13,7 @@
             return {
                 min: 0,
                 max: 1,
-                disabled: true
+                disabled: false
             }
         },
         sockets: {
