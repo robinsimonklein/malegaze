@@ -29,6 +29,7 @@
         </div>
 
         <div class="camera-overlay__black-screen"></div>
+        <div class="camera-overlay__black-screen--off"></div>
     </div>
 </template>
 
@@ -97,7 +98,7 @@
             buildStopTimeline() {
                 this.timelines.stop.pause(0)
                 this.timelines.stop.to('.camera-overlay', {duration: 1, delay: 0, alpha: 0})
-                this.timelines.stop.to('.camera-overlay__black-screen', {duration: 1, delay: 0, alpha: 1})
+                this.timelines.stop.to('.camera-overlay__black-screen--off', {duration: 1, delay: 0, alpha: 1})
             }
         },
         beforeMount() {
@@ -393,9 +394,20 @@
         z-index: 500;
         top: 0;
         left: 0;
-        background: black;
         height: 100vh;
         width: 100vw;
+        background: black;
+
+        &--off {
+            position: fixed;
+            z-index: 500;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 100vw;
+            background: black;
+            opacity: 0;
+        }
     }
 
 }

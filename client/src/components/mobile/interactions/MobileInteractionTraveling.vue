@@ -43,8 +43,6 @@
                 }
             });
 
-            this.draggable[0].disable()
-
             EventManager.subscribe('drag', (progress) => {
                 if(progress === 1) {
                     this.done()

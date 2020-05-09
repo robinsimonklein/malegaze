@@ -114,7 +114,6 @@ class CameraManager {
             default:
                 break;
         }
-        console.log(this.controls)
     }
 
     setControls(type){
