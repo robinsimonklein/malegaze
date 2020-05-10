@@ -2,7 +2,7 @@
     <div class="camera-overlay" :class="{'aiming' : aiming}">
         <div class="camera-overlay__corner camera-overlay__corner--tl">
             <div v-show="instructions" class="camera-overlay__instructions">
-                <img class="camera-overlay__instructions-img" src=""/>
+                <img class="camera-overlay__instructions-img" src="icon/tutorial/smartphone.svg"/>
                 <span class="camera-overlay__instructions-text">{{ instructions }}</span>
             </div>
         </div>
@@ -29,6 +29,7 @@
         </div>
 
         <div class="camera-overlay__black-screen"></div>
+        <div class="camera-overlay__black-screen--off"></div>
     </div>
 </template>
 
@@ -97,7 +98,7 @@
             buildStopTimeline() {
                 this.timelines.stop.pause(0)
                 this.timelines.stop.to('.camera-overlay', {duration: 1, delay: 0, alpha: 0})
-                this.timelines.stop.to('.camera-overlay__black-screen', {duration: 1, delay: 0, alpha: 1})
+                this.timelines.stop.to('.camera-overlay__black-screen--off', {duration: 1, delay: 0, alpha: 1})
             }
         },
         beforeMount() {
@@ -366,6 +367,7 @@
         &-text {
             text-transform: uppercase;
             letter-spacing: .2rem;
+            margin-left: 1rem;
         }
     }
 
@@ -392,9 +394,20 @@
         z-index: 500;
         top: 0;
         left: 0;
-        background: black;
         height: 100vh;
         width: 100vw;
+        background: black;
+
+        &--off {
+            position: fixed;
+            z-index: 500;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 100vw;
+            background: black;
+            opacity: 0;
+        }
     }
 
 }
