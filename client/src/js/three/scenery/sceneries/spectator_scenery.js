@@ -17,6 +17,7 @@ import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass';
 import {BloomPass} from 'three/examples/jsm/postprocessing/BloomPass';
 import {FilmPass} from 'three/examples/jsm/postprocessing/FilmPass';
 import * as Nodes from 'three/examples/jsm/nodes/Nodes';
+import gsap from 'gsap';
 
 export default new Scenery({
     name: `${appStates.SPECTATOR}_scenery`,
@@ -24,14 +25,14 @@ export default new Scenery({
         new Camera({
             type: cameraTypes.PERSPECTIVE,
             properties: {fov: 180, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 3500},
-            initialPosition: {x: -20, y: 200, z: 390},
+            initialPosition: {x: -20, y: 220, z: 520},
             settings: {
                 alphaOffset: 0
             }
-        }),
+        })
     ],
     renderer: null,
-    controls: controlsTypes.ORBIT,
+    controls: controlsTypes.MOBILE,
     models: [
         new Model({
             name: 'cinema',
@@ -53,14 +54,7 @@ export default new Scenery({
         new Light({
             name: 'ambient',
             type: lightTypes.AMBIENT,
-            // light: new THREE.HemisphereLight(0xffb8c6, 0x080820),
-            light: new THREE.HemisphereLight(0xffffff, 0xffffff),
-        }),
-        new Light({
-            name: 'directional',
-            type: lightTypes.DIRECTIONAL,
-            light: new THREE.DirectionalLight(0xffffff, 0.5),
-            initialPosition: {x: 0, y: 0, z: 0},
+            light: new THREE.HemisphereLight(0xffb8c6, 0x080820)
         }),
         new Light({
             name: 'spotlight',
@@ -78,30 +72,80 @@ export default new Scenery({
             name: 'ambiance',
             path: 'sound/ambianceScene3.mp3',
             isLoop: true,
-            volume: 0.4,
+            volume: 0.4
         }),
         new Sound({
             name: 'light',
             path: 'sound/spectator/soundLight.mp3',
             isLoop: false,
-            volume: 0.4,
+            volume: 0.4
         }),
+        new Sound({
+            name: 'voice',
+            path: 'sound/spectator/voice.mp3',
+            isLoop: false,
+            volume: 0.7
+        }),
+        new Sound({
+            name: 'voice1',
+            path: 'sound/spectator/voice_1.mp3',
+            isLoop: false,
+            volume: 0.7
+        }),
+        new Sound({
+            name: 'voice2',
+            path: 'sound/spectator/voice_2.mp3',
+            isLoop: false,
+            volume: 0.7
+        }),
+        new Sound({
+            name: 'voice3',
+            path: 'sound/spectator/voice_3.mp3',
+            isLoop: false,
+            volume: 0.7
+        }),
+        new Sound({
+            name: 'voice4',
+            path: 'sound/spectator/voice_4.mp3',
+            isLoop: false,
+            volume: 0.7
+        }),
+        new Sound({
+            name: 'voice5',
+            path: 'sound/spectator/voice_5.mp3',
+            isLoop: false,
+            volume: 0.7
+        }),
+        new Sound({
+            name: 'voice6',
+            path: 'sound/spectator/voice_6.mp3',
+            isLoop: false,
+            volume: 0.7
+        }),
+        new Sound({
+            name: 'voice7',
+            path: 'sound/spectator/voice_7.mp3',
+            isLoop: false,
+            volume: 0.7
+        })
     ],
     onCreated: (self) => {
         self.eyeModel = null;
         self.eyes = [];
         self.video = null;
+        self.blur = null;
 
         self.raycaster = new THREE.Raycaster();
 
         self.volumetricLights = [];
         self.spotLights = [];
+        self.spectators = [];
+        self.voices = [];
+        self.smokeParticles = [];
 
         self.lightColor = 0xffeeee;
+        self.cooldown = 0;
 
-        /**
-         * @param {*} mesh
-         */
         self.replaceConeByCylinder = (mesh) => {
             mesh.material = new THREEx.VolumetricSpotLightMaterial(2.8, 5., mesh.position, new THREE.Color(self.lightColor), 1.);
             mesh.material.visible = false;
@@ -116,14 +160,13 @@ export default new Scenery({
             self.spotLights.push(spotLight.target);
             self.scene.add(spotLight);
             self.scene.add(spotLight.target);
-
         }
 
         self.playVoice = () => {
-
+            const length = self.voices.length;
+            const random = Math.floor(Math.random() * length);
+            self.voices[random].play();
         }
-
-        self.cooldown = 0;
 
         self.spectatorListener = () => {
             self.raycaster.setFromCamera({x: 0.0, y: 0.0}, self.cameraManager.camera);
@@ -136,13 +179,30 @@ export default new Scenery({
             }
 
             if (self.cooldown > 0) {
-                EventManager.publish('spectatorNotDetected');
+                if (self.cooldown < 150) {
+                    EventManager.publish('spectatorNotDetected');
+                }
                 self.cooldown--;
             }
         }
 
-        self.moveCameraToScreen = () => {
-            self.cameraManager.camera.lookAt(self.videoScreen);
+        self.endScene = () => {
+            self.source.src = '/video/cinema-vid-end.mp4';
+            self.cameraManager.controls = null;
+            const timeline = gsap.timeline();
+            timeline
+                .to(self.cameraManager.camera.rotation, {x: 0.1, y: -0.05, duration: 3})
+                .to(self.cameraManager.camera, {delay: 1, zoom: 5, duration: 2});
+            timeline.play().then(() => {
+                EventManager.publish('fadeEnding');
+                const timeout = setTimeout(() => {
+                    store.dispatch('app/requestState', appStates.END).then(() => {
+                        self.video.pause();
+                        self.soundManager.stopAll();
+                        clearTimeout(timeout);
+                    });
+                }, 1000);
+            });
         }
 
         self.lightUp = (index) => {
@@ -154,16 +214,12 @@ export default new Scenery({
                     eye.visible = true;
                 }
             });
-
-            self.lightSound.play();
         }
-
-        self.smokeParticles = [];
 
         self.generateFog = (smokePosition, intervals, number, opacity) => {
             const smokeTexture = new THREE.TextureLoader().load('models/images/Smoke.png');
             const smokeMaterial = new THREE.MeshLambertMaterial({
-                color: 0x444444,
+                color: 0xFFFFFF,
                 map: smokeTexture,
                 transparent: true,
                 opacity: opacity
@@ -171,7 +227,7 @@ export default new Scenery({
 
             smokeMaterial.polygonOffset = true;
             smokeMaterial.depthTest = true;
-            const smokeGeo = new THREE.PlaneGeometry(800, 800);
+            const smokeGeo = new THREE.PlaneGeometry(500, 500);
 
             const particles = [];
             for (let p = 0; p < number; p++) {
@@ -202,9 +258,6 @@ export default new Scenery({
          */
         self.generateEyes = ({position}) => {
             const objects = [];
-
-            const material = new THREE.MeshPhongMaterial({opacity: 0});
-            material.transparent = true;
 
             const actress = new THREE.Object3D();
             self.scene.add(actress);
@@ -245,10 +298,10 @@ export default new Scenery({
         self.buildVideo = ({src}) => {
             self.video = document.createElement('video');
             self.video.setAttribute('style', 'display: none');
-            const source = document.createElement('source');
-            source.setAttribute('src', src);
-            source.setAttribute('type', 'video/mp4');
-            self.video.appendChild(source);
+            self.source = document.createElement('source');
+            self.source.setAttribute('src', src);
+            self.source.setAttribute('type', 'video/mp4');
+            self.video.appendChild(self.source);
             document.body.appendChild(self.video);
         }
 
@@ -279,11 +332,8 @@ export default new Scenery({
             self.scene.add(mesh);
 
             self.videoScreen = mesh;
-
             self.video.play().then(() => self.video.volume = 0.02);
         }
-
-        self.blur = null;
 
         self.addBlur = () => {
             self.composer = new EffectComposer(self.renderer);
@@ -297,16 +347,6 @@ export default new Scenery({
             );
             self.composer.addPass(self.bloomPass);
 
-            const size = self.renderer.getDrawingBufferSize(new THREE.Vector2());
-
-            self.blur = new Nodes.BlurNode(new Nodes.ScreenNode());
-            self.blur.size = new THREE.Vector2(size.width, size.height);
-
-            self.nodepostBlur.output = self.blur;
-
-            self.blur.radius.x = 6;
-            self.blur.radius.y = 6;
-
             const filmPass = new FilmPass(
                 0.1,
                 0.025,
@@ -315,6 +355,20 @@ export default new Scenery({
             );
             filmPass.renderToScreen = true;
             self.composer.addPass(filmPass);
+
+            const size = self.renderer.getDrawingBufferSize(new THREE.Vector2());
+
+            self.blur = new Nodes.BlurNode(new Nodes.ScreenNode());
+            self.blur.size = new THREE.Vector2(size.width, size.height);
+
+            self.nodepostBlur.output = self.blur;
+
+            self.blur.radius.x = 7;
+            self.blur.radius.y = 7;
+        }
+
+        self.addVoice = (name) => {
+            self.voices.push(self.soundManager.getSoundByName(name));
         }
     },
     onLoaded: (self) => {
@@ -326,7 +380,19 @@ export default new Scenery({
 
         self.lightSound = self.soundManager.getSoundByName('light');
 
+        self.light = new THREE.DirectionalLight(0xffffff, 0);
+        self.scene.add(self.light);
+
         self.soundManager.getSoundByName('ambiance').play();
+
+        self.addVoice('voice');
+        self.addVoice('voice1');
+        self.addVoice('voice2');
+        self.addVoice('voice3');
+        self.addVoice('voice4');
+        self.addVoice('voice5');
+        self.addVoice('voice6');
+        self.addVoice('voice7');
 
         // Set street lamp & eyes next to women
         self.scene.traverse((child) => {
@@ -336,7 +402,6 @@ export default new Scenery({
                 self.eyeModel = child;
             }
         });
-        self.spectators = [];
 
         let i = 0;
         self.scene.traverse((child) => {
@@ -371,16 +436,6 @@ export default new Scenery({
         self.buildVideo({src: '/video/cinema-vid.mp4'});
         self.buildScreen();
 
-        // TODO: Generate fog
-        /* self.generateFog({x: 0, y: 100, z: 0}, {
-            minX: -1000,
-            maxX: 1000,
-            minY: 0,
-            maxY: 500,
-            minZ: -500,
-            maxZ: 200
-        }, 50, 0.); */
-
         self.addBlur();
     },
     onUpdate: (self) => {
@@ -394,28 +449,26 @@ export default new Scenery({
             });
         });
 
-        self.smokeParticles.forEach((particles) => {
+        /* self.smokeParticles.forEach((particles) => {
             let sp = particles.length;
             while (sp--) {
                 particles[sp].rotation.z += (delta * 0.2);
             }
-        });
+        }); */
 
-        if (self.timer > 100) {
-            if (self.blur.radius.x > 0 && self.blur.radius.y > 0) {
-                self.blur.radius.x -= 0.1;
-                self.blur.radius.y -= 0.1;
-            }
+        if (self.timer === 100) {
+            gsap.to(self.blur.radius, {x: 0, y: 0, duration: 3});
+        }
+        if (self.timer > 100 && self.timer < 6000) {
+            gsap.to(self.blur.radius, {x: 0, y: 0, duration: 3});
             self.spectatorListener();
         }
-
-        if (self.timer === 300) {
-            self.moveCameraToScreen();
-        }
-
         if (self.timer === 1000) {
             self.lightUp(2);
             self.lightUp(3);
+            gsap.to(self.light, {intensity: 1, duration: 4});
+
+            self.lightSound.play();
         }
         if (self.timer === 1050) {
             self.lightUp(1);
@@ -424,26 +477,22 @@ export default new Scenery({
         if (self.timer === 1100) {
             self.lightUp(0);
             self.lightUp(4);
+
         }
-        if (self.timer > 3000) {
+        /*if (self.timer > 3000) {
             self.smokeParticles.forEach((particles) => {
                 let sp = particles.length;
                 while (sp--) {
-                    if (particles[sp].material.opacity < 1.) {
-                        particles[sp].material.opacity += 1 / 3000;
+                    if (particles[sp].material.opacity < 0.1) {
+                        particles[sp].material.opacity += 0.01;
                     }
                 }
             });
-        }
-        if (self.timer === 5900) {
-            EventManager.publish('fadeEnding');
-        }
+        } */
         if (self.timer === 6150) {
-            store.dispatch('app/requestState', appStates.END).then(() => {
-                self.video.pause();
-                self.soundManager.stopAll();
-            });
+            self.endScene();
         }
+
         if (self.timer < 6150) {
             self.timer++;
         }
@@ -451,6 +500,5 @@ export default new Scenery({
         self.composer.render(delta);
         self.frame.update(delta);
         self.nodepostBlur.render(self.scene, self.cameraManager.camera, self.frame);
-
     }
 });
