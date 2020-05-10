@@ -318,7 +318,6 @@ export default new Scenery({
         }
     },
     onLoaded: (self) => {
-        console.log(self.scene);
         self.timer = 0;
         self.clock = new THREE.Clock();
 
@@ -367,8 +366,6 @@ export default new Scenery({
                 });
             }
         });
-
-        console.log(self.spectators);
 
         // Create cinema screen
         self.buildVideo({src: '/video/cinema-vid.mp4'});
@@ -438,7 +435,7 @@ export default new Scenery({
                 }
             });
         }
-        if (self.timer === 6000) {
+        if (self.timer === 5900) {
             EventManager.publish('fadeEnding');
         }
         if (self.timer === 6150) {
@@ -447,7 +444,7 @@ export default new Scenery({
                 self.soundManager.stopAll();
             });
         }
-        if (self.timer < 6000) {
+        if (self.timer < 6150) {
             self.timer++;
         }
 
