@@ -15,11 +15,16 @@
             return {
                 event : null,
                 text: 'Transition text',
-                comment: 'Comment'
+                comment: 'Comment',
+                timeline: null
             }
         },
         methods: {
+            createTimeline() {
+
+            },
             playTimeline() {
+                this.createTimeline()
                 this.timeline.pause(0)
                 this.timeline.play()
             }
@@ -35,9 +40,9 @@
         mounted() {
             this.timeline.from('.camera-transition', {duration: 2, alpha: 0, ease: "power3.out"},)
             this.timeline.from('.camera-transition__text', {duration: 2, alpha: 0, ease: "power3.out"}, '-=0.5')
-            this.timeline.from('.camera-transition__comment', {duration: 2, alpha: 0, ease: "power3.out"}, '-=1')
+            this.timeline.from('.camera-transition__comment', {duration: 2, alpha: 0, ease: "power3.out"}, '-=0.5')
 
-            this.timeline.to('.camera-transition__text', {duration: 1, alpha: 0, ease: "power3.out"}, '+=6')
+            this.timeline.to('.camera-transition__text', {duration: 1, alpha: 0, ease: "power3.out"}, '+=8') // 6
             this.timeline.to('.camera-transition__comment', {duration: 1, alpha: 0, ease: "power3.out"}, '-=1')
             this.timeline.to('.camera-transition', {duration: 1, alpha: 0, ease: "power3.out"}, '-=0.5')
 

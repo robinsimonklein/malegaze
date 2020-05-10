@@ -238,7 +238,10 @@ export default new Scenery({
 
                     EventManager.publish('mobile:interaction_set', 'framing')
                     self.soundManager.getSoundByName('04_real_cadrage_traveling').play()
-                    EventManager.publish('camera:instructions', 'Cadre l\'image')
+                    EventManager.publish('camera:instructions', {
+                        text: 'Cadre l\'image',
+                        hint: 'Vise les pieds de l\'actrice'
+                    })
                     self.sequences[self.currentSequence].ready = true
                 },
                 update: (self) => {
@@ -278,7 +281,10 @@ export default new Scenery({
                     EventManager.publish('mobile:interaction_set', 'traveling')
 
                     EventManager.publish('camera:rec', true)
-                    EventManager.publish('camera:instructions', 'Effectue un traveling')
+                    EventManager.publish('camera:instructions', {
+                        text: 'Effectue un traveling',
+                        hint: 'Tourne la roue pour faire avancer le traveling'
+                    })
                     const curve = self.cameraCurves.find(curve => curve.name === 'P1_TRAVEL')
                     const finalPosition = curve.getPointAt(1)
 
@@ -350,7 +356,10 @@ export default new Scenery({
 
                         setTimeout(() => {
                             self.soundManager.getSoundByName('07_real_zoom').source.onended = () => {
-                                EventManager.publish('camera:instructions', 'Cadre l\'image')
+                                EventManager.publish('camera:instructions', {
+                                    text: 'Cadre l\'image',
+                                    hint: 'Oriente la caméra vers Shean'
+                                })
                                 self.sequences[self.currentSequence].ready = true
 
                             }
@@ -386,7 +395,10 @@ export default new Scenery({
                 init: (self) => {
                     self.cameraManager.controls = null
                     EventManager.publish('mobile:interaction_set', 'zoom')
-                    EventManager.publish('camera:instructions', 'Effectue un zoom')
+                    EventManager.publish('camera:instructions', {
+                        text: 'Effectue un zoom',
+                        hint: 'Pousse le curseur pour zoomer'
+                    })
                     const curve = self.cameraCurves.find(curve => curve.name === 'P2_ZOOM')
                     const finalPosition = curve.getPointAt(1)
 
@@ -462,7 +474,10 @@ export default new Scenery({
                                 setTimeout(() => {
                                     self.soundManager.getSoundByName('10_real_rotation').source.onended = () => {
                                         self.sequences[self.currentSequence].ready = true
-                                        EventManager.publish('camera:instructions', 'Cadre l\'image')
+                                        EventManager.publish('camera:instructions', {
+                                            text: 'Cadre l\'image',
+                                            hint: 'Vise vers les seins de l\'actrice',
+                                        })
                                     }
                                 }, 0)
 
@@ -503,7 +518,10 @@ export default new Scenery({
                     EventManager.publish('mobile:interaction_set', 'rotation')
 
                     EventManager.publish('camera:rec', true)
-                    EventManager.publish('camera:instructions', 'Effectue une rotation')
+                    EventManager.publish('camera:instructions', {
+                        text: 'Effectue une rotation',
+                        hint: 'Tourne doucement le téléphone vers la gauche'
+                    })
 
                     const y = self.cameraManager.camera.rotation.y
                     const finalRotation = y + MathUtils.degToRad(20)

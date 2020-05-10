@@ -1,9 +1,9 @@
 <template>
     <div class="camera-overlay" :class="{'aiming' : aiming}">
         <div class="camera-overlay__corner camera-overlay__corner--tl">
-            <div v-show="instructions" class="camera-overlay__instructions">
-                <img class="camera-overlay__instructions-img" src="icon/tutorial/smartphone.svg"/>
-                <span class="camera-overlay__instructions-text">{{ instructions }}</span>
+            <div v-show="instructions.text" class="camera-overlay__instructions">
+                <img class="camera-overlay__instructions-icon" src="icon/tutorial/smartphone.svg"/>
+                <span class="camera-overlay__instructions-text">{{ instructions.text }}</span>
             </div>
         </div>
         <div class="camera-overlay__corner camera-overlay__corner--tr">
@@ -24,6 +24,9 @@
             <div class="camera-overlay__target--corner camera-overlay__target--bl"></div>
             <div class="camera-overlay__target--corner camera-overlay__target--br"></div>
         </div>
+        <div class="camera-overlay__hint">
+            <p v-show="instructions.hint" class="camera-overlay__hint-text" >> {{ instructions.hint }}</p>
+        </div>
         <div class="camera-overlay__progress">
             <div class="camera-overlay__progress-bar" :style="`width: ${progress}%`"></div>
         </div>
@@ -41,12 +44,15 @@
         name: "CameraOverlay",
         data() {
             return {
-                started: false,
+                started: true,
                 progress: 0,
                 recording: false,
                 aiming: false,
 
-                instructions: null,
+                instructions: {
+                    text: null,
+                    hint: null
+                },
 
                 targetSize: {
                     min: 130,
@@ -99,6 +105,10 @@
                 this.timelines.stop.pause(0)
                 this.timelines.stop.to('.camera-overlay', {duration: 1, delay: 0, alpha: 0})
                 this.timelines.stop.to('.camera-overlay__black-screen--off', {duration: 1, delay: 0, alpha: 1})
+            },
+            displayInstructions() {
+                gsap.fromTo('.camera-overlay__instructions-icon', {alpha: 0, x: -10}, {duration: 2, alpha: 1, x: 0, ease: 'power3.out'})
+                gsap.fromTo('.camera-overlay__instructions-text', {alpha: 0, x: -10}, {duration: 2, alpha: 1, x: 0, ease: 'power3.out'})
             }
         },
         beforeMount() {
@@ -127,7 +137,14 @@
             }))
 
             this.events.push(EventManager.subscribe('camera:instructions', (instructions) => {
-                this.instructions = instructions
+                if(this.instructions) {
+                    this.instructions.text = instructions.text ?? null
+                    this.instructions.hint = instructions.hint ?? null
+                }else {
+                    this.instructions.text = null
+                    this.instructions.hint = null
+                }
+                if(instructions.text !== null) this.displayInstructions()
             }))
         },
         mounted() {
@@ -368,6 +385,19 @@
             text-transform: uppercase;
             letter-spacing: .2rem;
             margin-left: 1rem;
+        }
+    }
+
+    &__hint {
+        position: fixed;
+        top: calc(50% + 9rem);
+        width: 100%;
+        display: flex;
+        justify-content: center;
+
+        &-text {
+            max-width: 35rem;
+            text-align: center;
         }
     }
 
