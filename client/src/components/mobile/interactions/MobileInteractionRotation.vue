@@ -1,6 +1,6 @@
 <template>
     <div class="mobile-interaction interaction-rotation">
-        <CustomSlider class="interaction-rotation__slider" :min="min" :max="max" :step="0.01" :disabled="disabled" @change="checkValue"/>
+        <CustomSlider class="interaction-rotation__slider" :min="min" :max="max" :step="0.01" :disabled="disabled" :orientation="'left'" @change="checkValue"/>
     </div>
 </template>
 
