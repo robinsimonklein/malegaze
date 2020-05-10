@@ -1,12 +1,13 @@
 <template>
     <div class="actressScene">
-        <div class="actressScene__tuto" id="actressScene__tuto">
+        <div class="actressScene__overlayFade" ref="overlayFade"></div>
+        <!--<div class="actressScene__tuto" id="actressScene__tuto">
             <div class="actressScene__tuto__content">
                 <h2>Repousse les regards</h2>
                 <p>Vise puis tape dans la zone definie pour repousser les statues</p>
                 <img src="icon/tutorial/tutorial_icon_hit.svg" alt="phone"/>
             </div>
-        </div>
+        </div>-->
         <div class="actressScene__sight" id="actressScene__sight" ref="sightWrapper"></div>
     </div>
 </template>
@@ -26,15 +27,26 @@
         methods: {
             init() {
                 this.sightWrapper = this.$refs.sightWrapper;
-                this.numberOfCircle = 2;
+                this.overlayFade = this.$refs.overlayFade;
 
-                var overlay = document.getElementById('actressScene__tuto');
+                this.numberOfCircle = 1;
+
+              //  var overlay = document.getElementById('actressScene__tuto');
                 var sight = document.getElementById('actressScene__sight');
 
                 setTimeout(() => {
-                   overlay.style.display = 'none';
+                 //  overlay.style.display = 'none';
                     sight.style.display = 'block';
                 },5000);
+
+                EventManager.subscribe('actress:fade', () => {
+                    if(this.overlayFade.classList.contains('actressScene__overlayFade__active')) {
+                        this.overlayFade.classList.remove('actressScene__overlayFade__active');
+                    } else {
+                        this.overlayFade.classList.add('actressScene__overlayFade__active');
+                    }
+
+                });
 
                 EventManager.subscribe('actress:click:animation', () => {
                     if (this.sightWrapper.children.length > this.numberOfCircle *2) {
@@ -50,7 +62,7 @@
                     this.sightWrapper.classList.add('actressScene__sight__active');
                     self.timeout = setTimeout(() => {
                         this.sightWrapper.classList.remove('actressScene__sight__active')
-                    }, 1000);
+                    }, 500);
 
                     for (let i = 0; i < this.numberOfCircle; i++) {
                         this.generateCircle(i)
@@ -74,6 +86,23 @@
 <style lang="scss">
 
     .actressScene {
+
+        &__overlayFade {
+            background: black;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 999;
+            opacity: 1;
+            transition: all 1.5s;
+
+            &__active {
+                opacity: 0;
+            }
+
+        }
 
         &__tuto {
             position: fixed;
@@ -113,10 +142,11 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 29px;
-            height: 29px;
+            width: 40px;
+            height: 40px;
             border-radius: 100%;
-            background-color: #ffff;
+            background-color: transparent;
+            border: 1px solid #ffff;
 
             &__active {
 
@@ -124,8 +154,8 @@
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
-                width: 29px;
-                height: 29px;
+                width: 40px;
+                height: 40px;
                 border-radius: 100%;
                 background-color: #FF4040;
 
@@ -137,8 +167,8 @@
                     transform: translate(-50%, -50%);
 
                     border-radius: 100%;
-                    width: 29px;
-                    height: 29px;
+                    width: 40px;
+                    height: 40px;
                     background-color: transparent;
                     transform-origin: center;
                     animation: sonar-effect .5s ease-in-out;
@@ -158,34 +188,6 @@
                     background-color: transparent;
                     animation: sonar-effect 1s ease-in-out;
                 }
-
-              /*  &:before {
-                    content: '';
-                    width: 25px;
-                    height: 25px;
-                    top: 50%;
-                    left: 50%;
-                    border-radius: 100%;
-                    background-color: transparent;
-                    border: .5px solid #FF4040;
-                    position: fixed;
-                    transform: translate(-50%, -50%);
-                    animation: sonar-effect .5s ease-in-out;
-                }
-
-                &:after {
-                    content: '';
-                    width: 25px;
-                    height: 25px;
-                    top: 50%;
-                    left: 50%;
-                    border-radius: 100%;
-                    background-color: transparent;
-                    border: .5px solid #FF4040;
-                    position: fixed;
-                    transform: translate(-50%, -50%);
-                    animation: sonar-effect 1s ease-in-out;
-                }*/
 
             }
 
