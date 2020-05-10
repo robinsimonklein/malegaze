@@ -89,13 +89,13 @@ export default new Scenery({
     lights: [
         new Light({
             name: 'ambiant',
-            light: new THREE.HemisphereLight(0xffb8c6, 0x080820),
+            light: new THREE.HemisphereLight(0xffffff, 0x080820, .5),
             initialPosition: {x: 0, y: 300, z: 0},
             debug: true
         }),
         new Light({
             name: 'spotlights',
-            light: new THREE.DirectionalLight(0xff4444, 1),
+            light: new THREE.DirectionalLight(0xffffff, .6),
             initialPosition: {x: 0, y: 200, z: -700},
             properties: {
                 castShadow: true
@@ -117,10 +117,48 @@ export default new Scenery({
 
         self.currentSequence = 0
 
-        // TODO : A l'aide
+        // TODO : Modulariser, utiliser des méthodes, ...
 
         self.sequences = [
-            // Intro
+            {
+                name: 'context',
+                cameraIndex: 0,
+                init: (self) => {
+
+                    const cameraPosition = self.cameraCurves.find(curve => curve.name === 'P0_TRAVEL').getPointAt(0)
+                    self.cameraManager.camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
+
+                    self.soundManager.getSoundByName('cameraman_ambiance').play()
+
+                    EventManager.publish('transition:start', {
+                        text: 'Les propos qui vont suivre ont déjà été entendus sur des tournages.',
+                    })
+
+                    const transitionEvent = EventManager.subscribe('transition:ended', () => {
+                        self.nextSequence(self)
+                        transitionEvent.unsubscribe();
+                    })
+
+                },
+                update: null
+            },
+            {
+                name: 'prevention',
+                cameraIndex: 0,
+                init: (self) => {
+
+                    EventManager.publish('transition:start', {
+                        text: 'Certains peuvent heurter la sensibilité des plus jeunes.'
+                    })
+
+                    const transitionEvent = EventManager.subscribe('transition:ended', () => {
+                        self.nextSequence(self)
+                        transitionEvent.unsubscribe();
+                    })
+
+                },
+                update: null
+            },
             {
                 name: 'intro',
                 cameraIndex: 0,
@@ -188,45 +226,24 @@ export default new Scenery({
 
                 }
             },
-
             // Traveling
-            {
-                name: 'tuto cadrage',
-                cameraIndex: 1,
-                init: (self) => {
-                    self.cameraManager.setControls(controlsTypes.MOBILE)
-                    const cameraPosition = self.cameraCurves.find(curve => curve.name === 'P1_TRAVEL').getPointAt(0)
-                    self.cameraManager.camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
-
-
-                    EventManager.publish('mobile:interaction_set', 'framing')
-
-                    self.soundManager.getSoundByName('04_real_cadrage_traveling').play()
-
-                    // Start tutorial
-                    EventManager.publish('tutorial:display', {
-                        title: 'Cadre l\'image',
-                        subtitle: 'Oriente la caméra en pivotant le téléphone',
-                        icon: 'tutorial_icon_framing.svg',
-                        animation: 'orientation',
-                    })
-
-
-                    // On tutorial finished
-                    const displayedEvent = EventManager.subscribe('tutorial:displayed', () => {
-                        self.sequences[self.currentSequence].ready = true
-                        self.nextSequence(self)
-                        // Unsubscribe the event
-                        displayedEvent.unsubscribe();
-                    })
-                }
-            },
             {
                 name: 'cadrage traveling',
                 cameraIndex: 1,
                 ready: false,
                 init: () => {
-                    EventManager.publish('camera:instructions', 'Cadre l\'image')
+                    self.cameraManager.setControls(controlsTypes.MOBILE)
+                    const cameraPosition = self.cameraCurves.find(curve => curve.name === 'P1_TRAVEL').getPointAt(0)
+                    self.cameraManager.camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
+
+                    EventManager.publish('mobile:interaction_set', 'framing')
+                    self.soundManager.getSoundByName('04_real_cadrage_traveling').play()
+
+                    EventManager.publish('camera:instructions', {
+                        text: 'Cadre l\'image',
+                        hint: 'Vise les pieds de l\'actrice'
+                    })
+
                     self.sequences[self.currentSequence].ready = true
                 },
                 update: (self) => {
@@ -241,7 +258,6 @@ export default new Scenery({
                         camera: self.cameraManager.camera,
                         onComplete: (self) => {
 
-                            EventManager.publish('camera:instructions', null)
                             sequence.ready = false
 
                             setTimeout(() => {
@@ -258,38 +274,19 @@ export default new Scenery({
                 }
             },
             {
-                name: 'tuto traveling',
-                cameraIndex: 1,
-                init: (self) => {
-                    self.cameraManager.controls = null
-
-                    EventManager.publish('mobile:interaction_set', 'traveling')
-
-                    // Start tutorial
-                    EventManager.publish('tutorial:display', {
-                        title: 'Effectue un traveling',
-                        subtitle: 'Utilise le curseur pour lancer le travelling',
-                        icon: 'tutorial_icon_traveling.svg',
-                    })
-
-
-                    // On tutorial finished
-                    const displayedEvent = EventManager.subscribe('tutorial:displayed', () => {
-                        self.sequences[self.currentSequence].ready = true
-                        self.nextSequence(self)
-                        // Unsubscribe the event
-                        displayedEvent.unsubscribe();
-                    })
-                }
-            },
-            {
                 name: 'traveling',
                 cameraIndex: 1,
                 ready: false,
                 init: () => {
-                    EventManager.publish('mobile:interaction_enable')
+                    self.cameraManager.controls = null
+                    EventManager.publish('camera:instructions', false)
+                    EventManager.publish('mobile:interaction_set', 'traveling')
+
                     EventManager.publish('camera:rec', true)
-                    EventManager.publish('camera:instructions', 'Effectue un traveling')
+                    EventManager.publish('camera:instructions', {
+                        text: 'Effectue un traveling',
+                        hint: 'Tourne la roue pour faire avancer le traveling'
+                    })
                     const curve = self.cameraCurves.find(curve => curve.name === 'P1_TRAVEL')
                     const finalPosition = curve.getPointAt(1)
 
@@ -305,6 +302,7 @@ export default new Scenery({
                     // On interaciton done
                     const travelingEvent = EventManager.subscribe('mobile:interaction_done', () => {
                         self.sequences[self.currentSequence].ready = true
+                        EventManager.publish('camera:instructions', false)
                         gsap.to(self.cameraManager.camera.position, {
                             duration: 5,
                             ease: 'power1.out',
@@ -313,7 +311,6 @@ export default new Scenery({
                             z: finalPosition.z,
                         }).then(() => {
                             EventManager.publish('camera:rec', false)
-                            EventManager.publish('camera:instructions', null)
 
 
                             setTimeout(() => {
@@ -336,7 +333,8 @@ export default new Scenery({
                 cameraIndex: 1,
                 init: (self) => {
                     EventManager.publish('transition:start', {
-                        text: 'Il faut savoir mettre en avant les atouts de nos actrices. Le réalisateur a fait un très bon choix de commencer par un traveling de bas en haut.'
+                        text: '&laquo;&nbsp;Une femme sur un tournage c’est important, ça permet de canaliser les hommes.&nbsp;&raquo;',
+                        comment: 'Un professeur de cinéma à ses élèves'
                     })
 
                     self.nextSequence(self)
@@ -360,8 +358,12 @@ export default new Scenery({
 
                         setTimeout(() => {
                             self.soundManager.getSoundByName('07_real_zoom').source.onended = () => {
-                                EventManager.publish('camera:instructions', 'Cadre l\'image')
+                                EventManager.publish('camera:instructions', {
+                                    text: 'Cadre l\'image',
+                                    hint: 'Oriente la caméra vers Sean'
+                                })
                                 self.sequences[self.currentSequence].ready = true
+                                EventManager.publish('camera:instructions', false)
 
                             }
                         }, 0)
@@ -382,35 +384,10 @@ export default new Scenery({
                         threshold: .1,
                         camera: self.cameraManager.camera,
                         onComplete: (self) => {
-                            EventManager.publish('camera:instructions', null)
                             self.nextSequence(self)
                         }
                     })
 
-                }
-            },
-            {
-                name: 'tuto zoom',
-                cameraIndex: 2,
-                init: (self) => {
-                    self.cameraManager.controls = null
-
-                    EventManager.publish('mobile:interaction_set', 'zoom')
-
-                    // Start tutorial
-                    EventManager.publish('tutorial:display', {
-                        title: 'Effectue un zoom',
-                        subtitle: 'UTILISE LE CURSEUR POUR lancer le zoom ',
-                        icon: 'tutorial_icon_zoom.svg',
-                    })
-
-                    // On tutorial finished
-                    const displayedEvent = EventManager.subscribe('tutorial:displayed', () => {
-                        self.sequences[self.currentSequence].ready = true
-                        self.nextSequence(self)
-                        // Unsubscribe the event
-                        displayedEvent.unsubscribe();
-                    })
                 }
             },
             {
@@ -419,11 +396,14 @@ export default new Scenery({
                 ready: false,
                 init: (self) => {
                     self.cameraManager.controls = null
-                    EventManager.publish('camera:instructions', 'Effectue un zoom')
+                    EventManager.publish('mobile:interaction_set', 'zoom')
+                    EventManager.publish('camera:instructions', {
+                        text: 'Effectue un zoom',
+                        hint: 'Pousse le curseur pour zoomer'
+                    })
                     const curve = self.cameraCurves.find(curve => curve.name === 'P2_ZOOM')
                     const finalPosition = curve.getPointAt(1)
 
-                    EventManager.publish('mobile:interaction_enable')
                     EventManager.publish('camera:rec', true)
 
                     // On interaction
@@ -438,6 +418,8 @@ export default new Scenery({
                     // On interaction done
                     const travelingEvent = EventManager.subscribe('mobile:interaction_done', () => {
 
+                        EventManager.publish('camera:instructions', false)
+
                         gsap.to(self.cameraManager.camera.position, {
                             duration: 6,
                             ease: 'power1.out',
@@ -446,7 +428,6 @@ export default new Scenery({
                             z: finalPosition.z,
                         }).then(() => {
                             EventManager.publish('camera:rec', false)
-                            EventManager.publish('camera:instructions', null)
 
                             setTimeout(() => {
                                 self.soundManager.getSoundByName('08_real_zoom_fin').source.onended = () => {
@@ -468,7 +449,8 @@ export default new Scenery({
                 cameraIndex: 2,
                 init: (self) => {
                     EventManager.publish('transition:start', {
-                        text: 'Un zoom en contre plongée assure un côté dominateur à tous les coups !'
+                        text: '&laquo;&nbsp;Il me faisait des baisers forcés dans le cou, c\'est arrivé très souvent.&nbsp;&raquo;',
+                        comment: 'Une assistante réalisation à propos d\'un acteur très connu'
                     })
 
                     self.nextSequence(self)
@@ -495,7 +477,10 @@ export default new Scenery({
                                 setTimeout(() => {
                                     self.soundManager.getSoundByName('10_real_rotation').source.onended = () => {
                                         self.sequences[self.currentSequence].ready = true
-                                        EventManager.publish('camera:instructions', 'Cadre l\'image')
+                                        EventManager.publish('camera:instructions', {
+                                            text: 'Cadre l\'image',
+                                            hint: 'Vise vers les seins de l\'actrice',
+                                        })
                                     }
                                 }, 0)
 
@@ -519,7 +504,7 @@ export default new Scenery({
                         threshold: .1,
                         camera: self.cameraManager.camera,
                         onComplete: (self) => {
-                            EventManager.publish('camera:instructions', null)
+                            EventManager.publish('camera:instructions', false)
                             self.nextSequence(self)
                         }
                     })
@@ -527,37 +512,19 @@ export default new Scenery({
                 }
             },
             {
-                name: 'tuto rotation',
+                name: 'rotation',
                 cameraIndex: 3,
+                ready: false,
                 init: (self) => {
                     self.cameraManager.controls = null
 
                     EventManager.publish('mobile:interaction_set', 'rotation')
 
-                    // Start tutorial
-                    EventManager.publish('tutorial:display', {
-                        title: 'EFFECTUE UNE ROTATION',
-                        subtitle: 'Pivote le téléphone vers la gauche pour effectuer une rotation',
-                        icon: 'tutorial_icon_rotation.svg',
-                    })
-
-                    // On tutorial finished
-                    const displayedEvent = EventManager.subscribe('tutorial:displayed', () => {
-                        self.sequences[self.currentSequence].ready = true
-                        self.nextSequence(self)
-                        // Unsubscribe the event
-                        displayedEvent.unsubscribe();
-                    })
-                }
-            },
-            {
-                name: 'rotation',
-                cameraIndex: 3,
-                ready: false,
-                init: (self) => {
-                    EventManager.publish('mobile:interaction_enable')
                     EventManager.publish('camera:rec', true)
-                    EventManager.publish('camera:instructions', 'Effectue une rotation')
+                    EventManager.publish('camera:instructions', {
+                        text: 'Pivote la caméra',
+                        hint: 'Tourne doucement le téléphone vers la gauche'
+                    })
 
                     const y = self.cameraManager.camera.rotation.y
                     const finalRotation = y + MathUtils.degToRad(20)
@@ -577,7 +544,7 @@ export default new Scenery({
 
                         gsap.to(self.cameraManager.camera.rotation, {y: finalRotation, duration: 6}).then(() => {
                             EventManager.publish('camera:rec', false)
-                            EventManager.publish('camera:instructions', null)
+                            EventManager.publish('camera:instructions', false)
 
                             setTimeout(() => {
                                 self.soundManager.getSoundByName('11_real_rotation_fin').source.onended = () => {
@@ -599,7 +566,8 @@ export default new Scenery({
                 cameraIndex: 3,
                 init: (self) => { // eslint-disable-line
                     EventManager.publish('transition:start', {
-                        text: 'Filmer la femme de bas en haut permet de la rendre sexy et encourage l’audience à prendre plus de plaisir en la regardant'
+                        text: '&laquo;&nbsp;Ça ne va pas, on peut la refaire ? <br> On ne voit pas assez ses seins.&nbsp;&raquo;',
+                        comment: 'Un directeur artistique à une journaliste chargée du making-of'
                     })
 
                     let transitionEvent = EventManager.subscribe('transition:ended', () => {
@@ -623,6 +591,8 @@ export default new Scenery({
 
                     setTimeout(() => {
                         self.soundManager.getSoundByName('12_real_fin').source.onended = () => {
+
+                            self.soundManager.getSoundByName('cameraman_ambiance').stop()
                             store.dispatch('app/requestState', appStates.ACTRESS)
                         }
                     }, 0)
@@ -687,12 +657,6 @@ export default new Scenery({
     },
     onLoaded: (self) => {
         console.log('self', self)
-        /*
-        store.dispatch('app/requestState', appStates.ACTRESS)
-        console.log('change scenery')
-        return
-
-         */
 
         // self.cameraManager.changeCamera(4)
         // self.cameraManager.controls.object = self.cameraManager.cameraObjects[4].camera

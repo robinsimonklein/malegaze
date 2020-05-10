@@ -1,9 +1,15 @@
 <template>
     <div class="mobile">
-        <p v-if="debug" class="mobile__debug">ID : {{ this.mobileId }}</p>
+        <p v-if="debug" class="mobile__debug">
+            ID : {{ mobileId }}<br>
+            Portrait : {{ isPortrait }}
+        </p>
 
-        <component :is="currentComponent" />
-        <MobileOrientation v-if="mobileOrientation" />
+        <component v-show="isPortrait" :is="currentComponent" />
+        <template v-if="!isPortrait">
+            <p>Utilisez votre téléphone en orientation portrait.</p>
+        </template>
+        <MobileOrientation v-if="mobileOrientation && isPortrait" />
     </div>
 </template>
 
@@ -31,6 +37,7 @@
         data() {
             return {
                 debug: true,
+                isPortrait: false
             }
         },
         computed: {
@@ -68,8 +75,13 @@
                     default:
                         return false
                 }
-            }
+            },
 
+        },
+        methods:  {
+            setPortraitOrientation() {
+                this.isPortrait = window.orientation === 0
+            }
         },
         created() {
             // Get the mobile ID in route
@@ -78,6 +90,12 @@
             // Join the mobile room
             this.$socket.emit('join_mobile_room', this.mobileId)
         },
+        beforeMount() {
+            window.addEventListener('orientationchange', () => {
+                this.setPortraitOrientation()
+            })
+            this.setPortraitOrientation()
+        }
     }
 </script>
 
@@ -88,8 +106,9 @@
         align-items: center;
         justify-content: center;
         height: 100vh;
-        max-height: 100vh;
-        overflow: hidden;
+       /* max-height: 100vh;
+        overflow: hidden;*/
+
 
         &__debug {
             position: fixed;

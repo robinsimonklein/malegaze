@@ -1,6 +1,7 @@
 <template>
     <div class="camera-transition">
         <p class="camera-transition__text" v-html="text"></p>
+        <span class="camera-transition__comment" v-show="comment">— {{ comment }}</span>
     </div>
 </template>
 
@@ -13,11 +14,17 @@
         data() {
             return {
                 event : null,
-                text: 'Il faut savoir mettre en avant les atouts de nos actrices. Le réalisateur a fait un très bon choix de commencer par un traveling de bas en haut.'
+                text: 'Transition text',
+                comment: 'Comment',
+                timeline: null
             }
         },
         methods: {
+            createTimeline() {
+
+            },
             playTimeline() {
+                this.createTimeline()
                 this.timeline.pause(0)
                 this.timeline.play()
             }
@@ -33,12 +40,15 @@
         mounted() {
             this.timeline.from('.camera-transition', {duration: 2, alpha: 0, ease: "power3.out"},)
             this.timeline.from('.camera-transition__text', {duration: 2, alpha: 0, ease: "power3.out"}, '-=0.5')
+            this.timeline.from('.camera-transition__comment', {duration: 2, alpha: 0, ease: "power3.out"}, '-=0.5')
 
-            this.timeline.to('.camera-transition__text', {duration: 2, alpha: 0, ease: "power3.out"}, '+=4')
-            this.timeline.to('.camera-transition', {duration: 2, alpha: 0, ease: "power3.out"}, '-=0.5')
+            this.timeline.to('.camera-transition__text', {duration: 1, alpha: 0, ease: "power3.out"}, '+=8') // 6
+            this.timeline.to('.camera-transition__comment', {duration: 1, alpha: 0, ease: "power3.out"}, '-=1')
+            this.timeline.to('.camera-transition', {duration: 1, alpha: 0, ease: "power3.out"}, '-=0.5')
 
             this.event = EventManager.subscribe('transition:start', (data) => {
                 this.text = data.text ?? null
+                this.comment = data.comment ?? null
                 this.playTimeline()
             })
         },
@@ -58,14 +68,24 @@
     z-index: 500;
     height: 100vh;
     width: 100vw;
-    background: rgba(black, .8);
+    background: rgba(black, .9);
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 
     &__text {
+        max-width: 40rem;
+        font-size: 1.6rem;
+        text-align: center;
+        width: 75vw;
+    }
+
+    &__comment {
+        color: $color-primary;
+        margin-top: 1rem;
         max-width: 80vw;
-        font-size: 1.8rem;
+        font-size: 1rem;
         text-align: center;
         width: 1300px;
     }
