@@ -16,6 +16,8 @@ import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer';
 import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass';
 import {BloomPass} from 'three/examples/jsm/postprocessing/BloomPass';
 import {FilmPass} from 'three/examples/jsm/postprocessing/FilmPass';
+import * as Nodes from 'three/examples/jsm/nodes/Nodes';
+
 export default new Scenery({
     name: `${appStates.SPECTATOR}_scenery`,
     cameras: [
@@ -123,8 +125,8 @@ export default new Scenery({
 
         self.cooldown = 0;
 
-        self.spectatorListener = () => { // TODO
-            self.raycaster.setFromCamera({x: 0.0,y: 0.0}, self.cameraManager.camera);
+        self.spectatorListener = () => {
+            self.raycaster.setFromCamera({x: 0.0, y: 0.0}, self.cameraManager.camera);
             const intersects = self.raycaster.intersectObjects(self.spectators, true);
 
             if (intersects.length > 0 && self.cooldown === 0) {
@@ -140,7 +142,7 @@ export default new Scenery({
         }
 
         self.moveCameraToScreen = () => {
-
+            self.cameraManager.camera.lookAt(self.videoScreen);
         }
 
         self.lightUp = (index) => {
@@ -276,8 +278,12 @@ export default new Scenery({
 
             self.scene.add(mesh);
 
+            self.videoScreen = mesh;
+
             self.video.play().then(() => self.video.volume = 0.02);
         }
+
+        self.blur = null;
 
         self.addBlur = () => {
             self.composer = new EffectComposer(self.renderer);
@@ -286,10 +292,20 @@ export default new Scenery({
             self.bloomPass = new BloomPass(
                 1,
                 25,
-                20,
+                0,
                 256
             );
             self.composer.addPass(self.bloomPass);
+
+            const size = self.renderer.getDrawingBufferSize(new THREE.Vector2());
+
+            self.blur = new Nodes.BlurNode(new Nodes.ScreenNode());
+            self.blur.size = new THREE.Vector2(size.width, size.height);
+
+            self.nodepostBlur.output = self.blur;
+
+            self.blur.radius.x = 6;
+            self.blur.radius.y = 6;
 
             const filmPass = new FilmPass(
                 0.1,
@@ -306,6 +322,9 @@ export default new Scenery({
         self.timer = 0;
         self.clock = new THREE.Clock();
 
+        self.nodepostBlur = new Nodes.NodePostProcessing(self.renderer);
+        self.frame = new Nodes.NodeFrame();
+
         self.lightSound = self.soundManager.getSoundByName('light');
 
         self.soundManager.getSoundByName('ambiance').play();
@@ -318,8 +337,6 @@ export default new Scenery({
                 self.eyeModel = child;
             }
         });
-
-
         self.spectators = [];
 
         let i = 0;
@@ -334,6 +351,7 @@ export default new Scenery({
                 self.generateEyes({position: [child.position.x, child.position.z]}); // Create eyes
                 i++;
             }
+
 
             if (child.name.toLowerCase().includes('persos')) {
                 child.children.forEach((spectator) => {
@@ -387,8 +405,15 @@ export default new Scenery({
         });
 
         if (self.timer > 100) {
-            self.bloomPass.enabled = false;
+            if (self.blur.radius.x > 0 && self.blur.radius.y > 0) {
+                self.blur.radius.x -= 0.1;
+                self.blur.radius.y -= 0.1;
+            }
             self.spectatorListener();
+        }
+
+        if (self.timer === 300) {
+            self.moveCameraToScreen();
         }
 
         if (self.timer === 1000) {
@@ -427,5 +452,8 @@ export default new Scenery({
         }
 
         self.composer.render(delta);
+        self.frame.update(delta);
+        self.nodepostBlur.render(self.scene, self.cameraManager.camera, self.frame);
+
     }
 });
