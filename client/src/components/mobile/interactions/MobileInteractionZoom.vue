@@ -1,5 +1,7 @@
 <template>
-    <div class="mobile-interaction interaction-zoom" :class="{'success': success}">
+    <div class="mobile-interaction interaction-zoom">
+        <CustomSlider class="interaction-zoom__slider" :min="min" :max="max" :step="0.01" :disabled="disabled" orientation="top" @change="checkValue"/>
+        <!--
         <div ref="zone" class="interaction-zoom__zone">
             <div class="interaction-zoom__target" :style="`height: ${size}%; width: ${size}%;`">
                 <div class="interaction-zoom__target-corner interaction-zoom__target-corner--tl"></div>
@@ -9,17 +11,18 @@
                 <div class="interaction-zoom__target--center"></div>
             </div>
         </div>
+        -->
     </div>
 </template>
 
 <script>
-    // import CustomSlider from "../controls/CustomSlider";
-    import Hammer from 'hammerjs'
-    import {normalize} from "../../../js/helpers/Utils";
+    import CustomSlider from "../controls/CustomSlider";
+    // import Hammer from 'hammerjs'
+    // import {normalize} from "../../../js/helpers/Utils";
 
     export default {
         name: "MobileInteractionZoom",
-        // components: {CustomSlider},
+        components: {CustomSlider},
         data() {
             return {
                 min: 0,
@@ -35,14 +38,16 @@
                 this.disabled = false
             }
         },
-        computed: {
-            success() {
-                return this.size === 100
-            }
-        },
         methods: {
             checkValue(value) {
-                if (Number(value) === 1) this.done()
+
+                this.$socket.emit('mobile_interaction', {
+                    type: 'zoom',
+                    value: value
+                })
+
+                if(Number(value )=== 1) this.done()
+
             },
             done() {
                 this.disabled = true
@@ -51,6 +56,7 @@
         },
         mounted() {
 
+            /*
             let zone = this.$refs.zone
             let hammer = new Hammer(zone)
             hammer.get('pinch').set({enable: true});
@@ -80,12 +86,21 @@
                     this.disabled = true
                 }
             })
+
+             */
         }
     }
 </script>
 
 <style lang="scss" scoped>
     .interaction-zoom {
+        &__slider {
+            // transform: rotate(90deg);
+        }
+
+        /* TODO: Temporary disabled code */
+
+        /*
         &__zone {
             display: flex;
             align-items: center;
@@ -171,7 +186,7 @@
                 }
             }
         }
-
+         */
 
     }
 </style>
