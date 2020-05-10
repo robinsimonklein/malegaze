@@ -68,17 +68,17 @@
     z-index: 500;
     height: 100vh;
     width: 100vw;
-    background: rgba(black, .8);
+    background: rgba(black, .9);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 
     &__text {
-        max-width: 80vw;
+        max-width: 40rem;
         font-size: 1.6rem;
         text-align: center;
-        width: 1300px;
+        width: 75vw;
     }
 
     &__comment {
