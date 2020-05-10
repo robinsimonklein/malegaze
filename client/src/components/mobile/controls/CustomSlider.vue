@@ -1,5 +1,5 @@
 <template>
-    <div class="custom-slider">
+    <div class="custom-slider" :class="orientation">
         <input class="custom-slider__input" :disabled="disabled" type="range" v-model="sliderValue" :min="min" :max="max" :step="step" />
     </div>
 </template>
@@ -19,6 +19,10 @@
             step: {
                 type: Number,
                 default: 1
+            },
+            orientation: {
+                type: String,
+                default: 'top'
             },
             disabled: {
                 type: Boolean,
@@ -49,13 +53,12 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
 
-    &.vertical {
-        height: 100%;
-        width: 1rem;
+    &.top {
+        transform: rotate(-90deg);
         .custom-slider__input {
             width: 50vh;
-            transform: rotate(-90deg);
         }
     }
 
