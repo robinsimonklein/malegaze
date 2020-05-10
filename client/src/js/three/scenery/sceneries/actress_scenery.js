@@ -42,7 +42,7 @@ export default new Scenery({
         }),
         new Model({
             name: 'eye',
-            path: "models/glb/eye.glb",
+            path: "models/glb/eyeScene2V3.glb",
             type: 'gltf'
         })
     ],
@@ -137,13 +137,11 @@ export default new Scenery({
         self.eyeSprite.scale.set(10, 10, 1);
 
         self.eyeModel = self.modelManager.getLoadedModelByName('eye').scene;
-
-        self.eyeModel.rotateX(Math.PI / 2);
         self.eyeModel.position.set(0,200,-800);
 
 
         self.manSpeed = 0.001;
-        self.eyesSpeed = 0.0005;
+        self.eyesSpeed = 0.002;
 
         self.timer = 0;
         self.endingTimer = 0;
@@ -175,6 +173,8 @@ export default new Scenery({
         self.smokeMaterial = null;
         self.smokeGeo = null;
         self.smokeParticles = [];
+
+        self.eyesAnimationFrame = null
 
 
         /*self.pointLight = self.lightManager.getLightByName('pointLight');
@@ -271,8 +271,16 @@ export default new Scenery({
             }
         };
 
-        self.eyesAttraction = () => {
-            let eyesAttractionFrame = requestAnimationFrame(self.eyesAttraction);
+      /*  self.eyesAttraction = () => {
+
+            self.group.children.forEach((child) => {
+                console.log(child);
+                gsap.fromTo(child.position, {z : -800}, {z:0 , duration: 10})
+            })
+        }*/
+
+         self.eyesAttraction = () => {
+            self.eyesAnimationFrame  = requestAnimationFrame(self.eyesAttraction);
 
             self.group.children.forEach((child) => {
 
@@ -280,7 +288,6 @@ export default new Scenery({
                 var position = child.position;
 
                 child.lookAt(cameraPosition.x, cameraPosition.y, cameraPosition.z);
-                child.rotateX(Math.PI / 2);
                 var numberz = position.z + (cameraPosition.z - position.z) * self.eyesSpeed;
                 var distZ = Math.round(numberz * 1000) / 1000;
                 var diffZ = Math.abs( distZ - self.cameraManager.camera.position.z );
@@ -294,19 +301,12 @@ export default new Scenery({
                     var distX = Math.round(numberx * 1000) / 1000;
                     var distY = Math.round(numbery * 1000) / 1000;
 
-                    var diffX = Math.abs( distX - cameraPosition.x );
-                    var diffY = Math.abs( distY - cameraPosition.y );
+                   /* var diffX = Math.abs( distX - cameraPosition.x );
+                    var diffY = Math.abs( distY - cameraPosition.y );*/
 
-                    if(diffX < 50 && diffY < 50 && diffZ < 50) {
-                        cancelAnimationFrame(eyesAttractionFrame);
-                       /* self.clickEvent.unsubscribe();
-                        self.endingScene();*/
-                    } else {
-                        position.x = distX;
-                        position.y = distY;
-                        position.z = distZ;
-
-                    }
+                    position.x = distX;
+                    position.y = distY;
+                    position.z = distZ;
 
                 } else {
                     position.z = distZ;
@@ -335,22 +335,13 @@ export default new Scenery({
                     self.whisperingVolume += 0.01;
                     self.whisperingSound.setVolume(self.whisperingVolume);
                 }
+                intersects.forEach((element) => {
+                    var object = element.object.parent;
+                    var position = object.position;
+                    position.set(position.x, position.y, position.z -50)
 
-                console.log(intersects);
+                })
 
-               /* intersects.forEach((element) => {
-                    //console.log(element)
-                   //var position = element.object.position;
-                   // element.object.position.z =  element.object.position.z -50;
-                })*/
-                /*var position = intersects[0].object.position;
-                position.set(
-                    position.x,
-                    position.y,
-                    position.z - 30
-                );*/
-                /*  self.group.remove(intersects[0].object);
-                  self.generateEye(self.randomIntFromInterval(1, 2));*/
             }
 
         };
@@ -363,7 +354,8 @@ export default new Scenery({
             self.eyesSound.sound.play();
         };
 
-        self.generateEye(5);
+        self.generateEye(3);
+
         self.generateSmoke({initialPosition : {x: 0, y: 600, z: -800}, interval : {
                 minX : -300,
                 maxX : 300,
@@ -388,8 +380,8 @@ export default new Scenery({
                 minY : 100,
                 maxY : 300,
                 minZ : -550,
-                maxZ : 150
-            }}, 40, 1, 0x000000);
+                maxZ : 200
+            }}, 50, 1, 0x000000);
 
         self.fadeMusic = (audio1, audio2) => {
             var volume1 = {x: audio1.getVolume()};
@@ -441,6 +433,7 @@ export default new Scenery({
                 },
                 onComplete: () => {
                     EventManager.publish('actress:fadeOut');
+                    cancelAnimationFrame(self.eyesAnimationFrame);
                     self.endingScene()
 
                 }
@@ -451,6 +444,7 @@ export default new Scenery({
        // self.createGUI();
 
 
+       // window.addEventListener('keypress', () => {self.eyesAttraction()})
         /*-----------------------------TIMELINES OUI-----------------------------------------*/
 
         //1.placer son dialogue actrice
