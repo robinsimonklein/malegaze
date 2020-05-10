@@ -123,7 +123,7 @@ export default new Scenery({
     ],
     onLoaded: (self) => {
 
-        EventManager.publish('actress:fade');
+        console.log('loaded')
 
         self.renderer.logarithmicDepthBuffer = true;
 
@@ -440,7 +440,7 @@ export default new Scenery({
                     self.blur.radius.y = blurValue.y;
                 },
                 onComplete: () => {
-                    EventManager.publish('actress:fade');
+                    EventManager.publish('actress:fadeOut');
                     self.endingScene()
 
                 }
@@ -448,12 +448,15 @@ export default new Scenery({
         };
 
         self.addBlur();
-        self.createGUI();
+       // self.createGUI();
 
 
         /*-----------------------------TIMELINES OUI-----------------------------------------*/
 
         //1.placer son dialogue actrice
+        setTimeout(() => {
+            EventManager.publish('actress:fadeIn');
+        },500)
 
         //2. Ambiance sonore
        setTimeout(() => {
@@ -477,6 +480,7 @@ export default new Scenery({
         //5. Statues qui s'approchent + possibilités de tirer sur les yeux t.40
         setTimeout(() => {
             console.log('menAttraction')
+            EventManager.publish('actress:showInstruction');
             self.menAttraction()
         },40000);
 
