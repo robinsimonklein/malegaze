@@ -36,13 +36,14 @@
 <style lang="scss" scoped>
 .connection-screen {
     font-size: 1.375rem;
+        text-align: center;
 
     &__url {
-        font-size: 2rem;
+        font-size: 1.8rem;
         color: $color-primary;
         text-transform: uppercase;
     }
-    
+
     &__code {
         color: $color-primary;
         text-transform: uppercase;

@@ -54,6 +54,11 @@ io.on('connection', function (socket) {
         console.log(socket.id + ' joined mobile room :', mobileId)
     })
 
+    socket.on('ask_mobile_room', (mobileId, callback) => {
+        const rooms = io.sockets.adapter.rooms;
+        rooms[mobileId] !== undefined ? callback(true) : callback(false)
+    })
+
     // --- MOBILE SETUP
 
     socket.on('mobile_calibrate', () => {
