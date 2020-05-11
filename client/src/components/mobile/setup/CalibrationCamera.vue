@@ -77,7 +77,7 @@
             window.tracking.ColorTracker.registerColor('purple', (r, g, b) => {
                 return r > 40 && r < 130 && g > 40 && g < 130 && b > 100;
             });
-            
+
             this.startCamera()
 
             let colors = new window.tracking.ColorTracker(['purple', 'red']);

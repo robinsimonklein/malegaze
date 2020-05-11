@@ -13,7 +13,7 @@ import {CatmullRomCurve3} from "three";
 export function ID(length= 9, includeZero = true) {
     const numbers = []
     for(let i = 0; i<length; i++){
-        const random = Math.round(Math.random() * 9)
+        const random = includeZero ? Math.round(Math.random() * 9) : Math.round(Math.random() * (9 - 1) + 1)
         numbers.push(random)
     }
     return '_' + numbers.join('');

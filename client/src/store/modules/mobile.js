@@ -16,7 +16,7 @@ export const mobile = {
     },
     mutations: {
         generateMobileId(state) {
-            state.mobileId = ID(4)
+            state.mobileId = ID(4, false)
         },
         setMobileId(state, mobileId) {
             state.mobileId = mobileId
