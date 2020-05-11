@@ -1,6 +1,5 @@
 <template>
     <div class="desktop-setup">
-        <h1>Male Gaze</h1>
         <template v-if="mode==='connection'">
             <h2>Scannez ce QR Code avec votre mobile.</h2>
             <QRCode v-if="mobileUrl" :url="mobileUrl" />

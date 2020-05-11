@@ -57,21 +57,31 @@
             },
             onOrientationRequestFail(error) {
                 console.error(error)
-            }
+            },
+
         },
         computed: {
             calibrationSuccess() {
-                const nbCyan = this.trackedColors.filter(tracked => tracked.color === 'cyan').length
-                const nbMagenta = this.trackedColors.filter(tracked => tracked.color === 'magenta').length
-                const nbYellow = this.trackedColors.filter(tracked => tracked.color === 'yellow').length
+                const nbPurple = this.trackedColors.filter(tracked => tracked.color === 'purple').length
+                const nbRed = this.trackedColors.filter(tracked => tracked.color === 'red').length
 
-                return nbMagenta >= 1 && nbCyan >= 1 && nbYellow >= 2
+                return nbPurple >= 1 && nbRed >= 1
             }
         },
+
+
         mounted() {
+            window.tracking.ColorTracker.registerColor('red', (r, g, b) => {
+                return r > 180 && g < 80 && b < 80;
+            });
+            window.tracking.ColorTracker.registerColor('purple', (r, g, b) => {
+                return r > 40 && r < 130 && g > 40 && g < 130 && b > 100;
+            });
+            
             this.startCamera()
 
-            var colors = new window.tracking.ColorTracker(['magenta', 'yellow', 'cyan']);
+            let colors = new window.tracking.ColorTracker(['purple', 'red']);
+            colors.setMinDimension(1)
 
             colors.on('track', (event) => {
                 if (event.data.length === 0) {
@@ -135,7 +145,7 @@
 
         &.visible {
             transition: all 0.5s ease;
-            box-shadow: inset 0 0 9px 7px #14FF5E;
+            box-shadow: inset 0 0 9px 7px $color-success;
 
             button {
                 transition: all .5s ease;
