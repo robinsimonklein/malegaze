@@ -90,6 +90,7 @@ class SubtitledSound {
 
     /**
      * Show text
+     * @param {string} text
      */
     showText(text) {
         store.commit('desktop/setSubtitles', text)
@@ -112,10 +113,10 @@ class SubtitledSound {
     }
 
     /**
-     * Stop sound
+     * Pause sound
      */
-    stop() {
-        this.audio.stop()
+    pause() {
+        this.audio.pause()
     }
 
 }
