@@ -135,8 +135,7 @@ class SceneManager {
         // Render depending to the camera type
         if (this.sceneryManager.scenery.cameraManager.cameraObject.type === cameraTypes.CINEMATIC) {
             this.sceneryManager.scenery.cameraManager.camera.renderCinematic(this.scene, this.renderer);
-        }
-        if (this.sceneryManager.scenery.name !== 'actress_scenery' && this.sceneryManager.scenery.name !== 'spectator_scenery') {
+        } else if (this.sceneryManager.scenery.name !== 'actress_scenery' && this.sceneryManager.scenery.name !== 'spectator_scenery') {
             this.renderer.render(this.scene, this.sceneryManager.scenery.cameraManager.camera);
         }
 
