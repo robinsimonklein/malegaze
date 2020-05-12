@@ -78,6 +78,7 @@
 </script>
 <style lang="scss" scoped>
     .desktop {
-        min-height: 100vh
+        min-height: 100vh;
+        background-color: $color-dark;
     }
 </style>
