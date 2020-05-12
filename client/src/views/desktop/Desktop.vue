@@ -5,6 +5,7 @@
         </template>
         <template v-else>
             <component :is="currentComponent" />
+            <DesktopSubtitles />
         </template>
     </div>
 </template>
@@ -20,10 +21,12 @@
     import appStates from "../../js/appStates";
     import DesktopLoader from "../../components/desktop/loader/DesktopLoader";
     import EventManager from "../../js/event/EventManager";
+    import DesktopSubtitles from "../../components/desktop/subtitles/DesktopSubtitles";
 
     export default {
         name: 'Desktop',
         components: {
+            DesktopSubtitles,
             DesktopLoader,
             DesktopIndex,
             DesktopScene,

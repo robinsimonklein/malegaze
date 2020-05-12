@@ -1,3 +1,5 @@
+import store from '../../../store'
+
 /**
  * Subtitled Sound class, can be used to display subtitles from VTT file with sound.
  */
@@ -12,13 +14,8 @@ class SubtitledSound {
         this.name = name;
         this.buildAudio(path)
         this.buildTrack(subtitlesPath)
-        this.buildSubtitles()
 
         if(ended) this.ended = ended
-
-        // Add audio to the DOM
-        document.body.appendChild(this.audio)
-        document.body.appendChild(this.subtitles)
 
         // Load audio
         this.audio.load();
@@ -73,15 +70,6 @@ class SubtitledSound {
     }
 
     /**
-     * Build subtitles in DOM
-     * @private
-     */
-    buildSubtitles() {
-        this.subtitles = document.createElement('span')
-        this.subtitles.classList.add('subtitles')
-    }
-
-    /**
      * Build cues
      * @private
      */
@@ -92,8 +80,7 @@ class SubtitledSound {
         this.track.oncuechange = (e) => {
             if(e.target.activeCues.length > 0) {
                 const text = e.target.activeCues[0].text
-                this.replaceText(text)
-                this.showText()
+                this.showText(text)
             }else{
                 this.hideText()
             }
@@ -102,26 +89,17 @@ class SubtitledSound {
     }
 
     /**
-     * Replace subtitles text
-     * @param {string} text
-     * @private
-     */
-    replaceText(text) {
-        this.subtitles.innerHTML = text;
-    }
-
-    /**
      * Show text
      */
-    showText() {
-        this.subtitles.style.display = 'inline-block';
+    showText(text) {
+        store.commit('desktop/setSubtitles', text)
     }
 
     /**
      * Hide text
      */
     hideText() {
-        this.subtitles.style.display = 'none';
+        store.commit('desktop/setSubtitles', null)
     }
 
     /**
