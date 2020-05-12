@@ -49,14 +49,10 @@ export default new Scenery({
     lights: [
         new Light({
             name: 'directionnal',
-            light: new  THREE.DirectionalLight(0xffffff, .25),
-            initialPosition: {x: 0, y: 0, z: 50},
-        }),
-        new Light({
-            name: 'directionnal',
             light: new  THREE.DirectionalLight(0xffffff, 1),
-            initialPosition: {x: 0, y: 0, z: 0},
+            initialPosition: {x: 50, y: 200, z: 350},
         }),
+
         new Light({
             name: 'pointLight',
             light: new  THREE.PointLight(0xFF73EC, 50, 1000),
@@ -91,20 +87,8 @@ export default new Scenery({
     sounds : [
         new Sound({
             name : 'ambiantSound',
-            path : 'sound/musicScene2P1.mp3',
+            path : 'sound/ambianceScene2.mp3',
             isLoop : false,
-            volume: 0,
-        }),
-        new Sound({
-            name : 'ambiantSound2',
-            path : 'sound/musicScene2P2.mp3',
-            isLoop : true,
-            volume: 0,
-        }),
-        new Sound({
-            name : 'ambiantSound3',
-            path : 'sound/musicScene2P3.mp3',
-            isLoop : true,
             volume: 0,
         }),
         new Sound({
@@ -123,8 +107,6 @@ export default new Scenery({
     ],
     onLoaded: (self) => {
 
-        console.log('loaded')
-
         self.renderer.logarithmicDepthBuffer = true;
 
         self.clickEvent = EventManager.subscribe('actress:click', () => {
@@ -141,7 +123,7 @@ export default new Scenery({
 
 
         self.manSpeed = 0.001;
-        self.eyesSpeed = 0.002;
+        self.eyesSpeed = 0.001;
 
         self.timer = 0;
         self.endingTimer = 0;
@@ -165,8 +147,6 @@ export default new Scenery({
         self.manModel.scene.position.set(0,0,-1000);
 
         self.ambiantSound = self.soundManager.getSoundObjectByName('ambiantSound').sound;
-        self.ambiantSound2 = self.soundManager.getSoundObjectByName('ambiantSound2').sound;
-        self.ambiantSound3 = self.soundManager.getSoundObjectByName('ambiantSound3').sound;
         self.whisperingSound = self.soundManager.getSoundObjectByName('whispering').sound;
 
         self.smokeTexture = null;
@@ -174,17 +154,9 @@ export default new Scenery({
         self.smokeGeo = null;
         self.smokeParticles = [];
 
-        self.eyesAnimationFrame = null
+        self.eyesAnimationFrame = null;
 
-
-        /*self.pointLight = self.lightManager.getLightByName('pointLight');
-        let pointLightHelper = new THREE.PointLightHelper( self.pointLight, 10 );
-        self.scene.add( pointLightHelper );
-
-        self.pointLight2 = self.lightManager.getLightByName('pointLight2');
-        let pointLightHelper2 = new THREE.PointLightHelper( self.pointLight2, 10 );
-        self.scene.add( pointLightHelper2 );
-
+        /*
         self.pointLight3 = self.lightManager.getLightByName('pointLight3');
         let pointLightHelper3 = new THREE.PointLightHelper( self.pointLight3, 10 );
         self.scene.add( pointLightHelper3 );*/
@@ -257,12 +229,13 @@ export default new Scenery({
         self.generateEye = (number) => {
 
             for(var i = 0; i < number; i++) {
-                var x = self.randomIntFromInterval(-100 , 100);
-                var y = self.randomIntFromInterval(200 , 300);
-                var z = self.randomIntFromInterval(-50 , 50) -800;
+                var x = self.randomIntFromInterval(-150 , 150);
+                var y = self.randomIntFromInterval(200 , 250);
+                var z = self.randomIntFromInterval(-200 , 50) -800;
 
                 var clonedSprite = self.eyeModel.clone();
                 clonedSprite.position.set(x,y,z);
+                clonedSprite.indexEye = i;
 
                 self.eyesSound.addToMesh(clonedSprite);
 
@@ -270,14 +243,6 @@ export default new Scenery({
                 self.scene.add(self.group)
             }
         };
-
-      /*  self.eyesAttraction = () => {
-
-            self.group.children.forEach((child) => {
-                console.log(child);
-                gsap.fromTo(child.position, {z : -800}, {z:0 , duration: 10})
-            })
-        }*/
 
          self.eyesAttraction = () => {
             self.eyesAnimationFrame  = requestAnimationFrame(self.eyesAttraction);
@@ -292,26 +257,10 @@ export default new Scenery({
                 var distZ = Math.round(numberz * 1000) / 1000;
                 var diffZ = Math.abs( distZ - self.cameraManager.camera.position.z );
 
-
-                if(diffZ < 400) {
-
-                    var numberx = position.x + (cameraPosition.x - position.x) * self.eyesSpeed;
-                    var numbery = position.y + (cameraPosition.y - position.y) * self.eyesSpeed;
-
-                    var distX = Math.round(numberx * 1000) / 1000;
-                    var distY = Math.round(numbery * 1000) / 1000;
-
-                   /* var diffX = Math.abs( distX - cameraPosition.x );
-                    var diffY = Math.abs( distY - cameraPosition.y );*/
-
-                    position.x = distX;
-                    position.y = distY;
+                if(diffZ > 150) {
                     position.z = distZ;
-
-                } else {
-                    position.z = distZ;
-
                 }
+
             })
         };
 
@@ -338,7 +287,7 @@ export default new Scenery({
                 intersects.forEach((element) => {
                     var object = element.object.parent;
                     var position = object.position;
-                    position.set(position.x, position.y, position.z -50)
+                    gsap.to(position, {z: position.z -50 , duration: 1});
 
                 })
 
@@ -348,13 +297,131 @@ export default new Scenery({
 
         self.playAmbiantSound = () => {
             self.ambiantSound.play();
-            self.ambiantSound2.play();
-            self.ambiantSound3.play();
             self.whisperingSound.play();
             self.eyesSound.sound.play();
         };
 
-        self.generateEye(3);
+        self.timeline = () => {
+            var tl = new gsap.timeline();
+
+            var duration = {time : 0}
+
+            tl.to(duration, {
+                onComplete: () => {
+                    console.log('fade in')
+                    EventManager.publish('actress:fadeIn');
+                    self.playAmbiantSound();
+                    self.fadeInMusic(self.ambiantSound);
+                },
+
+            });
+
+
+            tl.to(duration, {
+                onComplete: () => {
+                    console.log('voix actrice');
+                },
+                delay: 10
+            });
+
+
+            //t.25 s
+            tl.to(duration, {
+                onComplete: () => {
+                    console.log('eyes + voix hommes');
+                    self.eyesAttraction();
+                },
+                delay: 15
+            });
+
+            //t.35
+            tl.to(duration, {
+                onComplete: () => {
+                    console.log('statues')
+                    self.menAttraction()
+                },
+                delay : 10
+            });
+
+
+            //t.40
+            tl.to(duration, {
+                onComplete: () => {
+                    console.log('instructions')
+                    EventManager.publish('actress:showInstruction');
+                },
+                delay : 5
+            });
+
+            //t. 1.10
+            tl.to(duration, {
+                onComplete: () => {
+                    console.log('blur')
+                    self.fadeBlur();
+                },
+                delay: 30
+            });
+        };
+
+      /*  self.fadeMusic = (audio1, audio2) => {
+            var volume1 = {x: audio1.getVolume()};
+            var volume2 = {x: audio2.getVolume()};
+
+            var tl = new gsap.timeline();
+
+            tl.to(volume1, {
+                duration: 1,
+                x: 0,
+                onUpdate: () => {
+                    audio1.setVolume(volume1.x)
+                },
+                onComplete: () => {
+                    audio1.stop()
+                }
+            });
+
+            tl.to(volume2, {
+                duration: 1,
+                x: 1,
+                onUpdate: () => {
+                    audio2.setVolume(volume2.x)
+                }
+            });
+
+        };*/
+
+        self.fadeInMusic = (sound) => {
+            var volume = {x: sound.getVolume()};
+            gsap.to(volume, {
+                duration: 15,
+                x: 1,
+                onUpdate: () => {
+                    sound.setVolume(volume.x)
+                }
+            });
+        };
+
+        self.fadeBlur = () => {
+            var blurValue = {x : self.blur.radius.x , y: self.blur.radius.y};
+            gsap.to(blurValue, {
+                duration: 35,
+                x: 10,
+                y: 10,
+                onUpdate: () => {
+                    self.blur.radius.x = blurValue.x;
+                    self.blur.radius.y = blurValue.y;
+                },
+                onComplete: () => {
+                    EventManager.publish('actress:fadeOut');
+                    cancelAnimationFrame(self.eyesAnimationFrame);
+                    self.endingScene()
+
+                }
+            });
+        };
+
+        self.generateEye(4);
+        //self.initEyeAnimation();
 
         self.generateSmoke({initialPosition : {x: 0, y: 600, z: -800}, interval : {
                 minX : -300,
@@ -383,77 +450,27 @@ export default new Scenery({
                 maxZ : 200
             }}, 50, 1, 0x000000);
 
-        self.fadeMusic = (audio1, audio2) => {
-            var volume1 = {x: audio1.getVolume()};
-            var volume2 = {x: audio2.getVolume()};
-
-            var tl = new gsap.timeline();
-
-            tl.to(volume1, {
-                duration: 1,
-                x: 0,
-                onUpdate: () => {
-                    audio1.setVolume(volume1.x)
-                },
-                onComplete: () => {
-                    audio1.stop()
-                }
-            });
-
-            tl.to(volume2, {
-                duration: 1,
-                x: 1,
-                onUpdate: () => {
-                    audio2.setVolume(volume2.x)
-                }
-            });
-
-        };
-
-        self.fadeInMusic = (sound) => {
-            var volume = {x: sound.getVolume()};
-            gsap.to(volume, {
-                duration: 5,
-                x: 1,
-                onUpdate: () => {
-                    sound.setVolume(volume.x)
-                }
-            });
-        };
-
-        self.fadeBlur = () => {
-            var blurValue = {x : self.blur.radius.x , y: self.blur.radius.y};
-            gsap.to(blurValue, {
-                duration: 37,
-                x: 5,
-                y: 5,
-                onUpdate: () => {
-                    self.blur.radius.x = blurValue.x;
-                    self.blur.radius.y = blurValue.y;
-                },
-                onComplete: () => {
-                    EventManager.publish('actress:fadeOut');
-                    cancelAnimationFrame(self.eyesAnimationFrame);
-                    self.endingScene()
-
-                }
-            });
-        };
-
         self.addBlur();
        // self.createGUI();
+        self.timeline();
 
-
-       // window.addEventListener('keypress', () => {self.eyesAttraction()})
+      //  window.addEventListener('keypress', () => {console.log(self.eyesAttraction())})
         /*-----------------------------TIMELINES OUI-----------------------------------------*/
 
         //1.placer son dialogue actrice
-        setTimeout(() => {
+     /*   setTimeout(() => {
             EventManager.publish('actress:fadeIn');
         },500)
 
         //2. Ambiance sonore
-       setTimeout(() => {
+        setTimeout(() => {
+            console.log('ambiant');
+            self.playAmbiantSound();
+            self.fadeInMusic(self.ambiantSound);
+        },2000);*/
+
+        //2. Ambiance sonore
+     /*  setTimeout(() => {
            console.log('ambiant')
             self.playAmbiantSound()
            self.fadeInMusic(self.ambiantSound);
@@ -483,7 +500,7 @@ export default new Scenery({
            console.log('blur')
             self.fadeBlur();
             self.fadeMusic(self.ambiantSound2, self.ambiantSound3);
-        },61000);
+        },61000);*/
 
 
     },

@@ -1,12 +1,14 @@
 <template>
     <div class="mobile-scene-2" id="mobile-scene-2" ref="mobileScene2" >
-        <p class="mobile-scene-2__text">Tape ici</p>
-        <div class="mobile-scene-2__wrapper" ref="circleWrapper" @click="shoot"></div>
-
+        <div class="mobile-scene-2__container" ref="mobileContainer" @click="shoot">
+            <p class="mobile-scene-2__text">Tape ici</p>
+            <div class="mobile-scene-2__wrapper" ref="circleWrapper"></div>
+        </div>
     </div>
 </template>
 
 <script>
+    import EventManager from "../../js/event/EventManager";
     export default {
         name: "MobileScene2",
         components: {},
@@ -17,16 +19,18 @@
             }
         },
         methods: {
-           /* next() {
-                this.$socket.emit('state_request', appStates.SPECTATOR)
-            },*/
             shoot() {
                this.$socket.emit('mobile_shoot')
                 this.circleAnimation();
             },
             init() {
                 this.circleWrapper = this.$refs.circleWrapper;
+                this.mobileContainer = this.$refs.mobileContainer;
                 this.numberOfCircle = 3;
+
+               EventManager.subscribe('actress:showInstructionMobile', () => {
+                   this.mobileContainer.style.display = 'block'
+               });
             },
             circleAnimation() {
                 if (this.circleWrapper.children.length > this.numberOfCircle *2) {
@@ -51,7 +55,6 @@
         },
         mounted() {
             this.init();
-            //   this.circleAnimation();
         }
 
     }
@@ -66,6 +69,10 @@
         width: 100%;
         height: 100%;
         position: relative;
+
+        &__container {
+            display: none;
+        }
 
         &__text {
             z-index: 2;
