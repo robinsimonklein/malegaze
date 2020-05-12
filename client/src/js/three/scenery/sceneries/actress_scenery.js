@@ -270,9 +270,8 @@ export default new Scenery({
             if(self.endingTimer === 1000) {
                 cancelAnimationFrame(endingAttractionFrame);
                 self.soundManager.stopAll();
-                store.dispatch('app/requestState', appStates.SPECTATOR)
+                store.dispatch('app/requestState', appStates.SPECTATOR);
             }
-            self.endingTimer++;
         };
 
         self.shoot = () => {

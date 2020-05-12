@@ -25,7 +25,7 @@ export default new Scenery({
         new Camera({
             type: cameraTypes.PERSPECTIVE,
             properties: {fov: 180, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 3500},
-            initialPosition: {x: -20, y: 220, z: 520},
+            initialPosition: {x: -25, y: 250, z: 710},
             settings: {
                 alphaOffset: 0
             }
