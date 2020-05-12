@@ -105,6 +105,11 @@ io.on('connection', function (socket) {
         socket.in(socket.mobileRoom).emit('mobile_interaction_enable')
     });
 
+    socket.on('mobile_show_instruction', () => {
+        socket.in(socket.mobileRoom).emit('mobile_show_instruction')
+    });
+
+
     socket.on('mobile_interaction', (data) => {
         console.log('zoom', data)
         socket.in(socket.mobileRoom).emit('mobile_interaction', data)

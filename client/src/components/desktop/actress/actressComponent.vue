@@ -50,6 +50,7 @@
 
                 EventManager.subscribe('actress:showInstruction', () => {
                     this.instructionWrapper.style.opacity = '1';
+                    this.$socket.emit('mobile_show_instruction')
                 });
 
                 EventManager.subscribe('actress:click:animation', () => {
