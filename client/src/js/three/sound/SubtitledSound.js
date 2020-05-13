@@ -23,6 +23,7 @@ class SubtitledSound {
         // Load metadata
         this.audio.addEventListener('loadedmetadata', () => {
             this.buildCues()
+            this.hideText()
         });
     }
 
@@ -42,12 +43,6 @@ class SubtitledSound {
             this.hideText()
             if(this.ended !== undefined) this.ended()
         }
-
-        this.audio.addEventListener('timeupdate', () => {
-            if(this.track.mode !== 'hidden') {
-                this.buildCues()
-            }
-        })
     }
 
     /**
@@ -80,7 +75,7 @@ class SubtitledSound {
         this.track.oncuechange = (e) => {
             if(e.target.activeCues.length > 0) {
                 const text = e.target.activeCues[0].text
-                this.showText(text)
+                if(!this.audio.paused) this.showText(text)
             }else{
                 this.hideText()
             }
@@ -90,6 +85,7 @@ class SubtitledSound {
 
     /**
      * Show text
+     * @param {string} text
      */
     showText(text) {
         store.commit('desktop/setSubtitles', text)
@@ -108,14 +104,19 @@ class SubtitledSound {
     play() {
         if(!this.cues) this.buildCues()
         this.track.mode = 'hidden'
+
+        // Show first subtitle on play
+        if(this.track.activeCues.length > 0) this.showText(this.track.activeCues[0].text)
+
+        // Play sound
         this.audio.play()
     }
 
     /**
-     * Stop sound
+     * Pause sound
      */
-    stop() {
-        this.audio.stop()
+    pause() {
+        this.audio.pause()
     }
 
 }

@@ -42,7 +42,7 @@
             this.timeline.from('.camera-transition__text', {duration: 2, alpha: 0, ease: "power3.out"}, '-=0.5')
             this.timeline.from('.camera-transition__comment', {duration: 2, alpha: 0, ease: "power3.out"}, '-=0.5')
 
-            this.timeline.to('.camera-transition__text', {duration: 1, alpha: 0, ease: "power3.out"}, '+=8') // 6
+            this.timeline.to('.camera-transition__text', {duration: 1, alpha: 0, ease: "power3.out"}, '+=4') // 6
             this.timeline.to('.camera-transition__comment', {duration: 1, alpha: 0, ease: "power3.out"}, '-=1')
             this.timeline.to('.camera-transition', {duration: 1, alpha: 0, ease: "power3.out"}, '-=0.5')
 

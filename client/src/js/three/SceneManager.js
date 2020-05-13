@@ -122,8 +122,6 @@ class SceneManager {
      * Update loop
      */
     update() {
-        // const elapsedTime = this.clock.getElapsedTime();
-
         // Cancel rendering if scenery isn't ready
         if (!this.sceneryManager.scenery || !this.sceneryManager.scenery.cameraManager) {
             return;
@@ -135,9 +133,6 @@ class SceneManager {
         // Render depending to the camera type
         if (this.sceneryManager.scenery.cameraManager.cameraObject.type === cameraTypes.CINEMATIC) {
             this.sceneryManager.scenery.cameraManager.camera.renderCinematic(this.scene, this.renderer);
-        }
-        if (this.sceneryManager.scenery.name !== 'actress_scenery' || this.sceneryManager.scenery.name !== 'spectator_scenery') {
-            this.renderer.render(this.scene, this.sceneryManager.scenery.cameraManager.camera);
         }
 
     }

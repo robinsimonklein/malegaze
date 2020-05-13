@@ -29,6 +29,7 @@
     &__text {
         font-size: 1.375rem;
         color: white;
+        text-align: center;
         font-family: "Roboto", Arial, sans-serif;
         text-shadow: 2px 2px 16px rgba(black, .8);
     }
