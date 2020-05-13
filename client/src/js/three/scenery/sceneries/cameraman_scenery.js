@@ -143,23 +143,6 @@ export default new Scenery({
                 update: null
             },
             {
-                name: 'prevention',
-                cameraIndex: 0,
-                init: (self) => {
-
-                    EventManager.publish('transition:start', {
-                        text: 'Certains peuvent heurter la sensibilité des plus jeunes.'
-                    })
-
-                    const transitionEvent = EventManager.subscribe('transition:ended', () => {
-                        self.nextSequence(self)
-                        transitionEvent.unsubscribe();
-                    })
-
-                },
-                update: null
-            },
-            {
                 name: 'intro',
                 cameraIndex: 0,
                 init: (self) => {
@@ -167,13 +150,12 @@ export default new Scenery({
                     const cameraPosition = self.cameraCurves.find(curve => curve.name === 'P0_TRAVEL').getPointAt(0)
                     self.cameraManager.camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
 
-                    setTimeout(() => {
-                        self.soundManager.getSoundByName('01_real_intro').source.onended = () => {
-                            EventManager.publish('camera:start')
-                            self.nextSequence(self)
-                        }
-                    }, 0)
-                    self.soundManager.getSoundByName('01_real_intro').play()
+
+                    self.soundManager.getSoundObjectByName('01_real_intro').ended = () => {
+                        EventManager.publish('camera:start')
+                        self.nextSequence(self)
+                    }
+                    self.soundManager.getSoundObjectByName('01_real_intro').play()
 
                 },
                 update: null
@@ -209,20 +191,15 @@ export default new Scenery({
                 name: 'transition to traveling',
                 cameraIndex: 0,
                 init: (self) => {
-                    self.soundManager.getSoundByName('02_real_intro_traveling').play()
+                    self.soundManager.getSoundObjectByName('02_real_intro_traveling').ended = () => {
+                        self.soundManager.getSoundObjectByName('03_real_transition_traveling').play()
+                    }
 
-                    setTimeout(() => {
-                        self.soundManager.getSoundByName('02_real_intro_traveling').source.onended = () => {
+                    self.soundManager.getSoundObjectByName('03_real_transition_traveling').ended = () => {
+                        self.nextSequence(self)
+                    }
 
-                            setTimeout(() => {
-                                self.soundManager.getSoundByName('03_real_transition_traveling').source.onended = () => {
-                                    self.nextSequence(self)
-                                }
-                            }, 0)
-
-                            self.soundManager.getSoundByName('03_real_transition_traveling').play()
-                        }
-                    }, 0)
+                    self.soundManager.getSoundObjectByName('02_real_intro_traveling').play()
 
                 }
             },
@@ -237,7 +214,7 @@ export default new Scenery({
                     self.cameraManager.camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
 
                     EventManager.publish('mobile:interaction_set', 'framing')
-                    self.soundManager.getSoundByName('04_real_cadrage_traveling').play()
+                    self.soundManager.getSoundObjectByName('04_real_cadrage_traveling').play()
 
                     EventManager.publish('camera:instructions', {
                         text: 'Cadre l\'image',
@@ -260,14 +237,12 @@ export default new Scenery({
 
                             sequence.ready = false
 
-                            setTimeout(() => {
-                                self.soundManager.getSoundByName('05_real_traveling').source.onended = () => {
-                                    self.nextSequence(self)
-                                }
-                            }, 0)
+                            self.soundManager.getSoundObjectByName('05_real_traveling').ended = () => {
+                                self.nextSequence(self)
+                            }
 
                             self.cameraManager.controls = null
-                            self.soundManager.getSoundByName('05_real_traveling').play()
+                            self.soundManager.getSoundObjectByName('05_real_traveling').play()
                         }
                     })
 
@@ -313,13 +288,11 @@ export default new Scenery({
                             EventManager.publish('camera:rec', false)
 
 
-                            setTimeout(() => {
-                                self.soundManager.getSoundByName('06_real_traveling_fin').source.onended = () => {
-                                    self.nextSequence(self)
-                                }
-                            }, 0)
+                            self.soundManager.getSoundObjectByName('06_real_traveling_fin').ended = () => {
+                                self.nextSequence(self)
+                            }
 
-                            self.soundManager.getSoundByName('06_real_traveling_fin').play()
+                            self.soundManager.getSoundObjectByName('06_real_traveling_fin').play()
                         })
 
                         // Unsubscribe the events
@@ -356,19 +329,17 @@ export default new Scenery({
 
                     let transitionEvent = EventManager.subscribe('transition:ended', () => {
 
-                        setTimeout(() => {
-                            self.soundManager.getSoundByName('07_real_zoom').source.onended = () => {
-                                EventManager.publish('camera:instructions', {
-                                    text: 'Cadre l\'image',
-                                    hint: 'Oriente la caméra vers Sean'
-                                })
-                                self.sequences[self.currentSequence].ready = true
-                                EventManager.publish('camera:instructions', false)
+                        self.soundManager.getSoundObjectByName('07_real_zoom').ended = () => {
+                            EventManager.publish('camera:instructions', {
+                                text: 'Cadre l\'image',
+                                hint: 'Oriente la caméra vers Sean'
+                            })
+                            self.sequences[self.currentSequence].ready = true
+                            EventManager.publish('camera:instructions', false)
 
-                            }
-                        }, 0)
+                        }
 
-                        self.soundManager.getSoundByName('07_real_zoom').play()
+                        self.soundManager.getSoundObjectByName('07_real_zoom').play()
 
                         transitionEvent.unsubscribe()
                     })
@@ -429,13 +400,11 @@ export default new Scenery({
                         }).then(() => {
                             EventManager.publish('camera:rec', false)
 
-                            setTimeout(() => {
-                                self.soundManager.getSoundByName('08_real_zoom_fin').source.onended = () => {
-                                    self.nextSequence(self)
-                                }
-                            }, 0)
+                            self.soundManager.getSoundObjectByName('08_real_zoom_fin').ended = () => {
+                                self.nextSequence(self)
+                            }
 
-                            self.soundManager.getSoundByName('08_real_zoom_fin').play()
+                            self.soundManager.getSoundObjectByName('08_real_zoom_fin').play()
                         })
 
                         // Unsubscribe the event
@@ -472,23 +441,19 @@ export default new Scenery({
 
                     let transitionEvent = EventManager.subscribe('transition:ended', () => {
 
-                        setTimeout(() => {
-                            self.soundManager.getSoundByName('09_real_transition_rotation').source.onended = () => {
-                                setTimeout(() => {
-                                    self.soundManager.getSoundByName('10_real_rotation').source.onended = () => {
-                                        self.sequences[self.currentSequence].ready = true
-                                        EventManager.publish('camera:instructions', {
-                                            text: 'Cadre l\'image',
-                                            hint: 'Vise vers les seins de l\'actrice',
-                                        })
-                                    }
-                                }, 0)
+                        self.soundManager.getSoundObjectByName('09_real_transition_rotation').ended = () => {
+                            self.soundManager.getSoundObjectByName('10_real_rotation').play()
+                        }
 
-                                self.soundManager.getSoundByName('10_real_rotation').play()
-                            }
-                        }, 0)
+                        self.soundManager.getSoundObjectByName('10_real_rotation').ended = () => {
+                            self.sequences[self.currentSequence].ready = true
+                            EventManager.publish('camera:instructions', {
+                                text: 'Cadre l\'image',
+                                hint: 'Vise vers les seins de l\'actrice',
+                            })
+                        }
 
-                        self.soundManager.getSoundByName('09_real_transition_rotation').play()
+                        self.soundManager.getSoundObjectByName('09_real_transition_rotation').play()
 
                         transitionEvent.unsubscribe()
                     })
@@ -546,13 +511,11 @@ export default new Scenery({
                             EventManager.publish('camera:rec', false)
                             EventManager.publish('camera:instructions', false)
 
-                            setTimeout(() => {
-                                self.soundManager.getSoundByName('11_real_rotation_fin').source.onended = () => {
-                                    self.nextSequence(self)
-                                }
-                            }, 0)
+                            self.soundManager.getSoundObjectByName('11_real_rotation_fin').ended = () => {
+                                self.nextSequence(self)
+                            }
 
-                            self.soundManager.getSoundByName('11_real_rotation_fin').play()
+                            self.soundManager.getSoundObjectByName('11_real_rotation_fin').play()
                         })
 
                         // Unsubscribe events
@@ -589,15 +552,13 @@ export default new Scenery({
 
                     EventManager.publish('camera:stop')
 
-                    setTimeout(() => {
-                        self.soundManager.getSoundByName('12_real_fin').source.onended = () => {
+                    self.soundManager.getSoundObjectByName('12_real_fin').ended = () => {
 
-                            self.soundManager.getSoundByName('cameraman_ambiance').stop()
-                            store.dispatch('app/requestState', appStates.ACTRESS)
-                        }
-                    }, 0)
+                        self.soundManager.getSoundByName('cameraman_ambiance').stop()
+                        store.dispatch('app/requestState', appStates.ACTRESS)
+                    }
 
-                    self.soundManager.getSoundByName('12_real_fin').play()
+                    self.soundManager.getSoundObjectByName('12_real_fin').play()
                 }
             },
         ]
