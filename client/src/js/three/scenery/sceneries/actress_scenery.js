@@ -272,6 +272,7 @@ export default new Scenery({
                 self.soundManager.stopAll();
                 store.dispatch('app/requestState', appStates.SPECTATOR);
             }
+            self.endingTimer++;
         };
 
         self.shoot = () => {
@@ -358,7 +359,7 @@ export default new Scenery({
                     console.log('blur')
                     self.fadeBlur();
                 },
-                delay: 30
+                delay: 40
             });
         };
 
@@ -403,7 +404,7 @@ export default new Scenery({
         self.fadeBlur = () => {
             var blurValue = {x : self.blur.radius.x , y: self.blur.radius.y};
             gsap.to(blurValue, {
-                duration: 35,
+                duration: 25,
                 x: 10,
                 y: 10,
                 onUpdate: () => {
