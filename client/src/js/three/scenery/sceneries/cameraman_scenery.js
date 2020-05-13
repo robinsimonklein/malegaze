@@ -146,13 +146,10 @@ export default new Scenery({
                 name: 'intro',
                 cameraIndex: 0,
                 init: (self) => {
-
                     const cameraPosition = self.cameraCurves.find(curve => curve.name === 'P0_TRAVEL').getPointAt(0)
                     self.cameraManager.camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
 
-
                     self.soundManager.getSoundObjectByName('01_real_intro').ended = () => {
-                        EventManager.publish('camera:start')
                         self.nextSequence(self)
                     }
                     self.soundManager.getSoundObjectByName('01_real_intro').play()
@@ -167,39 +164,39 @@ export default new Scenery({
                     const tl = new gsap.timeline()
                     tl.pause(0);
                     tl.to(self.cameraManager.camera.rotation, {
-                        duration: 17,
+                        duration: 12,
+                        delay: 6,
+                        ease: 'power2.inOut',
                         y: MathUtils.degToRad(MathUtils.radToDeg(self.cameraManager.camera.rotation.y) - 100),
                     })
+                    tl.call(() => {
+                        self.soundManager.getSoundObjectByName('02_real_intro_traveling').play()
+                    }, [], '-=4')
+                    tl.then(() => {
+                        self.nextSequence(self)
+                    })
 
+                    self.followCurve(self, {
+                        curveName: 'P0_TRAVEL',
+                        camera: self.cameraManager.camera,
+                        duration: 17,
+                        ease: 'power1.out'
+                    });
 
+                    EventManager.publish('camera:start')
                     tl.play();
                     EventManager.publish('camera:rec', true)
                 },
-                update: (self) => {
-                    self.followCurve(self, {
-                            curveName: "P0_TRAVEL",
-                            cameraIndex: 0,
-                            duration: 1000, // 1000
-                        },
-                        (self) => {
-                            EventManager.publish('camera:rec', false)
-                            self.nextSequence(self)
-                        })
-                }
             },
             {
                 name: 'transition to traveling',
                 cameraIndex: 0,
                 init: (self) => {
-                    self.soundManager.getSoundObjectByName('02_real_intro_traveling').ended = () => {
-                        self.soundManager.getSoundObjectByName('03_real_transition_traveling').play()
-                    }
 
                     self.soundManager.getSoundObjectByName('03_real_transition_traveling').ended = () => {
                         self.nextSequence(self)
                     }
-
-                    self.soundManager.getSoundObjectByName('02_real_intro_traveling').play()
+                    self.soundManager.getSoundObjectByName('03_real_transition_traveling').play()
 
                 }
             },
@@ -674,26 +671,34 @@ export default new Scenery({
         /**
          * Follow the curve with camera
          * @param self
+         * @param curveName
          * @param camera
-         * @param callback
+         * @param {number} duration
+         * @param {string} ease - Gsap ease
          */
-        self.followCurve = (self, {curveName, cameraIndex, duration}, callback) => {
-            if (self.camPosIndex >= duration) {
-                callback(self)
-                self.camPosIndex = 0
-                return
-            }
 
+        self.followCurve = (self, {curveName, camera, duration, ease = 'power1.out'}) => {
+            // Set precision
+            const nbPoints = 30
+
+            // Get curve points
             const curve = self.cameraCurves.find((curve) => curve.name === curveName)
+            if(!curve) return
+            const points = curve.getSpacedPoints(nbPoints)
+            const steps = points.map((point) => {
+                return Object.assign({},{x: point.x, y: point.y, z: point.z})
+            })
 
-            const camPos = curve.getPointAt(self.camPosIndex / duration);
-            // const camRot = curve.getTangentAt(self.camPosIndex / duration);
+            // Add duration
+            steps.forEach(point => point.duration = duration/nbPoints)
 
-            self.cameraManager.cameraObjects[cameraIndex].camera.position.x = (camPos.x)
-            self.cameraManager.cameraObjects[cameraIndex].camera.position.y = (camPos.y)
-            self.cameraManager.cameraObjects[cameraIndex].camera.position.z = (camPos.z)
+            console.log('ici')
 
-            self.camPosIndex += 1
+            // Run animation
+            gsap.to(camera.position, {
+                keyframes: steps,
+                ease: ease,
+            })
         }
 
         /**
