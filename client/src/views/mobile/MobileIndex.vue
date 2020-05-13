@@ -5,15 +5,32 @@
         <p>Ouvrez <strong>{{ siteUrl }}</strong> sur votre ordinateur et entrez le code qui s'affiche à l'écran.</p>
 
         <div class="ticket">
+            <h2 class="ticket__header">Ticket pour votre séance</h2>
             <div class="ticket__row">
-                <label> Salle <input v-model="inputs.room" type="number" pattern="[0-9]*" class="ticket__field" min="1" max="9" step="1" maxlength="1" name="room"/></label>
-                <label> Prix <input v-model="inputs.price" type="number" pattern="[0-9]*" class="ticket__field" min="1" max="9" step="1" maxlength="1" name="price" /></label>
+                <label class="ticket__label"> Salle
+                    <select class="ticket__select" v-model="inputs.room">
+                        <option v-for="i in 9" :key="i" :value="i">{{ i }}</option>
+                    </select>
+                </label>
+                <label class="ticket__label"> Prix
+                    <select class="ticket__select" v-model="inputs.price">
+                        <option v-for="i in 9" :key="i" :value="i">{{ i }}</option>
+                    </select>
+                </label>
             </div>
             <div class="ticket__row">
-                <label> Rangée <input v-model="inputs.row" type="number" pattern="[0-9]*" class="ticket__field" min="1" max="9" step="1" maxlength="1" name="row" /></label>
-                <label> Place <input v-model="inputs.place" type="number" pattern="[0-9]*" class="ticket__field" min="1" max="9" step="1" maxlength="1" name="seat" /></label>
+                <label class="ticket__label"> Rangée
+                    <select class="ticket__select" v-model="inputs.row">
+                        <option v-for="i in 9" :key="i" :value="i">{{ i }}</option>
+                    </select>
+                </label>
+                <label class="ticket__label"> Place
+                    <select class="ticket__select" v-model="inputs.place">
+                        <option v-for="i in 9" :key="i" :value="i">{{ i }}</option>
+                    </select>
+                </label>
             </div>
-            <button @click="play">Play</button>
+            <button class="ticket__button" @click="play">Play</button>
         </div>
     </div>
 </template>
@@ -53,3 +70,51 @@
         }
     }
 </script>
+
+<style lang="scss" scoped>
+    .mobile-index {
+
+    }
+
+    .ticket {
+        display: flex;
+        flex-direction: column;
+
+        &__header {
+            padding: 0.25rem;
+            background: white;
+            font-size: .75rem;
+            color: black;
+            font-weight: normal;
+            text-align: center;
+            text-transform: uppercase;
+            @include letter-spacing(50)
+        }
+
+        &__row {
+            display: flex;
+            width: 100%;
+        }
+
+        &__label {
+            width: 50%;
+            text-transform: uppercase;
+        }
+
+        &__select {
+            font-size: 2.3rem;
+            color: $color-primary;
+            text-align: center;
+            background: none;
+            border: none;
+            outline: none;
+        }
+
+        &__button {
+            display: inline-block;
+            color: $color-primary;
+            font-size: 1.375rem;
+            border: 1px solid $color-primary;
+        }
+    }
+</style>

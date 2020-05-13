@@ -26,9 +26,6 @@
         },
         beforeMount() {
             this.url = window.location.host
-        },
-        mounted() {
-            console.log(window.location.host)
         }
     }
 </script>
