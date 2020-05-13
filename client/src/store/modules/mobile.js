@@ -16,7 +16,7 @@ export const mobile = {
     },
     mutations: {
         generateMobileId(state) {
-            state.mobileId = ID(9)
+            state.mobileId = ID(4, false)
         },
         setMobileId(state, mobileId) {
             state.mobileId = mobileId
@@ -38,6 +38,9 @@ export const mobile = {
         },
         SOCKET_mobile_interaction_enable({commit}) { // eslint-disable-line
             EventManager.publish('mobile:interaction_enable')
+        },
+        SOCKET_mobile_show_instruction() {
+            EventManager.publish('actress:showInstructionMobile')
         }
     },
 }

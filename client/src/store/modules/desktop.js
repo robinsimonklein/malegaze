@@ -4,7 +4,8 @@ export const desktop = {
     namespaced: true,
     state: {
         loading: false,
-        loadingProgress: 0
+        loadingProgress: 0,
+        subtitles: null
     },
     getters: {
 
@@ -15,6 +16,9 @@ export const desktop = {
         },
         setLoadingProgress(state, value) {
             state.loadingProgress = value
+        },
+        setSubtitles(state, value) {
+            state.subtitles = value
         }
     },
     actions: {

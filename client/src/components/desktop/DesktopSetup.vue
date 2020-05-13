@@ -1,10 +1,7 @@
 <template>
     <div class="desktop-setup">
-        <h1>Male Gaze</h1>
         <template v-if="mode==='connection'">
-            <h2>Scannez ce QR Code avec votre mobile.</h2>
-            <QRCode v-if="mobileUrl" :url="mobileUrl" />
-            <a v-if="mobileUrl" :href="mobileUrl" target="_blank">{{ mobileUrl }}</a>
+            <ConnectionScreen />
         </template>
         <template v-else-if="mode==='calibration'">
             <CalibrationScreen />
@@ -13,13 +10,13 @@
 </template>
 
 <script>
-    import QRCode from './mobileConnection/QRCode';
     import CalibrationScreen from './mobileConnection/CalibrationScreen';
     import appStates from '../../js/appStates';
+    import ConnectionScreen from "./mobileConnection/ConnectionScreen";
 
     export default {
         name: 'DesktopSetup',
-        components: {CalibrationScreen, QRCode},
+        components: {ConnectionScreen, CalibrationScreen},
         data() {
             return {
                 mode: 'connection'

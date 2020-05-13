@@ -62,7 +62,6 @@ class Scenery {
 
     cameraManager;
     modelManager;
-    audioManager;
     lightManager;
     soundManager;
     onCreated;
@@ -194,9 +193,6 @@ class Scenery {
         }
         if (this.lightManager) {
             this.lightManager.update();
-        }
-        if (this.audioManager) {
-            this.audioManager.update();
         }
     }
 }

@@ -1,7 +1,6 @@
 <template>
     <div class="desktop-intro">
-        <button class="desktop-intro__start" @click="startVideo">Forcer la vidéo (provisoire)</button>
-        <video class="desktop-intro__video" ref="player">
+        <video v-if="visible" class="desktop-intro__video" poster="/png/intro_poster.png" ref="player">
             <source src="/video/intro.mp4" type="video/mp4">
         </video>
     </div>
@@ -14,17 +13,13 @@
         name: "DesktopIntro",
         data() {
             return {
-                player: null
+                player: null,
+                visible: true
             };
         },
-        methods: {
-            startVideo() {
-                this.$refs.player.play();
-            }
-        },
         mounted() {
-            // Commencer la vidéo si on arrive directement sur cette vue, provisoire.
             this.$refs.player.addEventListener('ended', () => {
+                this.visible = false;
                 this.$store.dispatch('app/requestState', appStates.CAMERAMAN);
             })
 
@@ -40,6 +35,7 @@
 
 <style lang="scss" scoped>
 .desktop-intro {
+    background: black;
     &__start {
         position: fixed;
         top: 1rem;

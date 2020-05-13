@@ -1,6 +1,8 @@
 /**
  * The {@link SoundManager} manages all the sounds of a {@link Scenery}.
  */
+import SubtitledSound from "./SubtitledSound";
+
 class SoundManager {
     soundObjects = [];
     currentSound = 0;
@@ -62,6 +64,7 @@ class SoundManager {
      */
     loadSounds() {
         this.soundObjects.forEach((sound) => {
+            if(sound instanceof SubtitledSound) return; // Don't add subtitled sounds to camera
             sound.loadSound()
         })
     }
@@ -82,6 +85,7 @@ class SoundManager {
      */
     addToCamera(camera) {
         this.soundObjects.forEach((soundObject) => {
+            if(soundObject instanceof SubtitledSound) return; // Don't add subtitled sounds to camera
             soundObject.addToCamera(camera);
         })
     }
