@@ -22,6 +22,7 @@
     import {mapState} from "vuex";
     import OrientationPermissionButton from "../setup/OrientationPermissionButton";
     import Popup from "../../Popup";
+    import EventManager from "../../../js/event/EventManager";
 
     export default {
         name: "MobileOrientation",
@@ -66,6 +67,7 @@
                 this.emitOrientation();
             },
             emitOrientation() {
+                EventManager.publish('mobile:orientation', this.orientation)
                 this.$socket.emit('mobile_orientation', this.orientation)
             },
         },

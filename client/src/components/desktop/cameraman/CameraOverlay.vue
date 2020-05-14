@@ -25,6 +25,7 @@
             <div class="camera-overlay__target--corner camera-overlay__target--tr"></div>
             <div class="camera-overlay__target--corner camera-overlay__target--bl"></div>
             <div class="camera-overlay__target--corner camera-overlay__target--br"></div>
+            <div class="camera-overlay__rotation" :class="{'visible' : rotationVisible}" :style="`transform: translateX(${rotation*100}vw) translateY(-50%);`"></div>
         </div>
         <div class="camera-overlay__hint">
             <p class="camera-overlay__hint-text">> {{ instructions.hint }}</p>
@@ -46,11 +47,13 @@
         name: "CameraOverlay",
         data() {
             return {
-                started: true,
+                started: false,
                 progress: 0,
                 recording: false,
                 aiming: false,
                 progressVisible: false,
+                rotation: 0,
+                rotationVisible: false,
 
                 instructions: {
                     text: '',
@@ -58,9 +61,9 @@
                 },
 
                 targetSize: {
-                    min: 130,
-                    max: 240,
-                    current: 240
+                    min: 100,
+                    max: 200,
+                    current: 200
                 },
 
                 timelines: {
@@ -164,13 +167,18 @@
 
             this.events.push(EventManager.subscribe('mobile:interaction_set', (interaction) => {
                 interaction === 'framing' ? this.progressVisible = true : this.progressVisible = false
+                interaction === 'rotation' ? this.rotationVisible = true : this.rotationVisible = false
             }))
+            this.events.push(EventManager.subscribe('mobile:interaction', (data) => {
+                // Check if traveling
+                if(data.type !== 'rotation') return
+                this.rotation = data.value
+            }))
+
         },
         mounted() {
             this.buildStartTimeline()
             this.buildStopTimeline()
-
-            // this.start()
         },
         beforeDestroy() {
             // Unsubscribe all events before destroy component
@@ -258,6 +266,11 @@
                 .aiming & {
                     border-bottom: 4px solid $color-success;
                     border-left: 4px solid $color-success;
+                }
+
+                .camera-overlay__corner-element {
+                    left: 1.5rem;
+                    bottom: 1.5rem;
                 }
             }
 
@@ -380,6 +393,46 @@
                         background: $color-success;
                     }
                 }
+            }
+        }
+
+        &__rotation {
+            position: absolute;
+            top: 50%;
+            right: -50px;
+            height: 200px;
+            width: calc(100vw + 200px);
+            border: 2px solid rgba(white, .5);
+            border-radius: 200px;
+            transform: translateX(0vw) translateY(-50%);
+
+            opacity: 0;
+            transition: opacity 1s ease;
+
+            &.visible {
+                opacity: 1;
+                transition: opacity 1s ease;
+            }
+
+            &:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 0;
+                height: 196px;
+                width: 196px;
+                border-radius: 200px;
+                background: rgba($color-primary, .5)
+            }
+            &:after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 196px;
+                width: 196px;
+                border-radius: 200px;
+                background: rgba($color-primary, .5)
             }
         }
 

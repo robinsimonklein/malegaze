@@ -1,19 +1,23 @@
 <template>
     <div class="mobile-interaction interaction-rotation">
-        <CustomSlider class="interaction-rotation__slider" :min="min" :max="max" :step="0.01" :disabled="disabled" :orientation="'left'" @change="checkValue"/>
+        <img src="@/assets/svg/mobile_rotation.svg" />
     </div>
 </template>
 
 <script>
-    import CustomSlider from "../controls/CustomSlider";
+    import EventManager from "../../../js/event/EventManager";
+    import {normalize} from "../../../js/helpers/Utils";
+    import {MathUtils} from "three";
     export default {
         name: "MobileInteractionRotation",
-        components: {CustomSlider},
         data() {
             return {
                 min: 0,
                 max: 1,
-                disabled: false
+                disabled: false,
+                alpha: null,
+                offset: undefined,
+                event: null
             }
         },
         sockets: {
@@ -37,13 +41,40 @@
                 this.$emit('done')
             }
         },
+        computed: {
+            value() {
+                const max = 50
+                if(this.alpha > 180) {
+                    return 0
+                }else if(this.alpha > max){
+                    return 1
+                }else {
+                    return normalize(this.alpha, 0, max)
+                }
+            }
+        },
+        mounted() {
+            this.event = EventManager.subscribe('mobile:orientation', (orientation) => {
+                if(this.offset === undefined) this.offset = orientation.alpha > 180 ? orientation.alpha - MathUtils.radToDeg(Math.PI*2) : orientation.alpha
+                this.alpha = orientation.alpha ?? 0
+
+                this.checkValue(this.value)
+            })
+        },
+        beforeDestroy() {
+            this.event.unsubscribe()
+        }
     }
 </script>
 
 <style lang="scss" scoped>
 .interaction-rotation {
-    &__slider {
-        transform: rotate(180deg);
+    display: flex;
+    flex-direction: column;
+
+    img {
+        max-height: 80vh;
+        max-width: 80vw
     }
 }
 </style>
