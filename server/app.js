@@ -105,11 +105,6 @@ io.on('connection', function (socket) {
         socket.in(socket.mobileRoom).emit('mobile_interaction_enable')
     });
 
-    socket.on('mobile_show_instruction', () => {
-        socket.in(socket.mobileRoom).emit('mobile_show_instruction')
-    });
-
-
     socket.on('mobile_interaction', (data) => {
         console.log('zoom', data)
         socket.in(socket.mobileRoom).emit('mobile_interaction', data)
@@ -119,12 +114,22 @@ io.on('connection', function (socket) {
         socket.in(socket.mobileRoom).emit('mobile_interaction_done')
     });
 
+    socket.on('mobile_show_instruction', () => {
+        socket.in(socket.mobileRoom).emit('mobile_show_instruction')
+    });
+
+
     // --- APP
 
     socket.on('state_request', (state) => {
         console.log('state_request', state)
         socket.emit('state_dispatch', state)
         socket.in(socket.mobileRoom).emit('state_dispatch', state)
+    })
+
+    socket.on('mobile_allow_next', () => {
+        console.log('mobile_allow_next')
+        socket.in(socket.mobileRoom).emit('mobile_allow_next')
     })
 
 });
