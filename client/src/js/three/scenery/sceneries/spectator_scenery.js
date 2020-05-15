@@ -18,7 +18,6 @@ import {BloomPass} from 'three/examples/jsm/postprocessing/BloomPass';
 import {FilmPass} from 'three/examples/jsm/postprocessing/FilmPass';
 import * as Nodes from 'three/examples/jsm/nodes/Nodes';
 import gsap from 'gsap';
-import {MathUtils} from "three";
 
 export default new Scenery({
     name: `${appStates.SPECTATOR}_scenery`,
@@ -428,7 +427,8 @@ export default new Scenery({
             self.scene.add(mesh);
 
             self.videoScreen = mesh;
-            self.video.play().then(() => self.video.volume = 0.02);
+            self.video.volume = 0.02;
+            self.video.play();
         }
 
         self.addBlur = () => {
