@@ -56,10 +56,9 @@
             emitInteractionDone() {
                 this.$socket.emit('mobile_interaction_done')
             },
-            startRec() {
-                this.$socket.emit('camera_rec');
-            }
         },
+
+
     }
 </script>
 

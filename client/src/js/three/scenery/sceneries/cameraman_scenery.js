@@ -214,8 +214,8 @@ export default new Scenery({
                     self.soundManager.getSoundObjectByName('04_real_cadrage_traveling').play()
 
                     EventManager.publish('camera:instructions', {
-                        text: 'Cadre l\'image',
-                        hint: 'Vise les pieds de l\'actrice'
+                        text: 'Cadre les pieds de l\'actrice',
+                        icon: '/icon/tutorial/tutorial_icon_framing.svg'
                     })
 
                     self.sequences[self.currentSequence].ready = true
@@ -257,7 +257,7 @@ export default new Scenery({
                     EventManager.publish('camera:rec', true)
                     EventManager.publish('camera:instructions', {
                         text: 'Effectue un traveling',
-                        hint: 'Tourne la roue pour faire avancer le traveling'
+                        icon: '/icon/tutorial/tutorial_icon_traveling.svg'
                     })
                     const curve = self.cameraCurves.find(curve => curve.name === 'P1_TRAVEL')
                     const finalPosition = curve.getPointAt(1)
@@ -328,8 +328,8 @@ export default new Scenery({
 
                         self.soundManager.getSoundObjectByName('07_real_zoom').ended = () => {
                             EventManager.publish('camera:instructions', {
-                                text: 'Cadre l\'image',
-                                hint: 'Oriente la caméra vers Sean'
+                                text: 'Cadre Sean en contre-plongée',
+                                icon: 'icon/tutorial/tutorial_icon_framing.svg'
                             })
                             self.sequences[self.currentSequence].ready = true
                             EventManager.publish('camera:instructions', false)
@@ -366,8 +366,8 @@ export default new Scenery({
                     self.cameraManager.controls = null
                     EventManager.publish('mobile:interaction_set', 'zoom')
                     EventManager.publish('camera:instructions', {
-                        text: 'Effectue un zoom',
-                        hint: 'Pousse le curseur pour zoomer'
+                        text: 'Zoome en direction de Sean',
+                        icon: 'icon/tutorial/tutorial_icon_zoom.svg'
                     })
                     const curve = self.cameraCurves.find(curve => curve.name === 'P2_ZOOM')
                     const finalPosition = curve.getPointAt(1)
@@ -434,7 +434,6 @@ export default new Scenery({
                     const cameraPosition = self.cameraCurves.find(curve => curve.name === 'P3_ROTATION').getPointAt(0)
                     self.cameraManager.camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
                     EventManager.publish('camera:aiming', {distance: 4, threshold: 1, aiming: false})
-                    EventManager.publish('mobile:interaction_set', 'framing')
 
                     let transitionEvent = EventManager.subscribe('transition:ended', () => {
 
@@ -443,10 +442,11 @@ export default new Scenery({
                         }
 
                         self.soundManager.getSoundObjectByName('10_real_rotation').ended = () => {
+                            EventManager.publish('mobile:interaction_set', 'framing')
                             self.sequences[self.currentSequence].ready = true
                             EventManager.publish('camera:instructions', {
-                                text: 'Cadre l\'image',
-                                hint: 'Vise vers les seins de l\'actrice',
+                                text: 'Cadre les seins de l\'actrice',
+                                icon: 'icon/tutorial/tutorial_icon_framing.svg',
                             })
                         }
 
@@ -484,8 +484,8 @@ export default new Scenery({
 
                     EventManager.publish('camera:rec', true)
                     EventManager.publish('camera:instructions', {
-                        text: 'Pivote la caméra',
-                        hint: 'Tourne doucement le téléphone vers la gauche'
+                        text: 'Pivote la caméra vers son visage',
+                        icon: 'icon/tutorial/tutorial_icon_rotation.svg'
                     })
 
                     const y = self.cameraManager.camera.rotation.y
@@ -495,7 +495,6 @@ export default new Scenery({
                     const interactionEvent = EventManager.subscribe('mobile:interaction', (data) => {
                         // Check if traveling
                         if(data.type !== 'rotation') return
-                        data.value *= 0.2
                         self.cameraManager.camera.rotation.y = y + (data.value * (finalRotation - y))
                     })
 
@@ -504,16 +503,15 @@ export default new Scenery({
 
                         self.sequences[self.currentSequence].ready = true
 
-                        gsap.to(self.cameraManager.camera.rotation, {y: finalRotation, duration: 6}).then(() => {
-                            EventManager.publish('camera:rec', false)
-                            EventManager.publish('camera:instructions', false)
+                        EventManager.publish('camera:rec', false)
+                        EventManager.publish('camera:instructions', false)
+                        EventManager.publish('mobile:interaction_set', null)
 
-                            self.soundManager.getSoundObjectByName('11_real_rotation_fin').ended = () => {
-                                self.nextSequence(self)
-                            }
+                        self.soundManager.getSoundObjectByName('11_real_rotation_fin').ended = () => {
+                            self.nextSequence(self)
+                        }
 
-                            self.soundManager.getSoundObjectByName('11_real_rotation_fin').play()
-                        })
+                        self.soundManager.getSoundObjectByName('11_real_rotation_fin').play()
 
                         // Unsubscribe events
                         travelingEvent.unsubscribe();
@@ -618,7 +616,7 @@ export default new Scenery({
 
         // self.cameraManager.changeCamera(4)
         // self.cameraManager.controls.object = self.cameraManager.cameraObjects[4].camera
-
+l
         // ---------------- //
         // Lights
         // ---------------- //
@@ -691,8 +689,6 @@ export default new Scenery({
 
             // Add duration
             steps.forEach(point => point.duration = duration/nbPoints)
-
-            console.log('ici')
 
             // Run animation
             gsap.to(camera.position, {
