@@ -18,6 +18,7 @@ import {BloomPass} from 'three/examples/jsm/postprocessing/BloomPass';
 import {FilmPass} from 'three/examples/jsm/postprocessing/FilmPass';
 import * as Nodes from 'three/examples/jsm/nodes/Nodes';
 import gsap from 'gsap';
+import {MathUtils} from "three";
 
 export default new Scenery({
     name: `${appStates.SPECTATOR}_scenery`,
@@ -54,7 +55,7 @@ export default new Scenery({
         new Light({
             name: 'ambient',
             type: lightTypes.AMBIENT,
-            light: new THREE.HemisphereLight(0xffb8c6, 0x080820)
+            light: new THREE.HemisphereLight(0xffb8c6, 0x080820, 1)
         }),
         new Light({
             name: 'spotlight',
@@ -75,7 +76,37 @@ export default new Scenery({
             volume: 0.4
         }),
         new Sound({
-            name: 'light',
+            name: 'light_0',
+            path: 'sound/spectator/soundLight.mp3',
+            isLoop: false,
+            volume: 0.4
+        }),
+        new Sound({
+            name: 'light_1',
+            path: 'sound/spectator/soundLight.mp3',
+            isLoop: false,
+            volume: 0.4
+        }),
+        new Sound({
+            name: 'light_2',
+            path: 'sound/spectator/soundLight.mp3',
+            isLoop: false,
+            volume: 0.4
+        }),
+        new Sound({
+            name: 'light_3',
+            path: 'sound/spectator/soundLight.mp3',
+            isLoop: false,
+            volume: 0.4
+        }),
+        new Sound({
+            name: 'light_4',
+            path: 'sound/spectator/soundLight.mp3',
+            isLoop: false,
+            volume: 0.4
+        }),
+        new Sound({
+            name: 'light_5',
             path: 'sound/spectator/soundLight.mp3',
             isLoop: false,
             volume: 0.4
@@ -140,11 +171,9 @@ export default new Scenery({
         self.volumetricLights = [];
         self.spotLights = [];
         self.spectators = [];
-        self.voices = [];
         self.smokeParticles = [];
 
         self.lightColor = 0xffeeee;
-        self.cooldown = 0;
 
         self.sprites = [
             {
@@ -173,17 +202,21 @@ export default new Scenery({
             }
         ]
         self.intersectedSprite = null
+        self.spritesEnabled = false
 
         self.listenEvent = EventManager.subscribe('mobile:interaction', (interaction) => {
             if(self.intersectedSprite === null || interaction !== 'listen') return
 
             // Freeze camera
             self.cameraManager.controls = null
+            EventManager.publish('mobile:interaction_set', null)
+            EventManager.publish('camera:instructions', false)
             self.cameraManager.camera.lookAt(self.intersectedSprite.position)
 
             const tl = new gsap.timeline()
 
             tl.to(self.intersectedSprite.material, {duration: 2, ease: 'power3.out', opacity: 0})
+            tl.to('.spectatorScene__sight', {duration: 2, ease: 'power3.out', opacity: 0}, '<')
             tl.to(self.cameraManager.camera, {
                 duration: 2,
                 ease: 'power3.inOut',
@@ -247,24 +280,30 @@ export default new Scenery({
             self.source.src = '/video/cinema-vid-end.mp4';
             self.cameraManager.controls = null;
             const timeline = gsap.timeline();
-            timeline
-                .to(self.cameraManager.camera.rotation, {x: 0.1, y: -0.05, duration: 3})
-                .to(self.cameraManager.camera, {delay: 1, zoom: 5, duration: 2});
-            timeline.play().then(() => {
-                EventManager.publish('fadeEnding');
-                const timeout = setTimeout(() => {
-                    store.dispatch('app/requestState', appStates.END).then(() => {
-                        self.video.pause();
-                        self.soundManager.stopAll();
-                        clearTimeout(timeout);
-                    });
-                }, 1000);
-            });
+            timeline.to(self.cameraManager.camera.rotation, {x: -0.01, y: 0, z:0, duration: 3, ease: 'power1.inOut'})
+            timeline.to(self.cameraManager.camera, {delay: 1, zoom: 5, duration: 3, ease: 'power1.inOut'}, '>-1');
+            timeline.call(() => {
+                EventManager.publish('spectator:fadeout');
+                self.video.pause();
+                gsap.delayedCall(3, () => { store.dispatch('app/requestState', appStates.END) })
+            })
         }
 
         self.lightUp = (index) => {
-            self.volumetricLights[index].material.visible = true;
-            self.spotLights[index * 2].intensity = 1;
+            const tl = new gsap.timeline()
+            // FIXME : Surement moyen d'optimiser ça
+            tl.to(self.volumetricLights[index].material, {duration: .1, visible: true}, )
+            tl.to(self.spotLights[index * 2], {duration: .1, intensity: 1}, '<')
+            tl.to(self.volumetricLights[index].material, {duration: .1, visible: false})
+            tl.to(self.spotLights[index * 2], {duration: .1, intensity: 0}, '<')
+            tl.to(self.volumetricLights[index].material, {duration: .1, visible: true})
+            tl.to(self.spotLights[index * 2], {duration: .1, intensity: 1}, '<')
+            tl.to(self.volumetricLights[index].material, {duration: .1, visible: false})
+            tl.to(self.spotLights[index * 2], {duration: .1, intensity: 0}, '<')
+            tl.to(self.volumetricLights[index].material, {delay: .4, duration: .1, visible: true})
+            tl.to(self.spotLights[index * 2], {duration: .1, intensity: 1}, '<')
+
+            self.soundManager.getSoundByName('light_'+index).play()
 
             self.eyes[index].forEach((eye, index) => {
                 if (index !== 0) {
@@ -424,9 +463,6 @@ export default new Scenery({
             self.blur.radius.y = 7;
         }
 
-        self.addVoice = (name) => {
-            self.voices.push(self.soundManager.getSoundByName(name));
-        }
 
         self.buildSprite = (self, {sprite}) => {
             const spriteObject = new THREE.Sprite(self.spriteMaterial)
@@ -440,6 +476,8 @@ export default new Scenery({
 
     },
     onLoaded: (self) => {
+        console.log(self)
+
         self.timer = 0;
         self.clock = new THREE.Clock();
 
@@ -453,17 +491,8 @@ export default new Scenery({
 
         self.soundManager.getSoundByName('ambiance').play();
 
-        self.addVoice('voice');
-        self.addVoice('voice1');
-        self.addVoice('voice2');
-        self.addVoice('voice3');
-        self.addVoice('voice4');
-        self.addVoice('voice5');
-        self.addVoice('voice6');
-        self.addVoice('voice7');
-
         self.spriteMap = new THREE.TextureLoader().load( "/png/spectator_sprite.png" );
-        self.spriteMaterial = new THREE.SpriteMaterial( { map: self.spriteMap, sizeAttenuation: false, transparent: true } );
+        self.spriteMaterial = new THREE.SpriteMaterial( { map: self.spriteMap, sizeAttenuation: false, opacity: 0, transparent: true } );
         self.spriteGroup = new THREE.Object3D();
         self.spriteGroup.name = 'sprites'
         self.scene.add(self.spriteGroup)
@@ -514,13 +543,47 @@ export default new Scenery({
 
         // Add sprites on spectators & women
         self.sprites.forEach((sprite) => {
-            self.buildSprite(self, {
-                sprite
-            })
+            self.buildSprite(self, {sprite})
         })
 
-        // TODO: Remove
-        console.log(self)
+
+        self.timeline = new gsap.timeline()
+        self.timeline.call(() => {EventManager.publish('spectator:fadein')})
+        self.timeline.to(self.blur.radius, {duration: 4, delay: 2, x: 0, y: 0})
+
+        // Lights on
+        self.timeline.to(self.light, {intensity: 1, duration: 4}, '>15'); // 15
+        self.timeline.call(() => { self.lightUp(0) }, [], '<1')
+        self.timeline.call(() => { self.lightUp(3) }, [], '<1')
+        self.timeline.call(() => { self.lightUp(4) }, [], '<1.4')
+        self.timeline.call(() => { self.lightUp(1) }, [], '<1')
+        self.timeline.call(() => { self.lightUp(2) }, [], '<1.2')
+        self.timeline.call(() => { self.lightUp(5) }, [], '<1.5')
+
+
+        // Enable interaction
+        self.timeline.call(() => {
+            self.scene.getObjectByName('sprites').children.forEach((sprite) => {
+                gsap.to(sprite.material, {duration: 3, opacity: 1, ease: 'power3.out'})
+            })
+            self.spritesEnabled = true
+        }, [], '>6')
+        self.timeline.to('.spectatorScene__sight', {duration: 2, opacity: 1, ease: 'power3.out'})
+
+        // Tutorial
+        self.timeline.call(() => {
+            EventManager.publish('camera:instructions', {
+                text: 'Ecoute les personnes autours de toi',
+                icon: 'icon/tutorial/tutorial_icon_listen.svg'
+            })
+        }, [])
+        self.timeline.call(() => {
+            EventManager.publish('mobile:allow_next')
+            self.doneEvent = EventManager.subscribe('mobile:interaction_done', () => {
+                self.endScene()
+            })
+        }, [], '+=3') // +=30
+
 
     },
     onUpdate: (self) => {
@@ -534,6 +597,8 @@ export default new Scenery({
             });
         });
 
+        if(self.spritesEnabled) self.spriteListener(self)
+
         /* self.smokeParticles.forEach((particles) => {
             let sp = particles.length;
             while (sp--) {
@@ -541,30 +606,8 @@ export default new Scenery({
             }
         }); */
 
-        if (self.timer === 100) {
-            gsap.to(self.blur.radius, {x: 0, y: 0, duration: .1});
-        }
-        if (self.timer > 0 && self.timer < 60000) {
-            gsap.to(self.blur.radius, {x: 0, y: 0, duration: .1});
-            self.spriteListener(self);
-        }
-        if (self.timer === 100) {
-            self.lightUp(2);
-            self.lightUp(3);
-            gsap.to(self.light, {intensity: 1, duration: 4});
-
-            self.lightSound.play();
-        }
-        if (self.timer === 1050) {
-            self.lightUp(1);
-            self.lightUp(5);
-        }
-        if (self.timer === 1100) {
-            self.lightUp(0);
-            self.lightUp(4);
-
-        }
-        /*if (self.timer > 3000) {
+        /*
+        if (self.timer > 3000) {
             self.smokeParticles.forEach((particles) => {
                 let sp = particles.length;
                 while (sp--) {
@@ -573,14 +616,9 @@ export default new Scenery({
                     }
                 }
             });
-        } */
-        if (self.timer === 6150) {
-            self.endScene();
         }
 
-        if (self.timer < 6150) {
-            self.timer++;
-        }
+         */
 
         self.composer.render(delta);
         self.frame.update(delta);
