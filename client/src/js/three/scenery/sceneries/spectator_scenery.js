@@ -70,7 +70,7 @@ export default new Scenery({
     sounds: [
         new Sound({
             name: 'ambiance',
-            path: 'sound/ambianceScene3.mp3',
+            path: 'sound/spectator/spectator_ambiance.mp3',
             isLoop: true,
             volume: 0.4
         }),
