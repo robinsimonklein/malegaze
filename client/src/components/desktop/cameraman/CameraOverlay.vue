@@ -1,10 +1,6 @@
 <template>
     <div class="camera-overlay" :class="{'aiming' : aiming}">
         <div class="camera-overlay__corner camera-overlay__corner--tl">
-            <div class="camera-overlay__instructions">
-                <img class="camera-overlay__instructions-icon" src="icon/tutorial/smartphone.svg"/>
-                <span class="camera-overlay__instructions-text">{{ instructions.text }}</span>
-            </div>
         </div>
         <div class="camera-overlay__corner camera-overlay__corner--tr">
             <div v-show="recording" class="camera-overlay__rec">
@@ -25,8 +21,9 @@
             <div class="camera-overlay__target--corner camera-overlay__target--br"></div>
             <div class="camera-overlay__rotation" :class="{'visible' : rotationVisible}" :style="`transform: translateX(${rotation*100}vw) translateY(-50%);`"></div>
         </div>
-        <div class="camera-overlay__hint">
-            <p class="camera-overlay__hint-text">> {{ instructions.hint }}</p>
+        <div class="camera-overlay__instructions">
+            <img class="camera-overlay__instructions-icon" :src="instructions.icon">
+            <p class="camera-overlay__instructions-text"> {{ instructions.text }}</p>
         </div>
         <div class="camera-overlay__progress" :class="{'visible' : progressVisible}">
             <div class="camera-overlay__progress-bar" :style="`width: ${progress}%`"></div>
@@ -55,7 +52,7 @@
 
                 instructions: {
                     text: '',
-                    hint: ''
+                    icon: null
                 },
 
                 targetSize: {
@@ -113,18 +110,15 @@
             displayInstructions() {
                 const tl = new gsap.timeline()
                 tl.pause()
-                tl.fromTo('.camera-overlay__instructions-icon', {alpha: 0, translateX: -10}, {duration: 2, alpha: 1, translateX: 0, ease: 'power3.out'})
-                tl.fromTo('.camera-overlay__instructions-text', {alpha: 0, translateX: -10}, {duration: 2, alpha: 1, translateX: 0, ease: 'power3.out'}, "-=1.7")
-                tl.fromTo('.camera-overlay__hint', {alpha: 0}, {duration: 2, delay: .5, alpha: 1, ease: 'power3.out'})
-                // tl.to('.camera-overlay__hint', {duration: 1, delay: 4, alpha: 0, ease: 'power3.out'})
+                tl.fromTo('.camera-overlay__instructions-icon', {alpha: 0, translateY: 10}, {duration: 2, alpha: 1, translateY: 0, ease: 'power3.out'})
+                tl.fromTo('.camera-overlay__instructions-text', {alpha: 0, translateY: 10}, {duration: 2, alpha: 1, translateY: 0, ease: 'power3.out'}, "-=1.7")
                 tl.play()
             },
             hideInstructions() {
                 const tl = new gsap.timeline()
                 tl.pause()
-                tl.to('.camera-overlay__instructions-text', {duration: .5, alpha: 0, translateX: -10, ease: 'power3.out'}, '#start')
-                tl.to('.camera-overlay__instructions-icon', {duration: .5, alpha: 0, translateX: -10, ease: 'power3.out'}, )
-                tl.to('.camera-overlay__hint', {duration: .5, alpha: 0, ease: 'power3.out'}, "#start+=0")
+                tl.to('.camera-overlay__instructions-text', {duration: .5, alpha: 0, translateY: 10, ease: 'power3.out'}, '#start')
+                tl.to('.camera-overlay__instructions-icon', {duration: .5, alpha: 0, translateY: 10, ease: 'power3.out'})
                 tl.play()
             }
         },
@@ -156,7 +150,7 @@
             this.events.push(EventManager.subscribe('camera:instructions', (instructions) => {
                 if (instructions!== false) {
                     this.instructions.text = instructions.text ?? ''
-                    this.instructions.hint = instructions.hint ?? ''
+                    this.instructions.icon = instructions.icon ?? null
                     this.displayInstructions()
                 } else {
                     this.hideInstructions()
@@ -462,10 +456,11 @@
         }
 
         &__instructions {
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            width: 40vw;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            top: calc(50% + 9rem);
+            width: 100%;
 
             &-icon {
                 opacity: 0;
@@ -475,6 +470,7 @@
                 text-transform: uppercase;
                 letter-spacing: .2rem;
                 margin-left: 1rem;
+                text-align: center;
                 opacity: 0;
             }
         }
