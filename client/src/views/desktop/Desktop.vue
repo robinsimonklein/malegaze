@@ -73,6 +73,9 @@
             EventManager.subscribe('mobile:interaction_set', (interaction) => {
                 this.$socket.emit('mobile_interaction_set', interaction)
             })
+            EventManager.subscribe('mobile:allow_next', () => {
+                this.$socket.emit('mobile_allow_next')
+            })
         }
     }
 </script>
