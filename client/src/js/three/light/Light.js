@@ -15,13 +15,13 @@ class Light {
     type;
     light;
     initialPosition = {x: 0, y: 0, z: 0};
-
     helper;
 
     /**
      * @param {string} name - Name of the light
      * @param {lightTypes} type - Type of the light
      * @param {*} light - The Three.js light
+     * @param {boolean} castShadow - Set to true if you want your light to castShadow
      * @param {Object} [initialPosition] - Initial position of the light
      * @param {Object} [properties] - Light properties (you can set all the properties of the Three.js light)
      *
@@ -31,12 +31,14 @@ class Light {
         name = 'undefined',
         type,
         light,
+        castShadow,
         initialPosition = {x: 0, y: 0, z: 0},
         properties = {}
     }) {
         this.name = name;
         this.type = type;
         this.light = light;
+        this.light.castShadow = castShadow;
 
         if (initialPosition) {
             this.initialPosition = initialPosition;
