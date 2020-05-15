@@ -146,6 +146,61 @@ export default new Scenery({
         self.lightColor = 0xffeeee;
         self.cooldown = 0;
 
+        self.sprites = [
+            {
+                name: 'spectatrice_gauche',
+                soundName: 'voice1',
+                needZoom: 2,
+                position: new THREE.Vector3(-160,250,600)
+            },
+            {
+                name: 'spectateur_droite',
+                soundName: 'voice2',
+                needZoom: 2,
+                position: new THREE.Vector3(260,250,600)
+            },
+            {
+                name: 'femme_assise_droite',
+                soundName: 'voice3',
+                needZoom: 4,
+                position: new THREE.Vector3(775,120,-500)
+            },
+            {
+                name: 'femme_skate_gauche',
+                soundName: 'voice4',
+                needZoom: 6,
+                position: new THREE.Vector3(-800,120,-1400)
+            }
+        ]
+        self.intersectedSprite = null
+
+        self.listenEvent = EventManager.subscribe('mobile:interaction', (interaction) => {
+            if(self.intersectedSprite === null || interaction !== 'listen') return
+
+            // Freeze camera
+            self.cameraManager.controls = null
+            self.cameraManager.camera.lookAt(self.intersectedSprite.position)
+
+            const tl = new gsap.timeline()
+
+            tl.to(self.intersectedSprite.material, {duration: 2, ease: 'power3.out', opacity: 0})
+            tl.to(self.cameraManager.camera, {
+                duration: 2,
+                ease: 'power3.inOut',
+                zoom: self.intersectedSprite.needZoom,
+                onComplete: () => {
+                    const sound = self.soundManager.getSoundByName(self.intersectedSprite.soundName)
+                    if(sound) sound.play()
+                    sound.source.onended = () => {
+                        tl.reverse(0).then(() => {
+                            self.cameraManager.setControls(controlsTypes.MOBILE)
+                        })
+                    }
+                }
+            }, '<')
+
+        })
+
         self.replaceConeByCylinder = (mesh) => {
             mesh.material = new THREEx.VolumetricSpotLightMaterial(2.8, 5., mesh.position, new THREE.Color(self.lightColor), 1.);
             mesh.material.visible = false;
@@ -162,27 +217,29 @@ export default new Scenery({
             self.scene.add(spotLight.target);
         }
 
-        self.playVoice = () => {
-            const length = self.voices.length;
-            const random = Math.floor(Math.random() * length);
-            self.voices[random].play();
+        self.playVoice = (self, {name}) => {
+            self.soundManager.getSoundByName(name).play()
         }
 
-        self.spectatorListener = () => {
+        self.spriteListener = (self) => {
             self.raycaster.setFromCamera({x: 0.0, y: 0.0}, self.cameraManager.camera);
-            const intersects = self.raycaster.intersectObjects(self.spectators, true);
+            const intersects = self.raycaster.intersectObjects(self.scene.getObjectByName('sprites').children, false);
 
-            if (intersects.length > 0 && self.cooldown === 0) {
-                EventManager.publish('spectatorDetected');
-                self.playVoice();
-                self.cooldown = 200;
+            if(intersects.length > 0) {
+                if(self.intersectedSprite !== intersects[0].object){
+                    self.intersectedSprite = intersects[0].object
+                    gsap.to(self.intersectedSprite.scale, {duration: .5, ease: 'power2.out', x: .1, y: .1, z: .1})
+                    EventManager.publish('mobile:interaction_set', 'listen')
+                    EventManager.publish('spectatorDetected');
+                }
             }
-
-            if (self.cooldown > 0) {
-                if (self.cooldown < 150) {
+            else{
+                if(self.intersectedSprite !== null) {
+                    gsap.to(self.intersectedSprite.scale, {duration: .5, ease: 'power2.out', x: .07, y: .07, z: .07})
+                    self.intersectedSprite = null
+                    EventManager.publish('mobile:interaction_set', null)
                     EventManager.publish('spectatorNotDetected');
                 }
-                self.cooldown--;
             }
         }
 
@@ -370,6 +427,17 @@ export default new Scenery({
         self.addVoice = (name) => {
             self.voices.push(self.soundManager.getSoundByName(name));
         }
+
+        self.buildSprite = (self, {sprite}) => {
+            const spriteObject = new THREE.Sprite(self.spriteMaterial)
+            spriteObject.name = sprite.name ?? ''
+            spriteObject.soundName = sprite.soundName ?? ''
+            spriteObject.needZoom = sprite.needZoom ?? false
+            spriteObject.position.set(sprite.position.x, sprite.position.y, sprite.position.z)
+            spriteObject.scale.set(.07, .07, .07)
+            self.spriteGroup.add(spriteObject)
+        }
+
     },
     onLoaded: (self) => {
         self.timer = 0;
@@ -393,6 +461,12 @@ export default new Scenery({
         self.addVoice('voice5');
         self.addVoice('voice6');
         self.addVoice('voice7');
+
+        self.spriteMap = new THREE.TextureLoader().load( "/png/spectator_sprite.png" );
+        self.spriteMaterial = new THREE.SpriteMaterial( { map: self.spriteMap, sizeAttenuation: false, transparent: true } );
+        self.spriteGroup = new THREE.Object3D();
+        self.spriteGroup.name = 'sprites'
+        self.scene.add(self.spriteGroup)
 
         // Set street lamp & eyes next to women
         self.scene.traverse((child) => {
@@ -438,7 +512,16 @@ export default new Scenery({
 
         self.addBlur();
 
-        console.log(self.spectators)
+        // Add sprites on spectators & women
+        self.sprites.forEach((sprite) => {
+            self.buildSprite(self, {
+                sprite
+            })
+        })
+
+        // TODO: Remove
+        console.log(self)
+
     },
     onUpdate: (self) => {
         const delta = self.clock.getDelta();
@@ -459,13 +542,13 @@ export default new Scenery({
         }); */
 
         if (self.timer === 100) {
-            gsap.to(self.blur.radius, {x: 0, y: 0, duration: 3});
+            gsap.to(self.blur.radius, {x: 0, y: 0, duration: .1});
         }
-        if (self.timer > 100 && self.timer < 6000) {
-            gsap.to(self.blur.radius, {x: 0, y: 0, duration: 3});
-            self.spectatorListener();
+        if (self.timer > 0 && self.timer < 60000) {
+            gsap.to(self.blur.radius, {x: 0, y: 0, duration: .1});
+            self.spriteListener(self);
         }
-        if (self.timer === 1000) {
+        if (self.timer === 100) {
             self.lightUp(2);
             self.lightUp(3);
             gsap.to(self.light, {intensity: 1, duration: 4});

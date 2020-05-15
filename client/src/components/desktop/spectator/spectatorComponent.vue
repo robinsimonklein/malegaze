@@ -33,12 +33,14 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 30px;
-            height: 30px;
-            border-radius: 100%;
+            width: 25px;
+            height: 25px;
+            border-radius: 50px;
             background-color: white;
+            transition: background-color .3s ease;
 
             &.active {
+                transition: background-color .3s ease;
                 background-color: $color-primary;
             }
         }
