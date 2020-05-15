@@ -25,7 +25,7 @@ export default new Scenery({
         new Camera({
             type: cameraTypes.PERSPECTIVE,
             properties: {fov: 180, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 3500},
-            initialPosition: {x: -25, y: 250, z: 710},
+            initialPosition: {x: -25, y: 280, z: 730},
             settings: {
                 alphaOffset: 0
             }
@@ -84,49 +84,49 @@ export default new Scenery({
             name: 'voice',
             path: 'sound/spectator/voice.mp3',
             isLoop: false,
-            volume: 0.7
+            volume: 0.9
         }),
         new Sound({
             name: 'voice1',
             path: 'sound/spectator/voice_1.mp3',
             isLoop: false,
-            volume: 0.7
+            volume: 0.9
         }),
         new Sound({
             name: 'voice2',
             path: 'sound/spectator/voice_2.mp3',
             isLoop: false,
-            volume: 0.7
+            volume: 0.9
         }),
         new Sound({
             name: 'voice3',
             path: 'sound/spectator/voice_3.mp3',
             isLoop: false,
-            volume: 0.7
+            volume: 0.9
         }),
         new Sound({
             name: 'voice4',
             path: 'sound/spectator/voice_4.mp3',
             isLoop: false,
-            volume: 0.7
+            volume: 0.9
         }),
         new Sound({
             name: 'voice5',
             path: 'sound/spectator/voice_5.mp3',
             isLoop: false,
-            volume: 0.7
+            volume: 0.9
         }),
         new Sound({
             name: 'voice6',
             path: 'sound/spectator/voice_6.mp3',
             isLoop: false,
-            volume: 0.7
+            volume: 0.9
         }),
         new Sound({
             name: 'voice7',
             path: 'sound/spectator/voice_7.mp3',
             isLoop: false,
-            volume: 0.7
+            volume: 0.9
         })
     ],
     onCreated: (self) => {
@@ -437,6 +437,8 @@ export default new Scenery({
         self.buildScreen();
 
         self.addBlur();
+
+        console.log(self.spectators)
     },
     onUpdate: (self) => {
         const delta = self.clock.getDelta();
