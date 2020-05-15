@@ -616,7 +616,7 @@ export default new Scenery({
 
         // self.cameraManager.changeCamera(4)
         // self.cameraManager.controls.object = self.cameraManager.cameraObjects[4].camera
-l
+
         // ---------------- //
         // Lights
         // ---------------- //
