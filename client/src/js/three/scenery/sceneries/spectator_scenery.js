@@ -18,6 +18,7 @@ import {BloomPass} from 'three/examples/jsm/postprocessing/BloomPass';
 import {FilmPass} from 'three/examples/jsm/postprocessing/FilmPass';
 import * as Nodes from 'three/examples/jsm/nodes/Nodes';
 import gsap from 'gsap';
+import {MathUtils} from "three";
 
 export default new Scenery({
     name: `${appStates.SPECTATOR}_scenery`,
@@ -32,7 +33,7 @@ export default new Scenery({
         })
     ],
     renderer: null,
-    controls: controlsTypes.MOBILE,
+    controls: controlsTypes.ORBIT,
     models: [
         new Model({
             name: 'cinema',
@@ -65,7 +66,7 @@ export default new Scenery({
                 penumbra: 0.3,
                 angle: 0.7
             }
-        })
+        }),
     ],
     sounds: [
         new Sound({
@@ -277,10 +278,9 @@ export default new Scenery({
 
             self.soundManager.getSoundByName('light_'+index).play()
 
-            self.eyes[index].forEach((eye, index) => {
-                if (index !== 0) {
-                    eye.visible = true;
-                }
+            self.eyes[index].forEach((eye) => {
+                eye.visible = true;
+                gsap.from(eye.scale, {duration: .5, delay: Math.random() * 1.5, ease: 'back.out(1.7)', x: 0, y: 0, z: 0})
             });
         }
 
@@ -321,15 +321,16 @@ export default new Scenery({
         };
 
         /**
-         * Create actor
+         * Generate eyes
          * @param {number[]} position
          */
         self.generateEyes = ({position}) => {
             const objects = [];
 
             const actress = new THREE.Object3D();
+            actress.name='actress'
+            actress.rotation.y = Math.random()*Math.PI
             self.scene.add(actress);
-            objects.push(actress);
 
             actress.position.x = position[0];
             actress.position.y = 100;
@@ -339,23 +340,29 @@ export default new Scenery({
                 const eye = self.eyeModel.clone();
                 switch (i) {
                     case 0:
-                        eye.rotateZ(Math.PI / 2);
-                        eye.position.x = 75;
+                        eye.position.x = Math.sin(0) * 105;
+                        eye.position.z = Math.cos(0) * 105;
                         eye.position.y = 70;
                         break;
                     case 1:
-                        eye.rotateZ(-Math.PI / 2);
-                        eye.position.x = -75;
-                        eye.position.y = 70;
+                        eye.position.x = Math.sin(MathUtils.degToRad(120)) * 105;
+                        eye.position.z = Math.cos(MathUtils.degToRad(120)) * 105;
+                        eye.position.y = 55;
                         break;
                     case 2:
-                        eye.rotateZ(Math.PI);
-                        eye.position.z = 75;
+                        eye.position.x = Math.sin(MathUtils.degToRad(240)) * 105;
+                        eye.position.z = Math.cos(MathUtils.degToRad(250)) * 105;
+                        eye.position.y = 85;
                         break;
                 }
                 actress.add(eye);
+                eye.lookAt(actress.position)
                 objects.push(eye);
+
+                const tl = gsap.timeline({delay: Math.random()*3 , yoyo: true, repeat: -1})
+                tl.to(eye.position, {duration: Math.round(Math.random()*3 + 2), y: self.randomIntFromInterval(45, 90), ease: 'power1.inOut'})
             }
+            self.actresses.push(actress)
             self.eyes.push(objects);
         }
 
@@ -451,6 +458,7 @@ export default new Scenery({
     onLoaded: (self) => {
         console.log(self)
 
+
         self.timer = 0;
         self.clock = new THREE.Clock();
 
@@ -470,12 +478,15 @@ export default new Scenery({
         self.spriteGroup.name = 'sprites'
         self.scene.add(self.spriteGroup)
 
+        self.eyeModel = self.modelManager.getLoadedModelByName('eye').scene
+        self.actresses = []
+
         // Set street lamp & eyes next to women
         self.scene.traverse((child) => {
             if (child.name === 'eye') {
-                child.rotateX(Math.PI / 2);
+                // child.rotateX(Math.PI / 2);
                 child.visible = false;
-                self.eyeModel = child;
+                // self.eyeModel = child;
             }
         });
 
@@ -570,7 +581,7 @@ export default new Scenery({
             self.timeline.to(self.blur.radius, {duration: 4, delay: 2, x: 0, y: 0})
 
             // Lights on
-            self.timeline.to(self.light, {intensity: 1, duration: 4}, '>15'); // 15
+            self.timeline.to(self.light, {intensity: 1, duration: 4}, '>1'); // 15
             self.timeline.call(() => {
                 self.lightUp(0)
             }, [], '<1')
@@ -611,18 +622,12 @@ export default new Scenery({
             self.timeline.play();
         }, 0)
 
-
     },
     onUpdate: (self) => {
         const delta = self.clock.getDelta();
 
-
-        self.eyes.forEach((objects) => {
-            objects.forEach((item, index) => {
-                if (index % 3 === 0) {
-                    item.rotation.y += delta;
-                }
-            });
+        self.actresses.forEach((actress) => {
+            actress.rotation.y += delta * 0.2
         });
 
         if(self.spritesEnabled) self.spriteListener(self)
