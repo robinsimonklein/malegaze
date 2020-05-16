@@ -63,27 +63,35 @@ export default new Scenery({
             initialPosition: {x: 0, y: 300, z: 0},
         })
     ],
-    // controls: controlsTypes.ORBIT,
+    //controls: controlsTypes.ORBIT,
     models: [
         new Model({
             name: 'cameraman_scenery',
-            path: 'models/glb/cameraman_scenery.glb',
-            type: 'glb'
+            path: 'models/glb/cameraman_scenery_fail.glb',
+            type: 'glb',
+            castShadow: false,
+            receiveShadow : false
         }),
         new Model({
             name: 'actress_scenery',
             path: 'models/glb/actress_scenery.glb',
-            type: 'glb'
+            type: 'glb',
+            castShadow: false,
+            receiveShadow : false
         }),
         new Model({
             name: 'cones_cameraman_scenery',
             path: 'models/glb/cones_cameraman_scenery.glb',
-            type: 'glb'
+            type: 'glb',
+            castShadow: false,
+            receiveShadow : false
         }),
         new Model({
             name: 'camera_splines',
             path: 'models/fbx/cameraman/camera_splines.fbx',
-            type: 'fbx'
+            type: 'fbx',
+            castShadow: false,
+            receiveShadow : false
         }),
     ],
     lights: [
@@ -91,16 +99,18 @@ export default new Scenery({
             name: 'ambiant',
             light: new THREE.HemisphereLight(0xffffff, 0x080820, .5),
             initialPosition: {x: 0, y: 300, z: 0},
-            debug: true
+            debug: true,
+            castShadow: false
         }),
         new Light({
             name: 'spotlights',
             light: new THREE.DirectionalLight(0xffffff, .6),
             initialPosition: {x: 0, y: 200, z: -700},
-            properties: {
+           /* properties: {
                 castShadow: true
-            },
-            debug: true
+            },*/
+            debug: true,
+            castShadow: false
         }),
     ],
     sounds: cameraman_sounds,
@@ -614,8 +624,6 @@ export default new Scenery({
     onLoaded: (self) => {
         console.log('self', self)
 
-        // self.cameraManager.changeCamera(4)
-        // self.cameraManager.controls.object = self.cameraManager.cameraObjects[4].camera
 
         // ---------------- //
         // Lights

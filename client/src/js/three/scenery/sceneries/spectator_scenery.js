@@ -203,36 +203,6 @@ export default new Scenery({
         self.intersectedSprite = null
         self.spritesEnabled = false
 
-        self.listenEvent = EventManager.subscribe('mobile:interaction', (interaction) => {
-            if(self.intersectedSprite === null || interaction !== 'listen') return
-
-            // Freeze camera
-            self.cameraManager.controls = null
-            EventManager.publish('mobile:interaction_set', null)
-            EventManager.publish('camera:instructions', false)
-            self.cameraManager.camera.lookAt(self.intersectedSprite.position)
-
-            const tl = new gsap.timeline()
-
-            tl.to(self.intersectedSprite.material, {duration: 2, ease: 'power3.out', opacity: 0})
-            tl.to('.spectatorScene__sight', {duration: 2, ease: 'power3.out', opacity: 0}, '<')
-            tl.to(self.cameraManager.camera, {
-                duration: 2,
-                ease: 'power3.inOut',
-                zoom: self.intersectedSprite.needZoom,
-                onComplete: () => {
-                    const sound = self.soundManager.getSoundByName(self.intersectedSprite.soundName)
-                    if(sound) sound.play()
-                    sound.source.onended = () => {
-                        tl.reverse(0).then(() => {
-                            self.cameraManager.setControls(controlsTypes.MOBILE)
-                        })
-                    }
-                }
-            }, '<')
-
-        })
-
         self.replaceConeByCylinder = (mesh) => {
             mesh.material = new THREEx.VolumetricSpotLightMaterial(2.8, 5., mesh.position, new THREE.Color(self.lightColor), 1.);
             mesh.material.visible = false;
@@ -547,42 +517,91 @@ export default new Scenery({
         })
 
 
-        self.timeline = new gsap.timeline()
-        self.timeline.call(() => {EventManager.publish('spectator:fadein')})
-        self.timeline.to(self.blur.radius, {duration: 4, delay: 2, x: 0, y: 0})
+        self.listenEvent = EventManager.subscribe('mobile:interaction', (interaction) => {
+            if(self.intersectedSprite === null || interaction !== 'listen') return
 
-        // Lights on
-        self.timeline.to(self.light, {intensity: 1, duration: 4}, '>15'); // 15
-        self.timeline.call(() => { self.lightUp(0) }, [], '<1')
-        self.timeline.call(() => { self.lightUp(3) }, [], '<1')
-        self.timeline.call(() => { self.lightUp(4) }, [], '<1.4')
-        self.timeline.call(() => { self.lightUp(1) }, [], '<1')
-        self.timeline.call(() => { self.lightUp(2) }, [], '<1.2')
-        self.timeline.call(() => { self.lightUp(5) }, [], '<1.5')
+            // Freeze camera
+            self.cameraManager.controls = null
+            EventManager.publish('mobile:interaction_set', null)
+            EventManager.publish('camera:instructions', false)
+            self.cameraManager.camera.lookAt(self.intersectedSprite.position)
 
+            const tl = new gsap.timeline()
 
-        // Enable interaction
-        self.timeline.call(() => {
-            self.scene.getObjectByName('sprites').children.forEach((sprite) => {
-                gsap.to(sprite.material, {duration: 3, opacity: 1, ease: 'power3.out'})
+            tl.to(self.intersectedSprite.material, {duration: 2, ease: 'power3.out', opacity: 0})
+            tl.to('.spectatorScene__sight', {duration: 2, ease: 'power3.out', opacity: 0}, '<')
+            tl.to(self.cameraManager.camera, {
+                duration: 2,
+                ease: 'power3.inOut',
+                zoom: self.intersectedSprite.needZoom,
+                onComplete: () => {
+                    const sound = self.soundManager.getSoundByName(self.intersectedSprite.soundName)
+                    if(sound) sound.play()
+                    sound.source.onended = () => {
+                        tl.reverse(0).then(() => {
+                            self.cameraManager.setControls(controlsTypes.MOBILE)
+                        })
+                    }
+                }
+            }, '<')
+
+        })
+
+        setTimeout(() => {
+            self.timeline = new gsap.timeline()
+            self.timeline.pause()
+            self.timeline.call(() => {
+                EventManager.publish('spectator:fadein')
             })
-            self.spritesEnabled = true
-        }, [], '>6')
-        self.timeline.to('.spectatorScene__sight', {duration: 2, opacity: 1, ease: 'power3.out'})
+            self.timeline.to(self.blur.radius, {duration: 4, delay: 2, x: 0, y: 0})
 
-        // Tutorial
-        self.timeline.call(() => {
-            EventManager.publish('camera:instructions', {
-                text: 'Ecoute les personnes autours de toi',
-                icon: 'icon/tutorial/tutorial_icon_listen.svg'
-            })
-        }, [])
-        self.timeline.call(() => {
-            EventManager.publish('mobile:allow_next')
-            self.doneEvent = EventManager.subscribe('mobile:interaction_done', () => {
-                self.endScene()
-            })
-        }, [], '+=3') // +=30
+            // Lights on
+            self.timeline.to(self.light, {intensity: 1, duration: 4}, '>15'); // 15
+            self.timeline.call(() => {
+                self.lightUp(0)
+            }, [], '<1')
+            self.timeline.call(() => {
+                self.lightUp(3)
+            }, [], '<1')
+            self.timeline.call(() => {
+                self.lightUp(4)
+            }, [], '<1.4')
+            self.timeline.call(() => {
+                self.lightUp(1)
+            }, [], '<1')
+            self.timeline.call(() => {
+                self.lightUp(2)
+            }, [], '<1.2')
+            self.timeline.call(() => {
+                self.lightUp(5)
+            }, [], '<1.5')
+
+
+            // Enable interaction
+            self.timeline.call(() => {
+                self.scene.getObjectByName('sprites').children.forEach((sprite) => {
+                    gsap.to(sprite.material, {duration: 3, opacity: 1, ease: 'power3.out'})
+                })
+                self.spritesEnabled = true
+            }, [], '>6')
+            self.timeline.to('.spectatorScene__sight', {duration: 2, opacity: 1, ease: 'power3.out'})
+
+            // Tutorial
+            self.timeline.call(() => {
+                EventManager.publish('camera:instructions', {
+                    text: 'Ecoute les personnes autours de toi',
+                    icon: 'icon/tutorial/tutorial_icon_listen.svg'
+                })
+            }, [])
+            self.timeline.call(() => {
+                EventManager.publish('mobile:allow_next')
+                self.doneEvent = EventManager.subscribe('mobile:interaction_done', () => {
+                    self.endScene()
+                })
+            }, [], '+=30') // +=30
+
+            self.timeline.play();
+        }, 0)
 
 
     },
