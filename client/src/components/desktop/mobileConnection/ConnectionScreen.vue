@@ -157,7 +157,6 @@
             }
 
             .baseline {
-                border-top: 1px solid white;
                 text-transform: uppercase;
                 text-align: center;
                 padding: 15px 2px;
