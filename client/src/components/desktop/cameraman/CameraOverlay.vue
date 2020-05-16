@@ -459,10 +459,12 @@
             position: fixed;
             display: flex;
             flex-direction: column;
+            align-items: center;
             top: calc(50% + 9rem);
             width: 100%;
 
             &-icon {
+                height: 6rem;
                 opacity: 0;
             }
             &-text {
