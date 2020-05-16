@@ -26,8 +26,9 @@
 
     p {
         font-size: 22px;
-        letter-spacing: 2px;
-        margin-top: 1rem;
+        letter-spacing: 3px;
+        margin-top: 5rem;
+        line-height: 40px;
         text-align: center;
     }
 </style>

@@ -45,7 +45,7 @@
 
         &__start {
             padding: 20px 80px;
-            border: 2px solid white;
+            border: 2px solid #FF4040;
             position: relative;
             cursor: pointer;
 
@@ -53,7 +53,8 @@
                 position: relative;
                 font-size: 30px;
                 z-index: 1;
-                color: white;
+                color: #FF4040;
+                text-transform: uppercase;
                 transition: all .5s;
             }
 
@@ -62,7 +63,7 @@
                     height: 100%;
                 }
                 span {
-                    color: #202020;
+                    color: white;
                 }
             }
 
@@ -73,7 +74,7 @@
                 left: 0;
                 width: 100%;
                 height: 0;
-                background: white;
+                background: #FF4040;
                 transition: all .5s;
             }
         }

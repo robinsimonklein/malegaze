@@ -52,7 +52,7 @@
                 <div class="number" @click="setNumber(7)">7</div>
                 <div class="number" @click="setNumber(8)">8</div>
                 <div class="number" @click="setNumber(9)">9</div>
-                <div class="delete">
+                <div class="delete" @click="deleteNumber()">
                     <img src="@/assets/png/delete.png"/></div>
                 <div class="action">
                     <button @click="play">Action</button>
@@ -104,10 +104,16 @@
                 inputs: {
                     room: null,
                     price: null,
+                    place: null,
                     row: null,
-                    place: null
                 },
-                selectedInput: 'room',
+                inputOrder: {
+                    room: 0,
+                    price: 1,
+                    place: 2,
+                    row: 3
+                },
+                selectedInput: 'room'
             };
         },
         computed: {
@@ -129,9 +135,46 @@
                 this.selectedInput = value;
             },
             setNumber(number) {
+                let index;
                 for (const expr in this.inputs) {
                     if (expr === this.selectedInput) {
                         this.inputs[expr] = number;
+                    }
+                }
+                for (const expr in this.inputOrder) {
+                    if (expr === this.selectedInput) {
+                        index = this.inputOrder[expr] + 1;
+                    }
+                    if (index === this.inputOrder[expr]) {
+                        this.selectedInput = expr.toString();
+                    }
+                }
+
+            },
+            deleteNumber() {
+                let index;
+                let isDeleted = false;
+                for (const expr in this.inputs) {
+                    if (expr === this.selectedInput) {
+                        if (this.inputs[expr] !== null) {
+                            this.inputs[expr] = null;
+                        } else {
+                            isDeleted = true;
+                        }
+                    }
+                }
+                if (!isDeleted) {
+                    return;
+                }
+                for (const expr in this.inputOrder) {
+                    if (expr === this.selectedInput) {
+                        index = this.inputOrder[expr] - 1;
+                    }
+                }
+                for (const expr in this.inputOrder) {
+                    if (index === this.inputOrder[expr]) {
+                        this.selectedInput = expr.toString();
+                        this.inputs[expr] = null;
                     }
                 }
             }
@@ -145,6 +188,7 @@
 <style lang="scss" scoped>
     .mobile-index {
         background: #202020;
+
         nav, footer {
             background: #FF4040;
             width: 100%;

@@ -59,7 +59,7 @@
                     top: 80px;
                     transform-origin: left center;
                     transform: rotate(90deg);
-                    animation: eye 2s infinite;
+                    animation: eye 2s infinite alternate;
                 }
             }
 
@@ -72,7 +72,7 @@
         }
 
         &__text {
-            animation: loading 2s infinite;
+            animation: loading 2s infinite al;
         }
 
         .sound {
@@ -101,12 +101,20 @@
     }
     
     @keyframes eye {
-        from {
-            transform: rotate(0deg);
+        0% {
+            transform: translateX(0) translateY(0);
         }
 
-        to {
-            transform: rotate(360deg);
+        40% {
+            transform: translateX(-10px) translateY(20px);
+        }
+
+        60% {
+            transform: translateX(-20px) translateY(20px);
+        }
+
+        100% {
+            transform: translateX(-40px) translateY(0);
         }
     }
 </style>
