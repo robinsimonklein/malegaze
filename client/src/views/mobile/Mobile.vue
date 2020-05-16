@@ -14,17 +14,17 @@
 </template>
 
 <script>
-    import MobileSetup from "../../components/mobile/MobileSetup";
-    import MobileIntro from "../../components/mobile/MobileIntro";
-    import MobileCameramanScenery from "../../components/mobile/MobileCameramanScenery";
-    import MobileScene2 from "../../components/mobile/MobileScene2";
-    import MobileScene3 from "../../components/mobile/MobileScene3";
-    import MobileEnd from "../../components/mobile/MobileEnd";
-    import appStates from "../../js/appStates";
-    import MobileOrientation from "../../components/mobile/orientation/MobileOrientation";
+    import MobileSetup from '../../components/mobile/MobileSetup';
+    import MobileIntro from '../../components/mobile/MobileIntro';
+    import MobileCameramanScenery from '../../components/mobile/MobileCameramanScenery';
+    import MobileScene2 from '../../components/mobile/MobileScene2';
+    import MobileScene3 from '../../components/mobile/MobileScene3';
+    import MobileEnd from '../../components/mobile/MobileEnd';
+    import appStates from '../../js/appStates';
+    import MobileOrientation from '../../components/mobile/orientation/MobileOrientation';
 
     export default {
-        name: "Mobile",
+        name: 'Mobile',
         components: {
             MobileOrientation,
             MobileSetup,
@@ -38,69 +38,70 @@
             return {
                 debug: true,
                 isPortrait: false
-            }
+            };
         },
         computed: {
             mobileId() {
-                return this.$route.params.mobileId
+                return this.$route.params.mobileId;
             },
             currentComponent() {
                 // TODO: Replace MobileScene1, MobileScene2, ...
                 switch(this.$store.state.app.appState) {
                     case appStates.INDEX:
                     case appStates.SETUP:
-                        return "MobileSetup"
+                        return 'MobileSetup';
                     case appStates.INTRO:
-                        return "MobileIntro"
+                        return 'MobileIntro';
                     case appStates.CAMERAMAN:
-                        return "MobileCameramanScenery"
+                        return 'MobileCameramanScenery';
                     case appStates.ACTRESS:
-                        return "MobileScene2"
+                        return 'MobileScene2';
                     case appStates.SPECTATOR:
-                        return "MobileScene3"
+                        return 'MobileScene3';
                     case appStates.END:
-                        return "MobileEnd"
+                        return 'MobileEnd';
                     default:
-                        return null
+                        return null;
                 }
             },
             mobileOrientation() {
                 switch(this.$store.state.app.appState) {
                     case appStates.CAMERAMAN:
-                        return true
+                        return true;
                     case appStates.ACTRESS:
-                        return true
+                        return true;
                     case appStates.SPECTATOR:
-                        return true
+                        return true;
                     default:
-                        return false
+                        return false;
                 }
             },
 
         },
         methods:  {
             setPortraitOrientation() {
-                this.isPortrait = window.orientation === 0
+                this.isPortrait = window.orientation === 0;
             }
         },
         created() {
             // Get the mobile ID in route
-            this.$store.commit('mobile/setMobileId', this.mobileId)
+            this.$store.commit('mobile/setMobileId', this.mobileId);
 
             // Join the mobile room
-            this.$socket.emit('join_mobile_room', this.mobileId)
+            this.$socket.emit('join_mobile_room', this.mobileId);
         },
         beforeMount() {
             window.addEventListener('orientationchange', () => {
-                this.setPortraitOrientation()
+                this.setPortraitOrientation();
             })
-            this.setPortraitOrientation()
+            this.setPortraitOrientation();
         }
     }
 </script>
 
 <style lang="scss" scoped>
     .mobile {
+        background: #202020;
         display: flex;
         flex-direction: column;
         align-items: center;
