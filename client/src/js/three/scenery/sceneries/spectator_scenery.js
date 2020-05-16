@@ -72,43 +72,43 @@ export default new Scenery({
             name: 'ambiance',
             path: 'sound/spectator/spectator_ambiance.mp3',
             isLoop: true,
-            volume: 0.4
+            volume: 1
         }),
         new Sound({
             name: 'light_0',
             path: 'sound/spectator/soundLight.mp3',
             isLoop: false,
-            volume: 0.4
+            volume: .9
         }),
         new Sound({
             name: 'light_1',
             path: 'sound/spectator/soundLight.mp3',
             isLoop: false,
-            volume: 0.4
+            volume: .9
         }),
         new Sound({
             name: 'light_2',
             path: 'sound/spectator/soundLight.mp3',
             isLoop: false,
-            volume: 0.4
+            volume: .9
         }),
         new Sound({
             name: 'light_3',
             path: 'sound/spectator/soundLight.mp3',
             isLoop: false,
-            volume: 0.4
+            volume: .9
         }),
         new Sound({
             name: 'light_4',
             path: 'sound/spectator/soundLight.mp3',
             isLoop: false,
-            volume: 0.4
+            volume: .9
         }),
         new Sound({
             name: 'light_5',
             path: 'sound/spectator/soundLight.mp3',
             isLoop: false,
-            volume: 0.4
+            volume: .9
         }),
         new Sound({
             name: 'voice',
@@ -190,13 +190,19 @@ export default new Scenery({
             {
                 name: 'femme_assise_droite',
                 soundName: 'voice3',
-                needZoom: 4,
+                needZoom: 5,
                 position: new THREE.Vector3(775,120,-500)
             },
             {
-                name: 'femme_skate_gauche',
+                name: 'femme_running_gauche',
                 soundName: 'voice4',
-                needZoom: 6,
+                needZoom: 5,
+                position: new THREE.Vector3(-800,120,-600)
+            },
+            {
+                name: 'femme_skate_gauche',
+                soundName: 'voice5',
+                needZoom: 7,
                 position: new THREE.Vector3(-800,120,-1400)
             }
         ]
@@ -219,10 +225,6 @@ export default new Scenery({
             self.scene.add(spotLight.target);
         }
 
-        self.playVoice = (self, {name}) => {
-            self.soundManager.getSoundByName(name).play()
-        }
-
         self.spriteListener = (self) => {
             self.raycaster.setFromCamera({x: 0.0, y: 0.0}, self.cameraManager.camera);
             const intersects = self.raycaster.intersectObjects(self.scene.getObjectByName('sprites').children, false);
@@ -236,6 +238,7 @@ export default new Scenery({
                 }
             }
             else{
+                // Check if all sounds
                 if(self.intersectedSprite !== null) {
                     gsap.to(self.intersectedSprite.scale, {duration: .5, ease: 'power2.out', x: .07, y: .07, z: .07})
                     self.intersectedSprite = null
@@ -538,15 +541,26 @@ export default new Scenery({
                     const sound = self.soundManager.getSoundByName(self.intersectedSprite.soundName)
                     if(sound) sound.play()
                     sound.source.onended = () => {
+                        self.scene.getObjectByName('sprites').remove(self.intersectedSprite)
                         tl.reverse(0).then(() => {
                             self.cameraManager.setControls(controlsTypes.MOBILE)
+
+                            // Check if all voices listened
+                            if(self.scene.getObjectByName('sprites').children.length <= 0){
+                                gsap.delayedCall(2, () => {
+                                    self.endScene()
+                                })
+                            }
                         })
+
                     }
                 }
             }, '<')
 
         })
 
+        // Scenery timeline
+        // TODO : Loaded before DOM, add setTimeOut to apply on next frame
         setTimeout(() => {
             self.timeline = new gsap.timeline()
             self.timeline.pause()
@@ -593,12 +607,6 @@ export default new Scenery({
                     icon: 'icon/tutorial/tutorial_icon_listen.svg'
                 })
             }, [])
-            self.timeline.call(() => {
-                EventManager.publish('mobile:allow_next')
-                self.doneEvent = EventManager.subscribe('mobile:interaction_done', () => {
-                    self.endScene()
-                })
-            }, [], '+=30') // +=30
 
             self.timeline.play();
         }, 0)
@@ -607,6 +615,7 @@ export default new Scenery({
     },
     onUpdate: (self) => {
         const delta = self.clock.getDelta();
+
 
         self.eyes.forEach((objects) => {
             objects.forEach((item, index) => {
