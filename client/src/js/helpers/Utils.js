@@ -1,5 +1,5 @@
-import * as THREE from "three";
-import {CatmullRomCurve3} from "three";
+import * as THREE from 'three';
+import { CatmullRomCurve3 } from 'three';
 
 /**
  * Generate a unique ID
@@ -10,9 +10,9 @@ import {CatmullRomCurve3} from "three";
  * const id = ID()
  * console.log(id) // _bg4bka7yx
  */
-export function ID(length= 9, includeZero = true) {
+export function ID(length = 9, includeZero = true) {
     const numbers = []
-    for(let i = 0; i<length; i++){
+    for (let i = 0; i < length; i++) {
         const random = includeZero ? Math.round(Math.random() * 9) : Math.round(Math.random() * (9 - 1) + 1)
         numbers.push(random)
     }
@@ -25,13 +25,13 @@ export function ID(length= 9, includeZero = true) {
  * @param {number} size - Chunk size
  * @return {Array}
  */
-export function chunkArray(array, size){
+export function chunkArray(array, size) {
     let index = 0;
     let arrayLength = array.length;
     let tempArray = [];
 
     for (index = 0; index < arrayLength; index += size) {
-        const chunk = array.slice(index, index+size);
+        const chunk = array.slice(index, index + size);
         // Do something if you want with the group
         tempArray.push(chunk);
     }
