@@ -33,7 +33,7 @@ export default new Scenery({
         })
     ],
     renderer: null,
-    controls: controlsTypes.ORBIT,
+    controls: controlsTypes.MOBILE,
     models: [
         new Model({
             name: 'cinema',
@@ -581,7 +581,7 @@ export default new Scenery({
             self.timeline.to(self.blur.radius, {duration: 4, delay: 2, x: 0, y: 0})
 
             // Lights on
-            self.timeline.to(self.light, {intensity: 1, duration: 4}, '>1'); // 15
+            self.timeline.to(self.light, {intensity: 1, duration: 4}, '>15'); // 15
             self.timeline.call(() => {
                 self.lightUp(0)
             }, [], '<1')
