@@ -23,12 +23,11 @@
             <div class="impact__content__image"></div>
             <div class="impact__content__text">
                 Le male gaze est tellement ancré dans notre société qu’on n’y prête plus attention,
-                c’est devenue une norme qui pénètre notre inconscient, l’inconscient collectif
+                c’est devenu une norme qui pénètre notre inconscient, l’inconscient collectif
                 et influence grandement nos rapports hommes / femmes.
             </div>
         </div>
         <div class="impact__borderBottom">
-            <p>Nom projet</p>
             <p>3/4</p>
         </div>
     </div>
@@ -54,7 +53,7 @@
             &__title {
                 font-family: "Roboto Mono", sans-serif;
                 font-weight: normal;
-                font-size: 40px;
+                font-size: 35px;
                 color: #ffff;
             }
 
@@ -126,7 +125,7 @@
             &__text {
                 margin: 80px 0;
                 color: #202020;
-                font-family: "Roboto Mono", sans-serif;
+                font-family: "Roboto", sans-serif;
                 font-size: 20px;
                 font-weight: lighter;
             }
@@ -138,7 +137,7 @@
             height: 50px;
             background-color: #FF4040;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             padding: 0 50px;
 
             p {

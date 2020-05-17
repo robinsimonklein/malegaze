@@ -1,17 +1,18 @@
 <template>
     <div class="conclusion">
         <div class="conclusion__title">
-            Male Gaze Free !
+            Des films non Male Gaze ?
         </div>
         <div class="conclusion__line"></div>
         <div class="conclusion__text">
             <span>Le Male Gaze est omniprésent au cinéma.
-                Grâce à la nouvelle catégorie Netflix nom projet découvrez une sélection de film féministe</span>
+                Filmer la femme sous une autre perspective est pourtant possible.
+                Nous vous proposons une sélection d’oeuvres filmées sous un autre angle. </span>
         </div>
         <div class="conclusion__button">
-            <span>C'est parti !</span>
+            <span>Découvrir</span>
         </div>
-
+        <!-- TODO: Partager.. -->
         <div class="conclusion__borderBottom"></div>
     </div>
 </template>
@@ -34,7 +35,7 @@
         &__title {
             font-family: "Roboto Mono", sans-serif;
             font-weight: normal;
-            font-size: 40px;
+            font-size: 35px;
             color: #ffff;
         }
 
@@ -53,6 +54,7 @@
             font-size: 20px;
             color: #ffff;
             margin-bottom: 80px;
+            font-weight: lighter;
         }
 
         &__button {
@@ -60,11 +62,13 @@
             text-align: center;
             span {
                 text-align: center;
-                background-color: #FF4040;
+                background-color: transparent;
                 padding: 15px 40px;
-                font-family: 'Roboto', sans-serif;
+                font-family: 'Roboto Mono', sans-serif;
                 font-size: 18px;
-               color: #ffff;
+                text-transform: uppercase;
+                color: #FF4040;
+                border: 1px solid #FF4040;
             }
 
         }

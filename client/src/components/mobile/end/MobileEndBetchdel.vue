@@ -2,7 +2,7 @@
     <div class="betchdel">
         <div class="betchdel__header">
             <div class="betchdel__header__title">
-                L’impact du Male Gaze
+                Déceler le Male Gaze
             </div>
             <div class="betchdel__header__line"></div>
             <div class="betchdel__header__borderBottom"></div>
@@ -17,7 +17,7 @@
                 <div class="betchdel__content__line"></div>
                 <div class="betchdel__content__subTitle">
                     Le test de Betchdel permet de se rendre compte en 3 questions de
-                    l’empleure de la présence du male gaze dans le cinéma.
+                    l’ampleur de la présence du male gaze dans le cinéma.
                 </div>
             </div>
 
@@ -42,7 +42,7 @@
                 </div>
             </div>
 
-            <div class="betchdel__content__stats">
+            <div class="betchdel__content__stats"> <!-- TODO -->
 
             </div>
         </div>
@@ -76,7 +76,7 @@
             &__title {
                 font-family: "Roboto Mono", sans-serif;
                 font-weight: normal;
-                font-size: 40px;
+                font-size: 35px;
                 color: #ffff;
             }
 

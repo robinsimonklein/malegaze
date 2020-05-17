@@ -1,6 +1,7 @@
 <template>
     <div class="mobile-interaction interaction-zoom">
-        <CustomSlider class="interaction-zoom__slider" :min="min" :max="max" :step="0.01" :disabled="disabled" orientation="top" @change="checkValue"/>
+        <CustomSlider class="interaction-zoom__slider" :min="min" :max="max" :step="0.01" :disabled="disabled"
+                      orientation="top" @change="checkValue"/>
         <!--
         <div ref="zone" class="interaction-zoom__zone">
             <div class="interaction-zoom__target" :style="`height: ${size}%; width: ${size}%;`">
@@ -40,17 +41,18 @@
         },
         methods: {
             checkValue(value) {
-
                 this.$socket.emit('mobile_interaction', {
                     type: 'zoom',
                     value: value
-                })
+                });
 
-                if(Number(value )=== 1) this.done()
+                if (Number(value) === 1) {
+                    this.done();
+                }
 
             },
             done() {
-                this.disabled = true
+                this.disabled = true;
                 this.$emit('done')
             }
         },
@@ -95,7 +97,26 @@
 <style lang="scss" scoped>
     .interaction-zoom {
         &__slider {
+            position: relative;
             // transform: rotate(90deg);
+            &:before {
+                content: "+";
+                font-weight: bold;
+                font-size: 32px;
+                position: absolute;
+                top: -1rem;
+                right: -30px;
+            }
+
+            &:after {
+                content: "-";
+                position: absolute;
+                font-weight: bold;
+                font-size: 32px;
+                bottom: -0.75rem;
+                left: -20px;
+                transform: rotate(90deg);
+            }
         }
 
         /* TODO: Temporary disabled code */
