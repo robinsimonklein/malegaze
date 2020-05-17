@@ -712,7 +712,6 @@ export default new Scenery({
 
          */
 
-        self.composer.render(delta);
         self.frame.update(delta);
         self.nodepostBlur.render(self.scene, self.cameraManager.camera, self.frame);
     }
