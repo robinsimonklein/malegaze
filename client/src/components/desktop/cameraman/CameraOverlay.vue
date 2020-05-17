@@ -1,5 +1,5 @@
 <template>
-    <div class="camera-overlay" :class="{'aiming' : aiming}">
+    <div class="camera-overlay" :class="{'aiming' : false}">
         <div class="camera-overlay__corner camera-overlay__corner--tl">
         </div>
         <div class="camera-overlay__corner camera-overlay__corner--tr">
@@ -20,13 +20,38 @@
             <div class="camera-overlay__target--corner camera-overlay__target--bl"></div>
             <div class="camera-overlay__target--corner camera-overlay__target--br"></div>
             <div class="camera-overlay__rotation" :class="{'visible' : rotationVisible}" :style="`transform: translateX(${rotation*100}vw) translateY(-50%);`"></div>
+
+            <svg
+                    class="camera-overlay__progress"
+                        :class="{'visible' : aiming}"
+                    width="220"
+                    height="220">
+                <circle
+                        class="camera-overlay__progress-circle"
+                        stroke="#FF4040"
+                        stroke-width="8"
+                        fill="transparent"
+                        :r="progressRadius"
+                        cx="110"
+                        cy="110"
+                        opacity="0.2"
+                />
+                <circle
+                        class="camera-overlay__progress-bar"
+                        stroke="#FF4040"
+                        stroke-width="8"
+                        fill="transparent"
+                        :r="progressRadius"
+                        cx="110"
+                        cy="110"
+                        :stroke-dasharray="progressCircumference + ' ' + progressCircumference"
+                        :stroke-dashoffset="progressOffset"
+                />
+            </svg>
         </div>
         <div class="camera-overlay__instructions">
             <img class="camera-overlay__instructions-icon" :src="instructions.icon">
             <p class="camera-overlay__instructions-text"> {{ instructions.text }}</p>
-        </div>
-        <div class="camera-overlay__progress" :class="{'visible' : progressVisible}">
-            <div class="camera-overlay__progress-bar" :style="`width: ${progress}%`"></div>
         </div>
 
         <div class="camera-overlay__black-screen"></div>
@@ -46,6 +71,7 @@
                 progress: 0,
                 recording: false,
                 aiming: false,
+                progressRadius: 65,
                 progressVisible: false,
                 rotation: 0,
                 rotationVisible: false,
@@ -56,7 +82,7 @@
                 },
 
                 targetSize: {
-                    min: 100,
+                    min: 70,
                     max: 200,
                     current: 200
                 },
@@ -122,6 +148,14 @@
                 tl.play()
             }
         },
+        computed: {
+            progressCircumference() {
+                return this.progressRadius * 2 * Math.PI
+            },
+            progressOffset() {
+                return this.progressCircumference - this.progress / 100 * this.progressCircumference
+            }
+        },
         beforeMount() {
 
             this.events.push(EventManager.subscribe('camera:start', () => {
@@ -162,7 +196,7 @@
                 interaction === 'rotation' ? this.rotationVisible = true : this.rotationVisible = false
             }))
             this.events.push(EventManager.subscribe('mobile:interaction', (data) => {
-                // Check if traveling
+                // Check if rotation
                 if(data.type !== 'rotation') return
                 this.rotation = data.value
             }))
@@ -296,8 +330,8 @@
 
             &--corner {
                 position: absolute;
-                width: 2rem;
-                height: 2rem;
+                width: 1.6rem;
+                height: 1.6rem;
             }
 
             &--tl {
@@ -430,18 +464,15 @@
 
         &__progress {
             position: absolute;
-            bottom: 5vh;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            border: 1px solid rgba(white, .5);
-            height: 1rem;
-            width: 40vw;
+            transform: translateX(-50%) translateY(-50%) rotate(-90deg);
             opacity: 0;
-            transition: opacity 1s ease;
+            transition: opacity .3s ease;
 
             &.visible {
                 opacity: 1;
-                transition: opacity 1s ease;
+                transition: opacity .5s ease;
             }
 
             &-bar {
@@ -459,10 +490,12 @@
             position: fixed;
             display: flex;
             flex-direction: column;
+            align-items: center;
             top: calc(50% + 9rem);
             width: 100%;
 
             &-icon {
+                height: 7rem;
                 opacity: 0;
             }
             &-text {

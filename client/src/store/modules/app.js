@@ -6,7 +6,7 @@ import EventManager from "../../js/event/EventManager";
 export const app = {
     namespaced: true,
     state: {
-        appState: process.env.VUE_APP_SKIP_MOBILE_SETUP === "true" ? appStates.CAMERAMAN : appStates.INDEX,
+        appState: process.env.VUE_APP_SKIP_MOBILE_SETUP === "true" ? appStates.SPECTATOR : appStates.INDEX,
         isMobile: false
     },
     getters: {
@@ -42,6 +42,9 @@ export const app = {
                 }
             }
             commit('setAppState', value)
+        },
+        SOCKET_ask_state({state}) {
+            this._vm.$socket.emit('answer_state', state.appState)
         },
         SOCKET_mobile_shoot() {
             EventManager.publish('actress:click')

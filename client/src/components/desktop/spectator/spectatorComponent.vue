@@ -120,10 +120,12 @@ import gsap from "gsap";
             position: fixed;
             display: flex;
             flex-direction: column;
+            align-items: center;
             top: calc(50% + 9rem);
             width: 100%;
 
             &-icon {
+                height: 7rem;
                 opacity: 0;
             }
             &-text {
