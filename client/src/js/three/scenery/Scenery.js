@@ -195,6 +195,15 @@ class Scenery {
             this.lightManager.update();
         }
     }
+
+    /**
+     * On window resize
+     * @private
+     */
+    onWindowResize() {
+        this.cameraManager.camera.aspect = window.innerWidth / window.innerHeight;
+        this.cameraManager.camera.updateProjectionMatrix();
+    }
 }
 
 export default Scenery;

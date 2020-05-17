@@ -101,7 +101,7 @@ class SceneryManager {
      * @param {number} height - Window height
      */
     onWindowResize({width, height}) { // eslint-disable-line
-
+        this.scenery.onWindowResize()
     }
 
 }
