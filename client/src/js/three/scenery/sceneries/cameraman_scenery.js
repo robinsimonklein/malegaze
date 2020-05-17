@@ -73,10 +73,17 @@ export default new Scenery({
             receiveShadow : true
         }),
         new Model({
-            name: 'actress_scenery',
-            path: 'models/glb/actress_scenery.glb',
-            type: 'glb',
-            castShadow: false,
+            name: 'actress_scenery_woman',
+            path: "models/glb/actress_scenery_woman.glb",
+            type: 'gltf',
+            castShadow : true,
+            receiveShadow : false
+        }),
+        new Model({
+            name: 'actress_scenery_decor',
+            path: "models/glb/actress_scenery_decor.glb",
+            type: 'gltf',
+            castShadow : false,
             receiveShadow : true
         }),
         new Model({
@@ -97,7 +104,7 @@ export default new Scenery({
     lights: [
         new Light({
             name: 'pointLight',
-            light: new THREE.PointLight(0xFFE5A3, .7, 500),
+            light: new THREE.PointLight(0xFFE5A3, .7, 250),
             initialPosition: {x: 150, y: 150, z: -350},
             debug: false,
             castShadow: true
@@ -613,7 +620,7 @@ export default new Scenery({
             spotLight.intensity = 1;
             spotLight.decay = 0.5;
             spotLight.penumbra = 0.5;
-            spotLight.castShadow = true;
+
             spotLight.target.position.set(mesh.position.x, 0, mesh.position.z);
             self.scene.add(spotLight);
             self.scene.add(spotLight.target);
@@ -631,14 +638,27 @@ export default new Scenery({
             }
         };
 
+        //Oui je sais c'est moche
+        self.generateLightOnWoman = () => {
+
+
+            var womanModel = self.modelManager.getLoadedModelByName('actress_scenery_woman').scene;
+
+            var spotLight =  new THREE.SpotLight(0xFFE5A3, .2 );
+            spotLight.position.set(0,400, 200);
+            spotLight.target = womanModel.children[0];
+            spotLight.castShadow = true;
+            spotLight.shadow.camera.far = 1000      // default
+            self.scene.add(spotLight);
+
+            self.renderer.shadowMap.autoUpdate = false;
+            self.renderer.shadowMap.needsUpdate = true;
+        }
+
 
     },
     onLoaded: (self) => {
         console.log('self', self)
-
-        //Pour gagner des perfs vu que les ombres ne sont pas dynamics dans cette scène
-        self.renderer.shadowMap.autoUpdate = false;
-        self.renderer.shadowMap.needsUpdate = true;
 
         self.manObj = null;
 
@@ -664,9 +684,10 @@ export default new Scenery({
         self.buildVolumetricLight(self, {mesh: self.scene.getObjectByName('PROJECTEUR_02'), color: 0xDE2900})
 
         setTimeout(() => {
-            self.buildDirectionnalLight(self.manObj, {position : {x: -100, y: 150, z: 0}}, {properties : {color: 0xffffff, intensity : 0.5}}, true);
-            self.buildDirectionnalLight(self.manObj, {position : {x: -100, y: 150, z: 80}}, {properties : {color: 0xC96934, intensity : 0.5}}, true);
-            self.buildDirectionnalLight(self.manObj, {position : {x: 10, y: 350, z: 200}}, {properties : {color: 0x68AB54, intensity : 0.5}}, true);
+            self.buildDirectionnalLight(self.manObj, {position : {x: -100, y: 150, z: 0}}, {properties : {color: 0xffffff, intensity : 0.5}}, false);
+            self.buildDirectionnalLight(self.manObj, {position : {x: -100, y: 150, z: 80}}, {properties : {color: 0xC96934, intensity : 0.5}}, false);
+            self.buildDirectionnalLight(self.manObj, {position : {x: 10, y: 350, z: 200}}, {properties : {color: 0x68AB54, intensity : 0.5}}, false);
+            self.generateLightOnWoman();
         },500)
 
 
