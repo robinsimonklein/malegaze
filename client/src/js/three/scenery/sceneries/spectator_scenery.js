@@ -35,11 +35,32 @@ export default new Scenery({
     renderer: null,
     controls: controlsTypes.MOBILE,
     models: [
-        new Model({
-            name: 'cinema',
-            path: 'models/glb/spectator_scenery.glb',
+       /* new Model({
+            name: 'spectator_p1',
+            path: 'models/glb/spectator_scenery_p1.glb',
             type: modelTypes.GLB,
             castShadow: false,
+            receiveShadow : true
+        }),
+        new Model({
+            name: 'spectator_p2',
+            path: 'models/glb/spectator_scenery_p2.glb',
+            type: modelTypes.GLB,
+            castShadow: true,
+            receiveShadow : false
+        }),
+        new Model({
+            name: 'spectator_p3',
+            path: 'models/glb/spectator_scenery_p3.glb',
+            type: modelTypes.GLB,
+            castShadow: false,
+            receiveShadow : false
+        }),*/
+        new Model({
+            name: 'spectator_p3',
+            path: 'models/glb/spectator_scenery.glb',
+            type: modelTypes.GLB,
+            castShadow: true,
             receiveShadow : true
         }),
         new Model({
@@ -59,54 +80,10 @@ export default new Scenery({
             type: lightTypes.SPOT,
             light: new THREE.SpotLight(0xFF5781, .65),
             initialPosition: {x: 0, y: 400, z: 1500},
-           /* properties: {
-                penumbra: 0.3,
-            },*/
             castShadow : false
 
         }),
 
-    /*    new Light({
-            name: 'spotlight2',
-            type: lightTypes.SPOT,
-            light: new THREE.SpotLight(0xFF5781, .65),
-            initialPosition: {x: 1000, y: 50, z: -1000},
-            properties: {
-                angle: Math.PI/4,
-            },
-            castShadow : true
-        }),*/
-       /* new Light({
-            name: 'spotlight3',
-            type: lightTypes.SPOT,
-            light: new THREE.SpotLight(0xFF5781, .65),
-            initialPosition: {x: 0, y: 50, z: -850},
-            properties: {
-                angle: Math.PI/3,
-            },
-            castShadow : true
-        }),*/
-      /*  new Light({
-            name: 'pointLight',
-            type: lightTypes.POINT,
-            light: new THREE.PointLight(0xff4444, 1, 1000),
-            initialPosition: {x:1000, y: 800, z: 300},
-            castShadow: true
-        }),*/
-       /* new Light({
-            name: 'pointLight2',
-            type: lightTypes.POINT,
-            light: new THREE.PointLight(0xff4444, 2.5, 800),
-            initialPosition: {x:1000, y: 700, z: -300},
-            castShadow: false
-        }),
-        new Light({
-            name: 'pointLight3',
-            type: lightTypes.POINT,
-            light: new THREE.PointLight(0xff4444, 2.5, 800),
-            initialPosition: {x:1000, y: 700, z: 500},
-            castShadow: false
-        }),*/
     ],
     sounds: [
         new Sound({
@@ -258,7 +235,6 @@ export default new Scenery({
 
             const spotLight = new THREE.SpotLight(new THREE.Color(self.lightColor), 0., 0., 0.9, 0.5, 0.5);
             spotLight.position.set(mesh.position.x, mesh.position.y, mesh.position.z);
-            spotLight.castShadow = true;
             spotLight.target.position.set(mesh.position.x, 0, mesh.position.z);
 
             self.spotLights.push(spotLight);
@@ -495,40 +471,50 @@ export default new Scenery({
             self.spriteGroup.add(spriteObject)
         }
 
-    },
+        self.buildSpotLight = (target) => {
+
+            var spotLight =  new THREE.SpotLight(0xFF5781, .65 );
+            spotLight.position.set(0,50, -800);
+            spotLight.target = target;
+            spotLight.angle = Math.PI/4;
+            spotLight.castShadow = true;
+            spotLight.shadow.mapSize.width = 1024;
+            spotLight.shadow.mapSize.height = 1024;
+
+            spotLight.shadow.camera.near = 500;
+            spotLight.shadow.camera.far = 4000;
+            spotLight.shadow.camera.fov = 30;
+            self.scene.add(spotLight);
+
+           /* let spotLightHelper = new THREE.SpotLightHelper( spotLight, 10 );
+            self.scene.add(spotLightHelper);*/
+
+        }
+    }
+
+    ,
     onLoaded: (self) => {
         console.log(self)
 
-        self.renderer.shadowMap.autoUpdate = false;
-        self.renderer.shadowMap.needsUpdate = true;
-
-       /* self.buildingArray = [];
-
-        var childrenCinema = self.modelManager.getLoadedModelByName('cinema').scene;
-
-        childrenCinema.traverse((child) => {
-            if(child.name.includes("IMMEUBLE")) {
-                self.buildingArray.push(child);
-            }
-
-        })
-
         var emptyOject = new THREE.Object3D();
         emptyOject.position.set(1200, 100, 400)
-        self.scene.add(emptyOject)*/
+        self.scene.add(emptyOject)
 
-      /*  self.pointLight = self.lightManager.getLightByName('pointLight');
-
-        var pointLightHelper = new THREE.PointLightHelper(self.pointLight, 10);
-        self.scene.add(pointLightHelper);*/
-
+        var emptyOject2 = new THREE.Object3D()
+        emptyOject2.position.set(-1200, 100, 400)
+        self.scene.add(emptyOject2)
 
 
         setTimeout(() => {
             var spotLight = self.lightManager.getLightByName('spotlight');
             spotLight.target =  self.screenMesh;
-            /*var spotLightHelper = new THREE.SpotLightHelper(spotLight);
-            self.scene.add(spotLightHelper)*/
+
+            self.buildSpotLight(emptyOject);
+            self.buildSpotLight(emptyOject2);
+
+            self.renderer.shadowMap.autoUpdate = false;
+            self.renderer.shadowMap.needsUpdate = true;
+
 
         },500)
 
