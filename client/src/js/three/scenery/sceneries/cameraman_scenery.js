@@ -121,7 +121,7 @@ export default new Scenery({
         // Camera animation
         self.camPosIndex = 0;
         self.cameraCurves = [];
-        self.cameraProgres = 0;
+        self.cameraProgress = 0;
 
         self.currentSequence = 0
 
@@ -761,6 +761,7 @@ export default new Scenery({
                 }else{
                     EventManager.publish('camera:progress_complete')
                     EventManager.publish('camera:aiming', {distance, threshold: threshold, aiming: false})
+                    self.cameraProgress = 0
                     onComplete(self)
                 }
                 EventManager.publish('camera:progress', self.cameraProgress)
