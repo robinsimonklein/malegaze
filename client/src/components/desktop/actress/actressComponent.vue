@@ -1,19 +1,10 @@
+import gsap from "gsap";
 <template>
     <div class="actressScene">
         <div class="actressScene__overlayFade" ref="overlayFade"></div>
-        <div class="actressScene__wrap" ref="instructionWrap">
-            <img class="actressScene__wrap__image" src="icon/tutorial/tutorial_shoot_eye.svg"/>
-            <span>Repousse les regards en tapant sur les yeux</span>
-           <!-- <div class="actressScene__corner actressScene__corner--tl">
-                <div class="actressScene__instructions">
-                    <img class="actressScene__instructions-img" src="icon/tutorial/smartphone.svg"/>
-                    <span class="actressScene__instructions-text">Tirer sur les yeux pour les repousser</span>
-                </div>
-            </div>
-            <div class="actressScene__corner actressScene__corner--tr"></div>
-            <div class="actressScene__corner actressScene__corner--bl"></div>
-            <div class="actressScene__corner actressScene__corner--br"></div>-->
-
+        <div class="actressScene__instructions" ref="instructionWrap">
+            <img class="actressScene__instructions-icon" src="icon/tutorial/tutorial_icon_hit.gif">
+            <p class="actressScene__instructions-text">Repousse les regards en tapant sur les yeux</p>
         </div>
         <div class="actressScene__sight" id="actressScene__sight" ref="sightWrapper"></div>
     </div>
@@ -22,13 +13,14 @@
 <script>
 
     import EventManager from "../../../js/event/EventManager";
+    import gsap from 'gsap';
 
     export default {
         name: "actressComponent",
         data() {
             return {
                 sightWrapper: null,
-                timeout : null
+                timeout : null,
             }
         },
         methods: {
@@ -50,7 +42,7 @@
                 });
 
                 EventManager.subscribe('actress:showInstruction', () => {
-                    this.instructionWrapper.style.opacity = '1';
+                    this.displayInstructions()
                     this.$socket.emit('mobile_show_instruction')
                 });
 
@@ -81,7 +73,14 @@
                 let node = document.createElement('div');
                 node.className = 'actressScene__sight__active--'+number;
                 this.sightWrapper.appendChild(node);
-            }
+            },
+            displayInstructions() {
+                const tl = new gsap.timeline()
+                tl.pause()
+                tl.fromTo('.actressScene__instructions-icon', {alpha: 0, translateY: 10}, {duration: 2, alpha: 1, translateY: 0, ease: 'power3.out'})
+                tl.fromTo('.actressScene__instructions-text', {alpha: 0, translateY: 10}, {duration: 2, alpha: 1, translateY: 0, ease: 'power3.out'}, "-=1.7")
+                tl.play()
+            },
         },
         mounted() {
             this.init();
@@ -115,15 +114,24 @@
         }
 
         &__instructions {
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            width: 40vw;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            top: calc(50% + 9rem);
+            width: 100%;
 
+            &-icon {
+                height: 7rem;
+                opacity: 0;
+            }
             &-text {
+                display: inline-block;
                 text-transform: uppercase;
                 letter-spacing: .2rem;
                 margin-left: 1rem;
+                text-align: center;
+                opacity: 0;
             }
         }
 
