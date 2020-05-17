@@ -1,10 +1,13 @@
 <template>
     <div class="desktop-setup">
         <template v-if="mode==='connection'">
-            <ConnectionScreen />
+            <ConnectionScreen/>
+        </template>
+        <template v-else-if="mode==='setup'">
+            <SetupScreen/>
         </template>
         <template v-else-if="mode==='calibration'">
-            <CalibrationScreen />
+            <CalibrationScreen/>
         </template>
     </div>
 </template>
@@ -12,11 +15,12 @@
 <script>
     import CalibrationScreen from './mobileConnection/CalibrationScreen';
     import appStates from '../../js/appStates';
-    import ConnectionScreen from "./mobileConnection/ConnectionScreen";
+    import ConnectionScreen from './mobileConnection/ConnectionScreen';
+    import SetupScreen from './mobileConnection/SetupScreen';
 
     export default {
         name: 'DesktopSetup',
-        components: {ConnectionScreen, CalibrationScreen},
+        components: {ConnectionScreen, CalibrationScreen, SetupScreen},
         data() {
             return {
                 mode: 'connection'
@@ -28,6 +32,9 @@
             }
         },
         sockets: {
+            mobile_orientation() {
+                this.mode = 'setup';
+            },
             mobile_calibrate() {
                 this.mode = 'calibration';
             },

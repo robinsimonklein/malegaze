@@ -16,24 +16,19 @@
                 return new Promise((resolve, reject) => {
                     if (typeof DeviceOrientationEvent.requestPermission === 'function' ) {
                         // iOS 13+
-
                         DeviceOrientationEvent.requestPermission().then( ( response ) => {
-
                             if ( response === 'granted' ) {
                                 resolve(response)
                             }
-
                         } ).catch( function ( error ) {
                             console.error( 'THREE.DeviceOrientationControls: Unable to use DeviceOrientation API:', error );
                             reject(error)
                         } );
-
                     } else {
                         // Other devices
                         resolve()
                     }
                 })
-
             },
             request() {
                 this.motionRequest()
@@ -50,5 +45,4 @@
 </script>
 
 <style scoped>
-
 </style>

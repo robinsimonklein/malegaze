@@ -17,6 +17,7 @@ import THREEx from "../../light/VolumetricLightMaterial";
 
 export default new Scenery({
     name: 'cameraman_scenery',
+    renderer: null,
     cameras: [
         new Camera({
             type: cameraTypes.CINEMATIC,
@@ -52,7 +53,6 @@ export default new Scenery({
             initialPosition: {x: 30, y: 30, z: 30},
             settings: {
                 alphaOffset: MathUtils.degToRad(180),
-                showFocus: true,
                 focalLength: 60,
                 focusDistance: 20
             },
@@ -63,44 +63,51 @@ export default new Scenery({
             initialPosition: {x: 0, y: 300, z: 0},
         })
     ],
-    // controls: controlsTypes.ORBIT,
+   // controls: controlsTypes.ORBIT,
     models: [
         new Model({
             name: 'cameraman_scenery',
-            path: 'models/glb/cameraman_scenery.glb',
-            type: 'glb'
+            path: 'models/glb/cameraman_scenery_fail.glb',
+            type: 'glb',
+            castShadow: true,
+            receiveShadow : true
         }),
         new Model({
             name: 'actress_scenery',
             path: 'models/glb/actress_scenery.glb',
-            type: 'glb'
+            type: 'glb',
+            castShadow: false,
+            receiveShadow : true
         }),
         new Model({
             name: 'cones_cameraman_scenery',
             path: 'models/glb/cones_cameraman_scenery.glb',
-            type: 'glb'
+            type: 'glb',
+            castShadow: false,
+            receiveShadow : false
         }),
         new Model({
             name: 'camera_splines',
             path: 'models/fbx/cameraman/camera_splines.fbx',
-            type: 'fbx'
+            type: 'fbx',
+            castShadow: false,
+            receiveShadow : false
         }),
     ],
     lights: [
         new Light({
-            name: 'ambiant',
-            light: new THREE.HemisphereLight(0xffffff, 0x080820, .5),
-            initialPosition: {x: 0, y: 300, z: 0},
-            debug: true
+            name: 'pointLight',
+            light: new THREE.PointLight(0xFFE5A3, .7, 500),
+            initialPosition: {x: 150, y: 150, z: -350},
+            debug: false,
+            castShadow: true
         }),
         new Light({
-            name: 'spotlights',
-            light: new THREE.DirectionalLight(0xffffff, .6),
-            initialPosition: {x: 0, y: 200, z: -700},
-            properties: {
-                castShadow: true
-            },
-            debug: true
+            name: 'spotLight',
+            light:  new THREE.SpotLight( 0xFFE5BF, .4 ),
+            initialPosition: {x: 200, y: 400, z: -550},
+            debug: false,
+            castShadow: false
         }),
     ],
     sounds: cameraman_sounds,
@@ -113,7 +120,7 @@ export default new Scenery({
         // Camera animation
         self.camPosIndex = 0;
         self.cameraCurves = [];
-        self.cameraProgres = 0;
+        self.cameraProgress = 0;
 
         self.currentSequence = 0
 
@@ -214,8 +221,8 @@ export default new Scenery({
                     self.soundManager.getSoundObjectByName('04_real_cadrage_traveling').play()
 
                     EventManager.publish('camera:instructions', {
-                        text: 'Cadre l\'image',
-                        hint: 'Vise les pieds de l\'actrice'
+                        text: 'Cadre les pieds de l\'actrice',
+                        icon: '/icon/tutorial/tutorial_icon_framing.gif'
                     })
 
                     self.sequences[self.currentSequence].ready = true
@@ -239,6 +246,7 @@ export default new Scenery({
                             }
 
                             self.cameraManager.controls = null
+                            EventManager.publish('camera:instructions', false)
                             self.soundManager.getSoundObjectByName('05_real_traveling').play()
                         }
                     })
@@ -257,7 +265,7 @@ export default new Scenery({
                     EventManager.publish('camera:rec', true)
                     EventManager.publish('camera:instructions', {
                         text: 'Effectue un traveling',
-                        hint: 'Tourne la roue pour faire avancer le traveling'
+                        icon: '/icon/tutorial/tutorial_icon_traveling.gif'
                     })
                     const curve = self.cameraCurves.find(curve => curve.name === 'P1_TRAVEL')
                     const finalPosition = curve.getPointAt(1)
@@ -328,8 +336,8 @@ export default new Scenery({
 
                         self.soundManager.getSoundObjectByName('07_real_zoom').ended = () => {
                             EventManager.publish('camera:instructions', {
-                                text: 'Cadre l\'image',
-                                hint: 'Oriente la caméra vers Sean'
+                                text: 'Cadre Sean en contre-plongée',
+                                icon: 'icon/tutorial/tutorial_icon_framing.gif'
                             })
                             self.sequences[self.currentSequence].ready = true
                             EventManager.publish('camera:instructions', false)
@@ -366,8 +374,8 @@ export default new Scenery({
                     self.cameraManager.controls = null
                     EventManager.publish('mobile:interaction_set', 'zoom')
                     EventManager.publish('camera:instructions', {
-                        text: 'Effectue un zoom',
-                        hint: 'Pousse le curseur pour zoomer'
+                        text: 'Zoome en direction de Sean',
+                        icon: 'icon/tutorial/tutorial_icon_zoom.gif'
                     })
                     const curve = self.cameraCurves.find(curve => curve.name === 'P2_ZOOM')
                     const finalPosition = curve.getPointAt(1)
@@ -434,7 +442,6 @@ export default new Scenery({
                     const cameraPosition = self.cameraCurves.find(curve => curve.name === 'P3_ROTATION').getPointAt(0)
                     self.cameraManager.camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
                     EventManager.publish('camera:aiming', {distance: 4, threshold: 1, aiming: false})
-                    EventManager.publish('mobile:interaction_set', 'framing')
 
                     let transitionEvent = EventManager.subscribe('transition:ended', () => {
 
@@ -443,10 +450,11 @@ export default new Scenery({
                         }
 
                         self.soundManager.getSoundObjectByName('10_real_rotation').ended = () => {
+                            EventManager.publish('mobile:interaction_set', 'framing')
                             self.sequences[self.currentSequence].ready = true
                             EventManager.publish('camera:instructions', {
-                                text: 'Cadre l\'image',
-                                hint: 'Vise vers les seins de l\'actrice',
+                                text: 'Cadre les seins de l\'actrice',
+                                icon: 'icon/tutorial/tutorial_icon_framing.gif',
                             })
                         }
 
@@ -484,8 +492,8 @@ export default new Scenery({
 
                     EventManager.publish('camera:rec', true)
                     EventManager.publish('camera:instructions', {
-                        text: 'Pivote la caméra',
-                        hint: 'Tourne doucement le téléphone vers la gauche'
+                        text: 'Pivote la caméra vers son visage',
+                        icon: 'icon/tutorial/tutorial_icon_rotation.gif'
                     })
 
                     const y = self.cameraManager.camera.rotation.y
@@ -495,7 +503,6 @@ export default new Scenery({
                     const interactionEvent = EventManager.subscribe('mobile:interaction', (data) => {
                         // Check if traveling
                         if(data.type !== 'rotation') return
-                        data.value *= 0.2
                         self.cameraManager.camera.rotation.y = y + (data.value * (finalRotation - y))
                     })
 
@@ -504,16 +511,15 @@ export default new Scenery({
 
                         self.sequences[self.currentSequence].ready = true
 
-                        gsap.to(self.cameraManager.camera.rotation, {y: finalRotation, duration: 6}).then(() => {
-                            EventManager.publish('camera:rec', false)
-                            EventManager.publish('camera:instructions', false)
+                        EventManager.publish('camera:rec', false)
+                        EventManager.publish('camera:instructions', false)
+                        EventManager.publish('mobile:interaction_set', null)
 
-                            self.soundManager.getSoundObjectByName('11_real_rotation_fin').ended = () => {
-                                self.nextSequence(self)
-                            }
+                        self.soundManager.getSoundObjectByName('11_real_rotation_fin').ended = () => {
+                            self.nextSequence(self)
+                        }
 
-                            self.soundManager.getSoundObjectByName('11_real_rotation_fin').play()
-                        })
+                        self.soundManager.getSoundObjectByName('11_real_rotation_fin').play()
 
                         // Unsubscribe events
                         travelingEvent.unsubscribe();
@@ -599,6 +605,7 @@ export default new Scenery({
             mesh.geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(0, 50, 0));
 
             const spotLight = new THREE.SpotLight(lightColor);
+            spotLight.name = mesh.name + '_spotlight';
             spotLight.position.set(mesh.position.x, mesh.position.y, mesh.position.z);
             spotLight.color = new THREE.Color(lightColor);
             spotLight.exponent = 30;
@@ -612,12 +619,40 @@ export default new Scenery({
             self.scene.add(spotLight.target);
         }
 
+        self.buildDirectionnalLight = (object, {position}, {properties}, helper) => {
+            var directionnalLight =  new THREE.DirectionalLight( properties.color, properties.intensity );
+            directionnalLight.position.set(position.x,position.y, position.z);
+            directionnalLight.target = object;
+            self.scene.add(directionnalLight);
+
+            if(helper) {
+                var directionnalLightHelper = new THREE.DirectionalLightHelper( directionnalLight, 5 );
+                self.scene.add( directionnalLightHelper );
+            }
+        };
+
+
     },
     onLoaded: (self) => {
         console.log('self', self)
 
-        // self.cameraManager.changeCamera(4)
-        // self.cameraManager.controls.object = self.cameraManager.cameraObjects[4].camera
+        //Pour gagner des perfs vu que les ombres ne sont pas dynamics dans cette scène
+        self.renderer.shadowMap.autoUpdate = false;
+        self.renderer.shadowMap.needsUpdate = true;
+
+        self.manObj = null;
+
+        let modelScene = self.modelManager.getLoadedModelByName('cameraman_scenery').scene;
+        modelScene.children.forEach((child) => {
+            if(child.name === 'DENNIS') {
+                self.manObj = child;
+            }
+        });
+
+        /*self.cameraManager.changeCamera(4)
+        self.cameraManager.controls.object = self.cameraManager.cameraObjects[4].camera
+        console.log(self.cameraManager.camera)*/
+
 
         // ---------------- //
         // Lights
@@ -627,6 +662,13 @@ export default new Scenery({
         self.buildVolumetricLight(self, {mesh: self.scene.getObjectByName('LAMPE_ACTRICE'), color: 0xFFE5A3})
         self.buildVolumetricLight(self, {mesh: self.scene.getObjectByName('PROJECTEUR_01'), color: 0xDE2900})
         self.buildVolumetricLight(self, {mesh: self.scene.getObjectByName('PROJECTEUR_02'), color: 0xDE2900})
+
+        setTimeout(() => {
+            self.buildDirectionnalLight(self.manObj, {position : {x: -100, y: 150, z: 0}}, {properties : {color: 0xffffff, intensity : 0.5}}, true);
+            self.buildDirectionnalLight(self.manObj, {position : {x: -100, y: 150, z: 80}}, {properties : {color: 0xC96934, intensity : 0.5}}, true);
+            self.buildDirectionnalLight(self.manObj, {position : {x: 10, y: 350, z: 200}}, {properties : {color: 0x68AB54, intensity : 0.5}}, true);
+        },500)
+
 
         // ---------------- //
         // Camera curves
@@ -692,8 +734,6 @@ export default new Scenery({
             // Add duration
             steps.forEach(point => point.duration = duration/nbPoints)
 
-            console.log('ici')
-
             // Run animation
             gsap.to(camera.position, {
                 keyframes: steps,
@@ -718,10 +758,11 @@ export default new Scenery({
 
             if(distance <= threshold) {
                 if(self.cameraProgress < 100) {
-                    self.cameraProgress += 0.5
+                    self.cameraProgress += 1
                 }else{
                     EventManager.publish('camera:progress_complete')
                     EventManager.publish('camera:aiming', {distance, threshold: threshold, aiming: false})
+                    self.cameraProgress = 0
                     onComplete(self)
                 }
                 EventManager.publish('camera:progress', self.cameraProgress)

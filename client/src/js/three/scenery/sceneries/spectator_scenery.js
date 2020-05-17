@@ -18,6 +18,7 @@ import {BloomPass} from 'three/examples/jsm/postprocessing/BloomPass';
 import {FilmPass} from 'three/examples/jsm/postprocessing/FilmPass';
 import * as Nodes from 'three/examples/jsm/nodes/Nodes';
 import gsap from 'gsap';
+import {MathUtils} from "three";
 
 export default new Scenery({
     name: `${appStates.SPECTATOR}_scenery`,
@@ -25,7 +26,7 @@ export default new Scenery({
         new Camera({
             type: cameraTypes.PERSPECTIVE,
             properties: {fov: 180, aspectRatio: window.innerWidth / window.innerHeight, near: 1, far: 3500},
-            initialPosition: {x: -25, y: 250, z: 710},
+            initialPosition: {x: -25, y: 280, z: 730},
             settings: {
                 alphaOffset: 0
             }
@@ -37,7 +38,9 @@ export default new Scenery({
         new Model({
             name: 'cinema',
             path: 'models/glb/spectator_scenery.glb',
-            type: modelTypes.GLB
+            type: modelTypes.GLB,
+            castShadow: false,
+            receiveShadow : true
         }),
         new Model({
             name: 'cones',
@@ -52,81 +55,149 @@ export default new Scenery({
     ],
     lights: [
         new Light({
-            name: 'ambient',
-            type: lightTypes.AMBIENT,
-            light: new THREE.HemisphereLight(0xffb8c6, 0x080820)
-        }),
-        new Light({
             name: 'spotlight',
             type: lightTypes.SPOT,
-            light: new THREE.SpotLight(0xff4444),
-            initialPosition: {x: 0, y: 100, z: -780},
-            properties: {
+            light: new THREE.SpotLight(0xFF5781, .65),
+            initialPosition: {x: 0, y: 400, z: 1500},
+           /* properties: {
                 penumbra: 0.3,
-                angle: 0.7
-            }
-        })
+            },*/
+            castShadow : false
+
+        }),
+
+    /*    new Light({
+            name: 'spotlight2',
+            type: lightTypes.SPOT,
+            light: new THREE.SpotLight(0xFF5781, .65),
+            initialPosition: {x: 1000, y: 50, z: -1000},
+            properties: {
+                angle: Math.PI/4,
+            },
+            castShadow : true
+        }),*/
+       /* new Light({
+            name: 'spotlight3',
+            type: lightTypes.SPOT,
+            light: new THREE.SpotLight(0xFF5781, .65),
+            initialPosition: {x: 0, y: 50, z: -850},
+            properties: {
+                angle: Math.PI/3,
+            },
+            castShadow : true
+        }),*/
+      /*  new Light({
+            name: 'pointLight',
+            type: lightTypes.POINT,
+            light: new THREE.PointLight(0xff4444, 1, 1000),
+            initialPosition: {x:1000, y: 800, z: 300},
+            castShadow: true
+        }),*/
+       /* new Light({
+            name: 'pointLight2',
+            type: lightTypes.POINT,
+            light: new THREE.PointLight(0xff4444, 2.5, 800),
+            initialPosition: {x:1000, y: 700, z: -300},
+            castShadow: false
+        }),
+        new Light({
+            name: 'pointLight3',
+            type: lightTypes.POINT,
+            light: new THREE.PointLight(0xff4444, 2.5, 800),
+            initialPosition: {x:1000, y: 700, z: 500},
+            castShadow: false
+        }),*/
     ],
     sounds: [
         new Sound({
             name: 'ambiance',
-            path: 'sound/ambianceScene3.mp3',
+            path: 'sound/spectator/spectator_ambiance.mp3',
             isLoop: true,
-            volume: 0.4
+            volume: 1
         }),
         new Sound({
-            name: 'light',
+            name: 'light_0',
             path: 'sound/spectator/soundLight.mp3',
             isLoop: false,
-            volume: 0.4
+            volume: .9
+        }),
+        new Sound({
+            name: 'light_1',
+            path: 'sound/spectator/soundLight.mp3',
+            isLoop: false,
+            volume: .9
+        }),
+        new Sound({
+            name: 'light_2',
+            path: 'sound/spectator/soundLight.mp3',
+            isLoop: false,
+            volume: .9
+        }),
+        new Sound({
+            name: 'light_3',
+            path: 'sound/spectator/soundLight.mp3',
+            isLoop: false,
+            volume: .9
+        }),
+        new Sound({
+            name: 'light_4',
+            path: 'sound/spectator/soundLight.mp3',
+            isLoop: false,
+            volume: .9
+        }),
+        new Sound({
+            name: 'light_5',
+            path: 'sound/spectator/soundLight.mp3',
+            isLoop: false,
+            volume: .9
         }),
         new Sound({
             name: 'voice',
             path: 'sound/spectator/voice.mp3',
             isLoop: false,
-            volume: 0.7
+            volume: 0.9
         }),
         new Sound({
             name: 'voice1',
             path: 'sound/spectator/voice_1.mp3',
             isLoop: false,
-            volume: 0.7
+            volume: 0.9
         }),
         new Sound({
             name: 'voice2',
             path: 'sound/spectator/voice_2.mp3',
             isLoop: false,
-            volume: 0.7
+            volume: 0.9
         }),
         new Sound({
             name: 'voice3',
             path: 'sound/spectator/voice_3.mp3',
             isLoop: false,
-            volume: 0.7
+            volume: 0.9
         }),
         new Sound({
             name: 'voice4',
             path: 'sound/spectator/voice_4.mp3',
             isLoop: false,
-            volume: 0.7
+            volume: 0.9
         }),
         new Sound({
             name: 'voice5',
             path: 'sound/spectator/voice_5.mp3',
             isLoop: false,
-            volume: 0.7
+            volume: 0.9
         }),
         new Sound({
             name: 'voice6',
             path: 'sound/spectator/voice_6.mp3',
             isLoop: false,
-            volume: 0.7
+            volume: 0.9
         }),
         new Sound({
             name: 'voice7',
             path: 'sound/spectator/voice_7.mp3',
             isLoop: false,
-            volume: 0.7
+            volume: 0.9
         })
     ],
     onCreated: (self) => {
@@ -140,11 +211,44 @@ export default new Scenery({
         self.volumetricLights = [];
         self.spotLights = [];
         self.spectators = [];
-        self.voices = [];
         self.smokeParticles = [];
 
         self.lightColor = 0xffeeee;
-        self.cooldown = 0;
+
+        self.sprites = [
+            {
+                name: 'spectatrice_gauche',
+                soundName: 'voice1',
+                needZoom: 2,
+                position: new THREE.Vector3(-160,250,600)
+            },
+            {
+                name: 'spectateur_droite',
+                soundName: 'voice2',
+                needZoom: 2,
+                position: new THREE.Vector3(260,250,600)
+            },
+            {
+                name: 'femme_assise_droite',
+                soundName: 'voice3',
+                needZoom: 5,
+                position: new THREE.Vector3(775,120,-500)
+            },
+            {
+                name: 'femme_running_gauche',
+                soundName: 'voice4',
+                needZoom: 5,
+                position: new THREE.Vector3(-800,120,-600)
+            },
+            {
+                name: 'femme_skate_gauche',
+                soundName: 'voice5',
+                needZoom: 7,
+                position: new THREE.Vector3(-800,120,-1400)
+            }
+        ]
+        self.intersectedSprite = null
+        self.spritesEnabled = false
 
         self.replaceConeByCylinder = (mesh) => {
             mesh.material = new THREEx.VolumetricSpotLightMaterial(2.8, 5., mesh.position, new THREE.Color(self.lightColor), 1.);
@@ -154,6 +258,7 @@ export default new Scenery({
 
             const spotLight = new THREE.SpotLight(new THREE.Color(self.lightColor), 0., 0., 0.9, 0.5, 0.5);
             spotLight.position.set(mesh.position.x, mesh.position.y, mesh.position.z);
+            spotLight.castShadow = true;
             spotLight.target.position.set(mesh.position.x, 0, mesh.position.z);
 
             self.spotLights.push(spotLight);
@@ -162,27 +267,26 @@ export default new Scenery({
             self.scene.add(spotLight.target);
         }
 
-        self.playVoice = () => {
-            const length = self.voices.length;
-            const random = Math.floor(Math.random() * length);
-            self.voices[random].play();
-        }
-
-        self.spectatorListener = () => {
+        self.spriteListener = (self) => {
             self.raycaster.setFromCamera({x: 0.0, y: 0.0}, self.cameraManager.camera);
-            const intersects = self.raycaster.intersectObjects(self.spectators, true);
+            const intersects = self.raycaster.intersectObjects(self.scene.getObjectByName('sprites').children, false);
 
-            if (intersects.length > 0 && self.cooldown === 0) {
-                EventManager.publish('spectatorDetected');
-                self.playVoice();
-                self.cooldown = 200;
+            if(intersects.length > 0) {
+                if(self.intersectedSprite !== intersects[0].object){
+                    self.intersectedSprite = intersects[0].object
+                    gsap.to(self.intersectedSprite.scale, {duration: .5, ease: 'power2.out', x: .1, y: .1, z: .1})
+                    EventManager.publish('mobile:interaction_set', 'listen')
+                    EventManager.publish('spectatorDetected');
+                }
             }
-
-            if (self.cooldown > 0) {
-                if (self.cooldown < 150) {
+            else{
+                // Check if all sounds
+                if(self.intersectedSprite !== null) {
+                    gsap.to(self.intersectedSprite.scale, {duration: .5, ease: 'power2.out', x: .07, y: .07, z: .07})
+                    self.intersectedSprite = null
+                    EventManager.publish('mobile:interaction_set', null)
                     EventManager.publish('spectatorNotDetected');
                 }
-                self.cooldown--;
             }
         }
 
@@ -190,29 +294,34 @@ export default new Scenery({
             self.source.src = '/video/cinema-vid-end.mp4';
             self.cameraManager.controls = null;
             const timeline = gsap.timeline();
-            timeline
-                .to(self.cameraManager.camera.rotation, {x: 0.1, y: -0.05, duration: 3})
-                .to(self.cameraManager.camera, {delay: 1, zoom: 5, duration: 2});
-            timeline.play().then(() => {
-                EventManager.publish('fadeEnding');
-                const timeout = setTimeout(() => {
-                    store.dispatch('app/requestState', appStates.END).then(() => {
-                        self.video.pause();
-                        self.soundManager.stopAll();
-                        clearTimeout(timeout);
-                    });
-                }, 1000);
-            });
+            timeline.to(self.cameraManager.camera.rotation, {x: -0.01, y: 0, z:0, duration: 3, ease: 'power1.inOut'})
+            timeline.to(self.cameraManager.camera, {delay: 1, zoom: 5, duration: 3, ease: 'power1.inOut'}, '>-1');
+            timeline.call(() => {
+                EventManager.publish('spectator:fadeout');
+                self.video.pause();
+                gsap.delayedCall(3, () => { store.dispatch('app/requestState', appStates.END) })
+            })
         }
 
         self.lightUp = (index) => {
-            self.volumetricLights[index].material.visible = true;
-            self.spotLights[index * 2].intensity = 1;
+            const tl = new gsap.timeline()
+            // FIXME : Surement moyen d'optimiser ça
+            tl.to(self.volumetricLights[index].material, {duration: .1, visible: true}, )
+            tl.to(self.spotLights[index * 2], {duration: .1, intensity: 1}, '<')
+            tl.to(self.volumetricLights[index].material, {duration: .1, visible: false})
+            tl.to(self.spotLights[index * 2], {duration: .1, intensity: 0}, '<')
+            tl.to(self.volumetricLights[index].material, {duration: .1, visible: true})
+            tl.to(self.spotLights[index * 2], {duration: .1, intensity: 1}, '<')
+            tl.to(self.volumetricLights[index].material, {duration: .1, visible: false})
+            tl.to(self.spotLights[index * 2], {duration: .1, intensity: 0}, '<')
+            tl.to(self.volumetricLights[index].material, {delay: .4, duration: .1, visible: true})
+            tl.to(self.spotLights[index * 2], {duration: .1, intensity: 1}, '<')
 
-            self.eyes[index].forEach((eye, index) => {
-                if (index !== 0) {
-                    eye.visible = true;
-                }
+            self.soundManager.getSoundByName('light_'+index).play()
+
+            self.eyes[index].forEach((eye) => {
+                eye.visible = true;
+                gsap.from(eye.scale, {duration: .5, delay: Math.random() * 1.5, ease: 'back.out(1.7)', x: 0, y: 0, z: 0})
             });
         }
 
@@ -253,15 +362,16 @@ export default new Scenery({
         };
 
         /**
-         * Create actor
+         * Generate eyes
          * @param {number[]} position
          */
         self.generateEyes = ({position}) => {
             const objects = [];
 
             const actress = new THREE.Object3D();
+            actress.name='actress'
+            actress.rotation.y = Math.random()*Math.PI
             self.scene.add(actress);
-            objects.push(actress);
 
             actress.position.x = position[0];
             actress.position.y = 100;
@@ -271,23 +381,29 @@ export default new Scenery({
                 const eye = self.eyeModel.clone();
                 switch (i) {
                     case 0:
-                        eye.rotateZ(Math.PI / 2);
-                        eye.position.x = 75;
+                        eye.position.x = Math.sin(0) * 105;
+                        eye.position.z = Math.cos(0) * 105;
                         eye.position.y = 70;
                         break;
                     case 1:
-                        eye.rotateZ(-Math.PI / 2);
-                        eye.position.x = -75;
-                        eye.position.y = 70;
+                        eye.position.x = Math.sin(MathUtils.degToRad(120)) * 105;
+                        eye.position.z = Math.cos(MathUtils.degToRad(120)) * 105;
+                        eye.position.y = 55;
                         break;
                     case 2:
-                        eye.rotateZ(Math.PI);
-                        eye.position.z = 75;
+                        eye.position.x = Math.sin(MathUtils.degToRad(240)) * 105;
+                        eye.position.z = Math.cos(MathUtils.degToRad(250)) * 105;
+                        eye.position.y = 85;
                         break;
                 }
                 actress.add(eye);
+                eye.lookAt(actress.position)
                 objects.push(eye);
+
+                const tl = gsap.timeline({delay: Math.random()*3 , yoyo: true, repeat: -1})
+                tl.to(eye.position, {duration: Math.round(Math.random()*3 + 2), y: self.randomIntFromInterval(45, 90), ease: 'power1.inOut'})
             }
+            self.actresses.push(actress)
             self.eyes.push(objects);
         }
 
@@ -324,15 +440,16 @@ export default new Scenery({
             geometry.faceVertexUvs[0][8] = [face5[3], face5[0], face5[2]];
             geometry.faceVertexUvs[0][9] = [face5[0], face5[1], face5[2]];
 
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.x = 0;
-            mesh.position.y = 268;
-            mesh.position.z = -785;
+            self.screenMesh = new THREE.Mesh(geometry, material);
+            self.screenMesh.position.x = 0;
+            self.screenMesh.position.y = 268;
+            self.screenMesh.position.z = -785;
 
-            self.scene.add(mesh);
+            self.scene.add( self.screenMesh);
 
-            self.videoScreen = mesh;
-            self.video.play().then(() => self.video.volume = 0.02);
+            self.videoScreen =  self.screenMesh;
+            self.video.volume = 0.02;
+            self.video.play();
         }
 
         self.addBlur = () => {
@@ -367,11 +484,54 @@ export default new Scenery({
             self.blur.radius.y = 7;
         }
 
-        self.addVoice = (name) => {
-            self.voices.push(self.soundManager.getSoundByName(name));
+
+        self.buildSprite = (self, {sprite}) => {
+            const spriteObject = new THREE.Sprite(self.spriteMaterial)
+            spriteObject.name = sprite.name ?? ''
+            spriteObject.soundName = sprite.soundName ?? ''
+            spriteObject.needZoom = sprite.needZoom ?? false
+            spriteObject.position.set(sprite.position.x, sprite.position.y, sprite.position.z)
+            spriteObject.scale.set(.07, .07, .07)
+            self.spriteGroup.add(spriteObject)
         }
+
     },
     onLoaded: (self) => {
+        console.log(self)
+
+        self.renderer.shadowMap.autoUpdate = false;
+        self.renderer.shadowMap.needsUpdate = true;
+
+       /* self.buildingArray = [];
+
+        var childrenCinema = self.modelManager.getLoadedModelByName('cinema').scene;
+
+        childrenCinema.traverse((child) => {
+            if(child.name.includes("IMMEUBLE")) {
+                self.buildingArray.push(child);
+            }
+
+        })
+
+        var emptyOject = new THREE.Object3D();
+        emptyOject.position.set(1200, 100, 400)
+        self.scene.add(emptyOject)*/
+
+      /*  self.pointLight = self.lightManager.getLightByName('pointLight');
+
+        var pointLightHelper = new THREE.PointLightHelper(self.pointLight, 10);
+        self.scene.add(pointLightHelper);*/
+
+
+
+        setTimeout(() => {
+            var spotLight = self.lightManager.getLightByName('spotlight');
+            spotLight.target =  self.screenMesh;
+            /*var spotLightHelper = new THREE.SpotLightHelper(spotLight);
+            self.scene.add(spotLightHelper)*/
+
+        },500)
+
         self.timer = 0;
         self.clock = new THREE.Clock();
 
@@ -380,26 +540,26 @@ export default new Scenery({
 
         self.lightSound = self.soundManager.getSoundByName('light');
 
-        self.light = new THREE.DirectionalLight(0xffffff, 0);
-        self.scene.add(self.light);
+       /* self.light = new THREE.DirectionalLight(0xffffff, 0);
+        self.scene.add(self.light);*/
 
         self.soundManager.getSoundByName('ambiance').play();
 
-        self.addVoice('voice');
-        self.addVoice('voice1');
-        self.addVoice('voice2');
-        self.addVoice('voice3');
-        self.addVoice('voice4');
-        self.addVoice('voice5');
-        self.addVoice('voice6');
-        self.addVoice('voice7');
+        self.spriteMap = new THREE.TextureLoader().load( "/png/spectator_sprite.png" );
+        self.spriteMaterial = new THREE.SpriteMaterial( { map: self.spriteMap, sizeAttenuation: false, opacity: 0, transparent: true } );
+        self.spriteGroup = new THREE.Object3D();
+        self.spriteGroup.name = 'sprites'
+        self.scene.add(self.spriteGroup)
+
+        self.eyeModel = self.modelManager.getLoadedModelByName('eye').scene
+        self.actresses = []
 
         // Set street lamp & eyes next to women
         self.scene.traverse((child) => {
             if (child.name === 'eye') {
-                child.rotateX(Math.PI / 2);
+                // child.rotateX(Math.PI / 2);
                 child.visible = false;
-                self.eyeModel = child;
+                // self.eyeModel = child;
             }
         });
 
@@ -437,17 +597,113 @@ export default new Scenery({
         self.buildScreen();
 
         self.addBlur();
+
+        // Add sprites on spectators & women
+        self.sprites.forEach((sprite) => {
+            self.buildSprite(self, {sprite})
+        })
+
+
+        self.listenEvent = EventManager.subscribe('mobile:interaction', (interaction) => {
+            if(self.intersectedSprite === null || interaction !== 'listen') return
+
+            // Freeze camera
+            self.cameraManager.controls = null
+            EventManager.publish('mobile:interaction_set', null)
+            EventManager.publish('camera:instructions', false)
+            self.cameraManager.camera.lookAt(self.intersectedSprite.position)
+
+            const tl = new gsap.timeline()
+
+            tl.to(self.intersectedSprite.material, {duration: 2, ease: 'power3.out', opacity: 0})
+            tl.to('.spectatorScene__sight', {duration: 2, ease: 'power3.out', opacity: 0}, '<')
+            tl.to(self.cameraManager.camera, {
+                duration: 2,
+                ease: 'power3.inOut',
+                zoom: self.intersectedSprite.needZoom,
+                onComplete: () => {
+                    const sound = self.soundManager.getSoundByName(self.intersectedSprite.soundName)
+                    if(sound) sound.play()
+                    sound.source.onended = () => {
+                        self.scene.getObjectByName('sprites').remove(self.intersectedSprite)
+                        tl.reverse(0).then(() => {
+                            self.cameraManager.setControls(controlsTypes.MOBILE)
+
+                            // Check if all voices listened
+                            if(self.scene.getObjectByName('sprites').children.length <= 0){
+                                gsap.delayedCall(2, () => {
+                                    self.endScene()
+                                })
+                            }
+                        })
+
+                    }
+                }
+            }, '<')
+
+        })
+
+        // Scenery timeline
+        // TODO : Loaded before DOM, add setTimeOut to apply on next frame
+        setTimeout(() => {
+            self.timeline = new gsap.timeline()
+            self.timeline.pause()
+            self.timeline.call(() => {
+                EventManager.publish('spectator:fadein')
+            })
+            self.timeline.to(self.blur.radius, {duration: 4, delay: 2, x: 0, y: 0})
+
+            // Lights on
+            //self.timeline.to(self.light, {intensity: 1, duration: 4}, '>15'); // 15
+            self.timeline.call(() => {
+                self.lightUp(0)
+            }, [], '<15')
+            self.timeline.call(() => {
+                self.lightUp(3)
+            }, [], '<1')
+            self.timeline.call(() => {
+                self.lightUp(4)
+            }, [], '<1.4')
+            self.timeline.call(() => {
+                self.lightUp(1)
+            }, [], '<1')
+            self.timeline.call(() => {
+                self.lightUp(2)
+            }, [], '<1.2')
+            self.timeline.call(() => {
+                self.lightUp(5)
+            }, [], '<1.5')
+
+
+            // Enable interaction
+            self.timeline.call(() => {
+                self.scene.getObjectByName('sprites').children.forEach((sprite) => {
+                    gsap.to(sprite.material, {duration: 3, opacity: 1, ease: 'power3.out'})
+                })
+                self.spritesEnabled = true
+            }, [], '>6')
+            self.timeline.to('.spectatorScene__sight', {duration: 2, opacity: 1, ease: 'power3.out'})
+
+            // Tutorial
+            self.timeline.call(() => {
+                EventManager.publish('camera:instructions', {
+                    text: 'Ecoute les personnes autours de toi',
+                    icon: 'icon/tutorial/tutorial_icon_listen.svg'
+                })
+            }, [])
+
+            self.timeline.play();
+        }, 0)
+
     },
     onUpdate: (self) => {
         const delta = self.clock.getDelta();
 
-        self.eyes.forEach((objects) => {
-            objects.forEach((item, index) => {
-                if (index % 3 === 0) {
-                    item.rotation.y += delta;
-                }
-            });
+        self.actresses.forEach((actress) => {
+            actress.rotation.y += delta * 0.2
         });
+
+        if(self.spritesEnabled) self.spriteListener(self)
 
         /* self.smokeParticles.forEach((particles) => {
             let sp = particles.length;
@@ -456,30 +712,8 @@ export default new Scenery({
             }
         }); */
 
-        if (self.timer === 100) {
-            gsap.to(self.blur.radius, {x: 0, y: 0, duration: 3});
-        }
-        if (self.timer > 100 && self.timer < 6000) {
-            gsap.to(self.blur.radius, {x: 0, y: 0, duration: 3});
-            self.spectatorListener();
-        }
-        if (self.timer === 1000) {
-            self.lightUp(2);
-            self.lightUp(3);
-            gsap.to(self.light, {intensity: 1, duration: 4});
-
-            self.lightSound.play();
-        }
-        if (self.timer === 1050) {
-            self.lightUp(1);
-            self.lightUp(5);
-        }
-        if (self.timer === 1100) {
-            self.lightUp(0);
-            self.lightUp(4);
-
-        }
-        /*if (self.timer > 3000) {
+        /*
+        if (self.timer > 3000) {
             self.smokeParticles.forEach((particles) => {
                 let sp = particles.length;
                 while (sp--) {
@@ -488,14 +722,9 @@ export default new Scenery({
                     }
                 }
             });
-        } */
-        if (self.timer === 6150) {
-            self.endScene();
         }
 
-        if (self.timer < 6150) {
-            self.timer++;
-        }
+         */
 
         self.composer.render(delta);
         self.frame.update(delta);

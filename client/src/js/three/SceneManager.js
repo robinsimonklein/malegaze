@@ -86,6 +86,9 @@ class SceneManager {
         renderer.gammaInput = true;
         renderer.gammaOutput = true;
 
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+
         return renderer;
     }
 

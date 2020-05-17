@@ -1,10 +1,6 @@
 <template>
-    <div class="camera-overlay" :class="{'aiming' : aiming}">
+    <div class="camera-overlay" :class="{'aiming' : false}">
         <div class="camera-overlay__corner camera-overlay__corner--tl">
-            <div class="camera-overlay__instructions">
-                <img class="camera-overlay__instructions-icon" src="icon/tutorial/smartphone.svg"/>
-                <span class="camera-overlay__instructions-text">{{ instructions.text }}</span>
-            </div>
         </div>
         <div class="camera-overlay__corner camera-overlay__corner--tr">
             <div v-show="recording" class="camera-overlay__rec">
@@ -12,9 +8,7 @@
             </div>
         </div>
         <div class="camera-overlay__corner camera-overlay__corner--bl">
-            <svg class="camera-overlay__battery" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" x="0"
-                 y="0" viewBox="0 0 512 512" xml:space="preserve"><path class="st0" d="M496 208h-16v-16c0-8.8-7.2-16-16-16h-16v-16c0-17.7-14.3-32-32-32H32c-17.7 0-32 14.3-32 32v192c0 17.7 14.3 32 32 32h384c17.7 0 32-14.3 32-32v-16h16c8.8 0 16-7.2 16-16v-16h16c8.8 0 16-7.2 16-16v-64c0-8.8-7.2-16-16-16zm-80-16v160H32V160h384v32z"/>
-                <path class="st0" d="M64 192h32v128H64zm64 0h32v128h-32zm64 0h32v128h-32zm64 0h32v128h-32z"/></svg>
+            <img class="camera-overlay__corner-element" src="@/assets/svg/battery.svg"/>
         </div>
         <div class="camera-overlay__corner camera-overlay__corner--br">
             <img class="camera-overlay__corner-element" src="@/assets/svg/4K.svg"/>
@@ -25,12 +19,39 @@
             <div class="camera-overlay__target--corner camera-overlay__target--tr"></div>
             <div class="camera-overlay__target--corner camera-overlay__target--bl"></div>
             <div class="camera-overlay__target--corner camera-overlay__target--br"></div>
+            <div class="camera-overlay__rotation" :class="{'visible' : rotationVisible}" :style="`transform: translateX(${rotation*100}vw) translateY(-50%);`"></div>
+
+            <svg
+                    class="camera-overlay__progress"
+                        :class="{'visible' : aiming}"
+                    width="220"
+                    height="220">
+                <circle
+                        class="camera-overlay__progress-circle"
+                        stroke="#FF4040"
+                        stroke-width="8"
+                        fill="transparent"
+                        :r="progressRadius"
+                        cx="110"
+                        cy="110"
+                        opacity="0.2"
+                />
+                <circle
+                        class="camera-overlay__progress-bar"
+                        stroke="#FF4040"
+                        stroke-width="8"
+                        fill="transparent"
+                        :r="progressRadius"
+                        cx="110"
+                        cy="110"
+                        :stroke-dasharray="progressCircumference + ' ' + progressCircumference"
+                        :stroke-dashoffset="progressOffset"
+                />
+            </svg>
         </div>
-        <div class="camera-overlay__hint">
-            <p class="camera-overlay__hint-text">> {{ instructions.hint }}</p>
-        </div>
-        <div class="camera-overlay__progress" :class="{'visible' : progressVisible}">
-            <div class="camera-overlay__progress-bar" :style="`width: ${progress}%`"></div>
+        <div class="camera-overlay__instructions">
+            <img class="camera-overlay__instructions-icon" :src="instructions.icon">
+            <p class="camera-overlay__instructions-text"> {{ instructions.text }}</p>
         </div>
 
         <div class="camera-overlay__black-screen"></div>
@@ -46,21 +67,24 @@
         name: "CameraOverlay",
         data() {
             return {
-                started: true,
+                started: false,
                 progress: 0,
                 recording: false,
                 aiming: false,
+                progressRadius: 65,
                 progressVisible: false,
+                rotation: 0,
+                rotationVisible: false,
 
                 instructions: {
                     text: '',
-                    hint: ''
+                    icon: null
                 },
 
                 targetSize: {
-                    min: 130,
-                    max: 240,
-                    current: 240
+                    min: 70,
+                    max: 200,
+                    current: 200
                 },
 
                 timelines: {
@@ -112,19 +136,24 @@
             displayInstructions() {
                 const tl = new gsap.timeline()
                 tl.pause()
-                tl.fromTo('.camera-overlay__instructions-icon', {alpha: 0, translateX: -10}, {duration: 2, alpha: 1, translateX: 0, ease: 'power3.out'})
-                tl.fromTo('.camera-overlay__instructions-text', {alpha: 0, translateX: -10}, {duration: 2, alpha: 1, translateX: 0, ease: 'power3.out'}, "-=1.7")
-                tl.fromTo('.camera-overlay__hint', {alpha: 0}, {duration: 2, delay: .5, alpha: 1, ease: 'power3.out'})
-                // tl.to('.camera-overlay__hint', {duration: 1, delay: 4, alpha: 0, ease: 'power3.out'})
+                tl.fromTo('.camera-overlay__instructions-icon', {alpha: 0, translateY: 10}, {duration: 2, alpha: 1, translateY: 0, ease: 'power3.out'})
+                tl.fromTo('.camera-overlay__instructions-text', {alpha: 0, translateY: 10}, {duration: 2, alpha: 1, translateY: 0, ease: 'power3.out'}, "-=1.7")
                 tl.play()
             },
             hideInstructions() {
                 const tl = new gsap.timeline()
                 tl.pause()
-                tl.to('.camera-overlay__instructions-text', {duration: .5, alpha: 0, translateX: -10, ease: 'power3.out'}, '#start')
-                tl.to('.camera-overlay__instructions-icon', {duration: .5, alpha: 0, translateX: -10, ease: 'power3.out'}, )
-                tl.to('.camera-overlay__hint', {duration: .5, alpha: 0, ease: 'power3.out'}, "#start+=0")
+                tl.to('.camera-overlay__instructions-text', {duration: .5, alpha: 0, translateY: 10, ease: 'power3.out'}, '#start')
+                tl.to('.camera-overlay__instructions-icon', {duration: .5, alpha: 0, translateY: 10, ease: 'power3.out'})
                 tl.play()
+            }
+        },
+        computed: {
+            progressCircumference() {
+                return this.progressRadius * 2 * Math.PI
+            },
+            progressOffset() {
+                return this.progressCircumference - this.progress / 100 * this.progressCircumference
             }
         },
         beforeMount() {
@@ -155,7 +184,7 @@
             this.events.push(EventManager.subscribe('camera:instructions', (instructions) => {
                 if (instructions!== false) {
                     this.instructions.text = instructions.text ?? ''
-                    this.instructions.hint = instructions.hint ?? ''
+                    this.instructions.icon = instructions.icon ?? null
                     this.displayInstructions()
                 } else {
                     this.hideInstructions()
@@ -164,13 +193,18 @@
 
             this.events.push(EventManager.subscribe('mobile:interaction_set', (interaction) => {
                 interaction === 'framing' ? this.progressVisible = true : this.progressVisible = false
+                interaction === 'rotation' ? this.rotationVisible = true : this.rotationVisible = false
             }))
+            this.events.push(EventManager.subscribe('mobile:interaction', (data) => {
+                // Check if rotation
+                if(data.type !== 'rotation') return
+                this.rotation = data.value
+            }))
+
         },
         mounted() {
             this.buildStartTimeline()
             this.buildStopTimeline()
-
-            // this.start()
         },
         beforeDestroy() {
             // Unsubscribe all events before destroy component
@@ -259,6 +293,11 @@
                     border-bottom: 4px solid $color-success;
                     border-left: 4px solid $color-success;
                 }
+
+                .camera-overlay__corner-element {
+                    left: 1.5rem;
+                    bottom: 1.5rem;
+                }
             }
 
             &--br {
@@ -291,8 +330,8 @@
 
             &--corner {
                 position: absolute;
-                width: 2rem;
-                height: 2rem;
+                width: 1.6rem;
+                height: 1.6rem;
             }
 
             &--tl {
@@ -383,20 +422,57 @@
             }
         }
 
-        &__progress {
+        &__rotation {
             position: absolute;
-            bottom: 5vh;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 1px solid rgba(white, .5);
-            height: 1rem;
-            width: 40vw;
+            top: 50%;
+            right: -50px;
+            height: 200px;
+            width: calc(100vw + 200px);
+            border: 2px solid rgba(white, .5);
+            border-radius: 200px;
+            transform: translateX(0vw) translateY(-50%);
+
             opacity: 0;
             transition: opacity 1s ease;
 
             &.visible {
                 opacity: 1;
                 transition: opacity 1s ease;
+            }
+
+            &:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 0;
+                height: 196px;
+                width: 196px;
+                border-radius: 200px;
+                background: rgba($color-primary, .5)
+            }
+            &:after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 196px;
+                width: 196px;
+                border-radius: 200px;
+                background: rgba($color-primary, .5)
+            }
+        }
+
+        &__progress {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%) rotate(-90deg);
+            opacity: 0;
+            transition: opacity .3s ease;
+
+            &.visible {
+                opacity: 1;
+                transition: opacity .5s ease;
             }
 
             &-bar {
@@ -411,12 +487,15 @@
         }
 
         &__instructions {
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            width: 40vw;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            top: calc(50% + 9rem);
+            width: 100%;
 
             &-icon {
+                height: 6rem;
                 opacity: 0;
             }
             &-text {
@@ -424,6 +503,7 @@
                 text-transform: uppercase;
                 letter-spacing: .2rem;
                 margin-left: 1rem;
+                text-align: center;
                 opacity: 0;
             }
         }

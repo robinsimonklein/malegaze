@@ -81,6 +81,10 @@ class ModelManager {
                         (obj) => {
                             obj.name = model.name
                             obj.scene.name = model.name
+                            obj.scene.traverse((child) => {
+                                child.castShadow = model.castShadow
+                                child.receiveShadow = model.receiveShadow
+                            });
                             this.loadedModels.push(obj)
                         },
                     )

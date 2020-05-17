@@ -49,6 +49,7 @@ io.on('connection', function (socket) {
             socket.leave(socket.mobileRoom)
         }
         socket.join(mobileId)
+        socket.join(mobileId)
         socket.mobileRoom = mobileId
 
         console.log(socket.id + ' joined mobile room :', mobileId)
@@ -58,6 +59,9 @@ io.on('connection', function (socket) {
         const rooms = io.sockets.adapter.rooms;
         rooms[mobileId] !== undefined ? callback(true) : callback(false)
     })
+
+    // --- DISCONNECT
+
 
     // --- MOBILE SETUP
 
@@ -82,11 +86,9 @@ io.on('connection', function (socket) {
     // --- CAMERA CONTROLS
 
     socket.on('camera_zoom', (value) => {
-        console.log('camera_zoom', value)
         socket.in(socket.mobileRoom).emit('camera_zoom', value)
     });
     socket.on('camera_rec', () => {
-        console.log('camera_rec')
         socket.in(socket.mobileRoom).emit('camera_rec')
     });
 
@@ -97,7 +99,6 @@ io.on('connection', function (socket) {
     });
 
     socket.on('mobile_interaction_set', (interaction) => {
-        console.log('mobile_interaction_set', interaction)
         socket.in(socket.mobileRoom).emit('mobile_interaction_set', interaction)
     });
 
@@ -105,13 +106,7 @@ io.on('connection', function (socket) {
         socket.in(socket.mobileRoom).emit('mobile_interaction_enable')
     });
 
-    socket.on('mobile_show_instruction', () => {
-        socket.in(socket.mobileRoom).emit('mobile_show_instruction')
-    });
-
-
     socket.on('mobile_interaction', (data) => {
-        console.log('zoom', data)
         socket.in(socket.mobileRoom).emit('mobile_interaction', data)
     });
 
@@ -119,12 +114,32 @@ io.on('connection', function (socket) {
         socket.in(socket.mobileRoom).emit('mobile_interaction_done')
     });
 
+    socket.on('mobile_show_instruction', () => {
+        socket.in(socket.mobileRoom).emit('mobile_show_instruction')
+    });
+
+
     // --- APP
 
     socket.on('state_request', (state) => {
         console.log('state_request', state)
         socket.emit('state_dispatch', state)
         socket.in(socket.mobileRoom).emit('state_dispatch', state)
+    })
+
+    socket.on('ask_state', () => {
+        console.log('ask_state')
+        socket.in(socket.mobileRoom).emit('ask_state')
+    })
+
+    socket.on('answer_state', (state) => {
+        console.log('answer_state', state)
+        socket.in(socket.mobileRoom).emit('state_dispatch', state)
+    })
+
+    socket.on('mobile_allow_next', () => {
+        console.log('mobile_allow_next')
+        socket.in(socket.mobileRoom).emit('mobile_allow_next')
     })
 
 });
