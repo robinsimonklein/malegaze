@@ -2,7 +2,9 @@
     <div class="actressScene">
         <div class="actressScene__overlayFade" ref="overlayFade"></div>
         <div class="actressScene__wrap" ref="instructionWrap">
-            <div class="actressScene__corner actressScene__corner--tl">
+            <img class="actressScene__wrap__image" src="icon/tutorial/tutorial_shoot_eye.svg"/>
+            <span>Repousse les regards en tapant sur les yeux</span>
+           <!-- <div class="actressScene__corner actressScene__corner--tl">
                 <div class="actressScene__instructions">
                     <img class="actressScene__instructions-img" src="icon/tutorial/smartphone.svg"/>
                     <span class="actressScene__instructions-text">Tirer sur les yeux pour les repousser</span>
@@ -10,11 +12,10 @@
             </div>
             <div class="actressScene__corner actressScene__corner--tr"></div>
             <div class="actressScene__corner actressScene__corner--bl"></div>
-            <div class="actressScene__corner actressScene__corner--br"></div>
+            <div class="actressScene__corner actressScene__corner--br"></div>-->
 
-            <div class="actressScene__sight" id="actressScene__sight" ref="sightWrapper"></div>
         </div>
-
+        <div class="actressScene__sight" id="actressScene__sight" ref="sightWrapper"></div>
     </div>
 </template>
 
@@ -95,6 +96,22 @@
         &__wrap {
             opacity: 0;
             transition: opacity .5s;
+            position: absolute;
+            left: 50%;
+            bottom: 10%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+
+            span {
+                color: #fff;
+                font-size: 18px;
+                font-family: "Roboto Mono", sans-serif;
+                width: 53%;
+                align-self: center;
+                text-align: center;
+            }
+
         }
 
         &__instructions {
