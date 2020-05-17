@@ -33,12 +33,14 @@ export default new Scenery({
         })
     ],
     renderer: null,
-    controls: controlsTypes.MOBILE,
+    controls: controlsTypes.ORBIT,
     models: [
         new Model({
             name: 'cinema',
             path: 'models/glb/spectator_scenery.glb',
-            type: modelTypes.GLB
+            type: modelTypes.GLB,
+            castShadow: true,
+            receiveShadow : true
         }),
         new Model({
             name: 'cones',
@@ -53,20 +55,56 @@ export default new Scenery({
     ],
     lights: [
         new Light({
-            name: 'ambient',
-            type: lightTypes.AMBIENT,
-            light: new THREE.HemisphereLight(0xffb8c6, 0x080820, 1)
-        }),
-        new Light({
             name: 'spotlight',
             type: lightTypes.SPOT,
-            light: new THREE.SpotLight(0xff4444),
-            initialPosition: {x: 0, y: 100, z: -780},
+            light: new THREE.SpotLight(0xFF5781, .65),
+            initialPosition: {x: 0, y: 400, z: 1500},
             properties: {
                 penumbra: 0.3,
-                angle: 0.7
-            }
+            },
+            castShadow : false
+
         }),
+
+        new Light({
+            name: 'pointLight',
+            type: lightTypes.POINT,
+            light: new THREE.PointLight(0xff4444, 1, 800),
+            initialPosition: {x:1300, y: 200, z: 300},
+            castShadow: true
+        }),
+
+      /*  new Light({
+            name: 'spotlight2',
+            type: lightTypes.DIRECTIONAL,
+            light: new THREE.DirectionalLight(0xFF5781, 1),
+            initialPosition: {x: 0, y: 268, z: -785},
+            properties: {
+                penumbra: 0.3,
+            },
+            castShadow : true
+        }),*/
+      /*  new Light({
+            name: 'pointLight',
+            type: lightTypes.POINT,
+            light: new THREE.PointLight(0xff4444, 1, 1000),
+            initialPosition: {x:1000, y: 800, z: 300},
+            castShadow: true
+        }),*/
+       /* new Light({
+            name: 'pointLight2',
+            type: lightTypes.POINT,
+            light: new THREE.PointLight(0xff4444, 2.5, 800),
+            initialPosition: {x:1000, y: 700, z: -300},
+            castShadow: false
+        }),
+        new Light({
+            name: 'pointLight3',
+            type: lightTypes.POINT,
+            light: new THREE.PointLight(0xff4444, 2.5, 800),
+            initialPosition: {x:1000, y: 700, z: 500},
+            castShadow: false
+        }),*/
     ],
     sounds: [
         new Sound({
@@ -218,6 +256,7 @@ export default new Scenery({
 
             const spotLight = new THREE.SpotLight(new THREE.Color(self.lightColor), 0., 0., 0.9, 0.5, 0.5);
             spotLight.position.set(mesh.position.x, mesh.position.y, mesh.position.z);
+            spotLight.castShadow = true;
             spotLight.target.position.set(mesh.position.x, 0, mesh.position.z);
 
             self.spotLights.push(spotLight);
@@ -357,6 +396,7 @@ export default new Scenery({
                 }
                 actress.add(eye);
                 eye.lookAt(actress.position)
+                eye.castShadow = true;
                 objects.push(eye);
 
                 const tl = gsap.timeline({delay: Math.random()*3 , yoyo: true, repeat: -1})
@@ -399,14 +439,14 @@ export default new Scenery({
             geometry.faceVertexUvs[0][8] = [face5[3], face5[0], face5[2]];
             geometry.faceVertexUvs[0][9] = [face5[0], face5[1], face5[2]];
 
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.x = 0;
-            mesh.position.y = 268;
-            mesh.position.z = -785;
+            self.screenMesh = new THREE.Mesh(geometry, material);
+            self.screenMesh.position.x = 0;
+            self.screenMesh.position.y = 268;
+            self.screenMesh.position.z = -785;
 
-            self.scene.add(mesh);
+            self.scene.add( self.screenMesh);
 
-            self.videoScreen = mesh;
+            self.videoScreen =  self.screenMesh;
             self.video.volume = 0.02;
             self.video.play();
         }
@@ -458,6 +498,45 @@ export default new Scenery({
     onLoaded: (self) => {
         console.log(self)
 
+        self.renderer.shadowMap.autoUpdate = false;
+        self.renderer.shadowMap.needsUpdate = true;
+
+        self.buildingArray = [];
+
+        var childrenCinema = self.modelManager.getLoadedModelByName('cinema').scene;
+
+        childrenCinema.traverse((child) => {
+            if(child.name.includes("IMMEUBLE")) {
+                self.buildingArray.push(child);
+            }
+
+        })
+
+        console.log(self.buildingArray[6])
+
+        self.pointLight = self.lightManager.getLightByName('pointLight');
+
+        var pointLightHelper = new THREE.PointLightHelper(self.pointLight, 10);
+        self.scene.add(pointLightHelper);
+
+      /*  self.pointLight2 = self.lightManager.getLightByName('pointLight2');
+
+        var pointLightHelper2 = new THREE.PointLightHelper(self.pointLight2, 10);
+        self.scene.add(pointLightHelper2);*/
+
+
+        setTimeout(() => {
+            var spotLight = self.lightManager.getLightByName('spotlight');
+            spotLight.target =  self.screenMesh;
+            var spotLightHelper = new THREE.SpotLightHelper(spotLight);
+            self.scene.add(spotLightHelper)
+
+           /* var spotLight2 = self.lightManager.getLightByName('spotlight2');
+            spotLight2.target =  self.buildingArray[6];
+            var spotLightHelper2 = new THREE.DirectionalLightHelper(spotLight2, 10);
+            self.scene.add(spotLightHelper2)*/
+
+        },500)
 
         self.timer = 0;
         self.clock = new THREE.Clock();
@@ -467,8 +546,8 @@ export default new Scenery({
 
         self.lightSound = self.soundManager.getSoundByName('light');
 
-        self.light = new THREE.DirectionalLight(0xffffff, 0);
-        self.scene.add(self.light);
+       /* self.light = new THREE.DirectionalLight(0xffffff, 0);
+        self.scene.add(self.light);*/
 
         self.soundManager.getSoundByName('ambiance').play();
 
@@ -581,10 +660,10 @@ export default new Scenery({
             self.timeline.to(self.blur.radius, {duration: 4, delay: 2, x: 0, y: 0})
 
             // Lights on
-            self.timeline.to(self.light, {intensity: 1, duration: 4}, '>15'); // 15
+            //self.timeline.to(self.light, {intensity: 1, duration: 4}, '>15'); // 15
             self.timeline.call(() => {
                 self.lightUp(0)
-            }, [], '<1')
+            }, [], '<15')
             self.timeline.call(() => {
                 self.lightUp(3)
             }, [], '<1')
