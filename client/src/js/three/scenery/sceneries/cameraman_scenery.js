@@ -757,7 +757,7 @@ export default new Scenery({
 
             if(distance <= threshold) {
                 if(self.cameraProgress < 100) {
-                    self.cameraProgress += 0.5
+                    self.cameraProgress += 0.8
                 }else{
                     EventManager.publish('camera:progress_complete')
                     EventManager.publish('camera:aiming', {distance, threshold: threshold, aiming: false})
