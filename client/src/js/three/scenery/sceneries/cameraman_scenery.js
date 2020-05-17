@@ -247,6 +247,7 @@ export default new Scenery({
                             }
 
                             self.cameraManager.controls = null
+                            EventManager.publish('camera:instructions', false)
                             self.soundManager.getSoundObjectByName('05_real_traveling').play()
                         }
                     })

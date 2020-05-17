@@ -29,7 +29,7 @@
                 <circle
                         class="camera-overlay__progress-circle"
                         stroke="#FF4040"
-                        stroke-width="6"
+                        stroke-width="8"
                         fill="transparent"
                         :r="progressRadius"
                         cx="110"
@@ -39,7 +39,7 @@
                 <circle
                         class="camera-overlay__progress-bar"
                         stroke="#FF4040"
-                        stroke-width="6"
+                        stroke-width="8"
                         fill="transparent"
                         :r="progressRadius"
                         cx="110"
@@ -71,7 +71,7 @@
                 progress: 0,
                 recording: false,
                 aiming: false,
-                progressRadius: 70,
+                progressRadius: 65,
                 progressVisible: false,
                 rotation: 0,
                 rotationVisible: false,
@@ -82,7 +82,7 @@
                 },
 
                 targetSize: {
-                    min: 80,
+                    min: 70,
                     max: 200,
                     current: 200
                 },
@@ -330,8 +330,8 @@
 
             &--corner {
                 position: absolute;
-                width: 2rem;
-                height: 2rem;
+                width: 1.6rem;
+                height: 1.6rem;
             }
 
             &--tl {
