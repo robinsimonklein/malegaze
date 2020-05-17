@@ -43,6 +43,9 @@ export const app = {
             }
             commit('setAppState', value)
         },
+        SOCKET_ask_state({state}) {
+            this._vm.$socket.emit('answer_state', state.appState)
+        },
         SOCKET_mobile_shoot() {
             EventManager.publish('actress:click')
             EventManager.publish('actress:click:animation')
