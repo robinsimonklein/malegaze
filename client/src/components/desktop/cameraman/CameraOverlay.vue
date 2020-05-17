@@ -1,5 +1,5 @@
 <template>
-    <div class="camera-overlay" :class="{'aiming' : aiming}">
+    <div class="camera-overlay" :class="{'aiming' : false}">
         <div class="camera-overlay__corner camera-overlay__corner--tl">
         </div>
         <div class="camera-overlay__corner camera-overlay__corner--tr">
@@ -28,8 +28,8 @@
                     height="220">
                 <circle
                         class="camera-overlay__progress-circle"
-                        stroke="white"
-                        stroke-width="3"
+                        stroke="#FF4040"
+                        stroke-width="6"
                         fill="transparent"
                         :r="progressRadius"
                         cx="110"
@@ -38,8 +38,8 @@
                 />
                 <circle
                         class="camera-overlay__progress-bar"
-                        stroke="white"
-                        stroke-width="3"
+                        stroke="#FF4040"
+                        stroke-width="6"
                         fill="transparent"
                         :r="progressRadius"
                         cx="110"
@@ -71,7 +71,7 @@
                 progress: 0,
                 recording: false,
                 aiming: false,
-                progressRadius: 100,
+                progressRadius: 70,
                 progressVisible: false,
                 rotation: 0,
                 rotationVisible: false,
@@ -82,7 +82,7 @@
                 },
 
                 targetSize: {
-                    min: 100,
+                    min: 80,
                     max: 200,
                     current: 200
                 },
