@@ -105,7 +105,7 @@
                 const nbPurple = this.trackedColors.filter(tracked => tracked.color === 'purple').length
                 const nbRed = this.trackedColors.filter(tracked => tracked.color === 'red').length
 
-                return nbPurple >= 1 && nbRed >= 1
+                return nbPurple >= 2 && nbRed >= 1
             }
         },
 
@@ -250,8 +250,8 @@
             button {
                 opacity: 0;
                 text-transform: uppercase;
-                color: #FF4040;
-                border: 1px solid #FF4040;
+                color: $color-primary;
+                border: 1px solid $color-primary;
                 background: transparent;
                 border-radius: 0;
                 width: 50vw;
@@ -291,17 +291,5 @@
                 }
             }
         }
-
-        /* &__button {
-            position: absolute;
-            bottom: 1rem;
-            right: 1rem;
-            background: white;
-            color: black;
-            padding: 1rem 1.5rem;
-            border-radius: 1rem;
-            transition: all .5s ease;
-
-        } */
     }
 </style>
