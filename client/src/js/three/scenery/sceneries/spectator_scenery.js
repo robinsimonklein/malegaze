@@ -92,45 +92,45 @@ export default new Scenery({
         }),
         new Sound({
             name: 'light_0',
-            path: 'sound/spectator/soundLight.mp3',
+            path: 'sound/spectator/light_sound_1.mp3',
             isLoop: false,
-            volume: .9
+            volume: 0.7
         }),
         new Sound({
             name: 'light_1',
-            path: 'sound/spectator/soundLight.mp3',
+            path: 'sound/spectator/light_sound_2.mp3',
             isLoop: false,
-            volume: .9
+            volume: 0.7
         }),
         new Sound({
             name: 'light_2',
-            path: 'sound/spectator/soundLight.mp3',
+            path: 'sound/spectator/light_sound_3.mp3',
             isLoop: false,
-            volume: .9
+            volume: 0.7
         }),
         new Sound({
             name: 'light_3',
-            path: 'sound/spectator/soundLight.mp3',
+            path: 'sound/spectator/light_sound_4.mp3',
             isLoop: false,
-            volume: .9
+            volume: 0.7
         }),
         new Sound({
             name: 'light_4',
-            path: 'sound/spectator/soundLight.mp3',
+            path: 'sound/spectator/light_sound_1.mp3',
             isLoop: false,
-            volume: .9
+            volume: 0.7
         }),
         new Sound({
             name: 'light_5',
-            path: 'sound/spectator/soundLight.mp3',
+            path: 'sound/spectator/light_sound_2.mp3',
             isLoop: false,
-            volume: .9
+            volume: 0.7
         }),
         new Sound({
             name: 'voice_spectator_left',
             path: 'sound/spectator/voice_spectator_left.mp3',
             isLoop: false,
-            volume: 0.9
+            volume: 0.7
         }),
         new Sound({
             name: 'voice_spectator_right',
