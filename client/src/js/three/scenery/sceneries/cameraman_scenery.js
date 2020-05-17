@@ -53,7 +53,6 @@ export default new Scenery({
             initialPosition: {x: 30, y: 30, z: 30},
             settings: {
                 alphaOffset: MathUtils.degToRad(180),
-                showFocus: true,
                 focalLength: 60,
                 focusDistance: 20
             },
@@ -121,7 +120,7 @@ export default new Scenery({
         // Camera animation
         self.camPosIndex = 0;
         self.cameraCurves = [];
-        self.cameraProgres = 0;
+        self.cameraProgress = 0;
 
         self.currentSequence = 0
 
@@ -223,7 +222,7 @@ export default new Scenery({
 
                     EventManager.publish('camera:instructions', {
                         text: 'Cadre les pieds de l\'actrice',
-                        icon: '/icon/tutorial/tutorial_icon_framing.svg'
+                        icon: '/icon/tutorial/tutorial_icon_framing.gif'
                     })
 
                     self.sequences[self.currentSequence].ready = true
@@ -247,6 +246,7 @@ export default new Scenery({
                             }
 
                             self.cameraManager.controls = null
+                            EventManager.publish('camera:instructions', false)
                             self.soundManager.getSoundObjectByName('05_real_traveling').play()
                         }
                     })
@@ -265,7 +265,7 @@ export default new Scenery({
                     EventManager.publish('camera:rec', true)
                     EventManager.publish('camera:instructions', {
                         text: 'Effectue un traveling',
-                        icon: '/icon/tutorial/tutorial_icon_traveling.svg'
+                        icon: '/icon/tutorial/tutorial_icon_traveling.gif'
                     })
                     const curve = self.cameraCurves.find(curve => curve.name === 'P1_TRAVEL')
                     const finalPosition = curve.getPointAt(1)
@@ -337,7 +337,7 @@ export default new Scenery({
                         self.soundManager.getSoundObjectByName('07_real_zoom').ended = () => {
                             EventManager.publish('camera:instructions', {
                                 text: 'Cadre Sean en contre-plongée',
-                                icon: 'icon/tutorial/tutorial_icon_framing.svg'
+                                icon: 'icon/tutorial/tutorial_icon_framing.gif'
                             })
                             self.sequences[self.currentSequence].ready = true
                             EventManager.publish('camera:instructions', false)
@@ -375,7 +375,7 @@ export default new Scenery({
                     EventManager.publish('mobile:interaction_set', 'zoom')
                     EventManager.publish('camera:instructions', {
                         text: 'Zoome en direction de Sean',
-                        icon: 'icon/tutorial/tutorial_icon_zoom.svg'
+                        icon: 'icon/tutorial/tutorial_icon_zoom.gif'
                     })
                     const curve = self.cameraCurves.find(curve => curve.name === 'P2_ZOOM')
                     const finalPosition = curve.getPointAt(1)
@@ -454,7 +454,7 @@ export default new Scenery({
                             self.sequences[self.currentSequence].ready = true
                             EventManager.publish('camera:instructions', {
                                 text: 'Cadre les seins de l\'actrice',
-                                icon: 'icon/tutorial/tutorial_icon_framing.svg',
+                                icon: 'icon/tutorial/tutorial_icon_framing.gif',
                             })
                         }
 
@@ -493,7 +493,7 @@ export default new Scenery({
                     EventManager.publish('camera:rec', true)
                     EventManager.publish('camera:instructions', {
                         text: 'Pivote la caméra vers son visage',
-                        icon: 'icon/tutorial/tutorial_icon_rotation.svg'
+                        icon: 'icon/tutorial/tutorial_icon_rotation.gif'
                     })
 
                     const y = self.cameraManager.camera.rotation.y
@@ -605,6 +605,7 @@ export default new Scenery({
             mesh.geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(0, 50, 0));
 
             const spotLight = new THREE.SpotLight(lightColor);
+            spotLight.name = mesh.name + '_spotlight';
             spotLight.position.set(mesh.position.x, mesh.position.y, mesh.position.z);
             spotLight.color = new THREE.Color(lightColor);
             spotLight.exponent = 30;
@@ -667,7 +668,6 @@ export default new Scenery({
             self.buildDirectionnalLight(self.manObj, {position : {x: -100, y: 150, z: 80}}, {properties : {color: 0xC96934, intensity : 0.5}}, true);
             self.buildDirectionnalLight(self.manObj, {position : {x: 10, y: 350, z: 200}}, {properties : {color: 0x68AB54, intensity : 0.5}}, true);
         },500)
-
 
 
         // ---------------- //
@@ -758,10 +758,11 @@ export default new Scenery({
 
             if(distance <= threshold) {
                 if(self.cameraProgress < 100) {
-                    self.cameraProgress += 0.5
+                    self.cameraProgress += 1
                 }else{
                     EventManager.publish('camera:progress_complete')
                     EventManager.publish('camera:aiming', {distance, threshold: threshold, aiming: false})
+                    self.cameraProgress = 0
                     onComplete(self)
                 }
                 EventManager.publish('camera:progress', self.cameraProgress)
