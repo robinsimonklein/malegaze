@@ -25,7 +25,8 @@ console.log('PUBLIC_HOST: ', process.env.PUBLIC_HOST)
 const io = require('socket.io')(server, {
     origins: `${process.env.PUBLIC_HOST}:* http://${process.env.PUBLIC_HOST}:* https://${process.env.PUBLIC_HOST}:* ` +
         'localhost:* http://localhost:* https://localhost:* ' +
-        '127.0.0.1:* http://127.0.0.1:* https://127.0.0.1:* '
+        '127.0.0.1:* http://127.0.0.1:* https://127.0.0.1:* ' +
+        'male-gaze.com:* http://male-gaze.com:* https://male-gaze.com:* '
 });
 
 
