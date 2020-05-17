@@ -1,6 +1,8 @@
 <template>
     <div class="custom-slider" :class="orientation">
         <input class="custom-slider__input" :disabled="disabled" type="range" v-model="sliderValue" :min="min" :max="max" :step="step" />
+        <img class="slider-arrow" src="@/assets/png/arrows.png" alt="go up"/>
+        <div class="slider-filled" v-bind:style="{'width': 'calc(100% * ' + sliderValue + ')'}"></div>
     </div>
 </template>
 
@@ -50,16 +52,39 @@
 <style lang="scss" scoped>
 .custom-slider {
     height: 1rem;
-    width: 100%;
+    width: 50vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 
     &.top {
         transform: rotate(-90deg);
         .custom-slider__input {
             width: 50vh;
+            position: absolute;
+            bottom: 0;
+            left: 0;
         }
+    }
+
+    .slider-arrow {
+        position: absolute;
+        bottom: -200%;
+        left: 50%;
+        animation: goUp 1s infinite;
+        // width: 100%;
+        // height: 100%;
+        transform: rotate(90deg);
+    }
+
+    .slider-filled {
+        background: #FF4040;
+        z-index: -1;
+        height: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
     }
 
 
@@ -95,6 +120,17 @@
 
         &::-ms-fill-lower {
             background: red;
+        }
+    }
+
+    @keyframes goUp {
+        from {
+            transform: translateX(0) rotate(90deg);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(10px) rotate(90deg);
+            opacity: 0.5;
         }
     }
 }

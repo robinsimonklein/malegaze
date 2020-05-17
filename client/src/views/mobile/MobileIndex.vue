@@ -2,60 +2,70 @@
     <div class="mobile-index">
         <nav></nav>
         <div class="brief">
-            <div>
-                <img src="@/assets/png/eye.png"/>
+            <div class="img">
+                <img src="@/assets/png/loading_eye.png"/>
+                <span class="circle"></span>
+            </div>
+            <div class="baseline">
+                <h1>Male Gaze</h1>
+                <h4>Une perspective cinématographique</h4>
+                <div class="top-separator"></div>
             </div>
             <div class="text">
                 <p>
-                    Mâle Gaze est une expérience cinématographique vous plongeant dans les coulisses du cinéma. </p>
-                <p>Pour assister à la séance, rendez-vous sur <strong>{{ siteUrl }}</strong> à partir d’un
-                    ordinateur. </p>
+                    Pour assister à la séance, rendez-vous sur :<br/>
+                    <strong>{{ siteUrl }}</strong>
+                    à partir d’un ordinateur et renseignez votre place.
+                </p>
             </div>
+            <img src="@/assets/png/goDown.png"/>
         </div>
         <div class="separator">
             <span>Votre ticket de cinéma</span>
         </div>
         <div class="keyboard">
-            <h2>Male gaze</h2>
-            <span>Une expérience de 15 minutes</span>
-            <div class="keyboard__display">
-                <div @click="setInput('room')"
-                     :class="{'active' : selectedInput === 'room' && !inputs.room}">
-                    <span>Salle</span>
-                    <span class="input">{{ inputs.room }}</span>
-                </div>
-                <div @click="setInput('price')"
-                     :class="{'active' : selectedInput === 'price' && !inputs.price}">
-                    <span>Prix</span>
-                    <span class="input">{{ inputs.price }}<span class="euro">€</span>
+            <div>
+                <h2>Male gaze</h2>
+                <span>Une expérience de 10 minutes</span>
+                <div class="keyboard__display">
+                    <div @click="setInput('room')"
+                         :class="{'active' : selectedInput === 'room' && !inputs.room}">
+                        <span>Salle</span>
+                        <span class="input">{{ inputs.room }}</span>
+                    </div>
+                    <div @click="setInput('price')"
+                         :class="{'active' : selectedInput === 'price' && !inputs.price}">
+                        <span>Prix</span>
+                        <span class="input">{{ inputs.price }}<span class="euro">€</span>
                     </span>
+                    </div>
+                    <hr/>
+                    <div @click="setInput('place')"
+                         :class="{'active' : selectedInput === 'place' && !inputs.place}" class="bottom">
+                        <span>Place</span>
+                        <span class="input">{{ inputs.place }}</span>
+                    </div>
+                    <div @click="setInput('row')"
+                         :class="{'active' : selectedInput === 'row' && !inputs.row}" class="bottom">
+                        <span>Rangée</span>
+                        <span class="input">{{ inputs.row }}</span>
+                    </div>
                 </div>
-                <hr/>
-                <div @click="setInput('place')"
-                     :class="{'active' : selectedInput === 'place' && !inputs.place}" class="bottom">
-                    <span>Place</span>
-                    <span class="input">{{ inputs.place }}</span>
-                </div>
-                <div @click="setInput('row')"
-                     :class="{'active' : selectedInput === 'row' && !inputs.row}" class="bottom">
-                    <span>Rangée</span>
-                    <span class="input">{{ inputs.row }}</span>
-                </div>
-            </div>
-            <div class="keyboard__content">
-                <div class="number" @click="setNumber(1)">1</div>
-                <div class="number" @click="setNumber(2)">2</div>
-                <div class="number" @click="setNumber(3)">3</div>
-                <div class="number" @click="setNumber(4)">4</div>
-                <div class="number" @click="setNumber(5)">5</div>
-                <div class="number" @click="setNumber(6)">6</div>
-                <div class="number" @click="setNumber(7)">7</div>
-                <div class="number" @click="setNumber(8)">8</div>
-                <div class="number" @click="setNumber(9)">9</div>
-                <div class="delete" @click="deleteNumber()">
-                    <img src="@/assets/png/delete.png"/></div>
-                <div class="action">
-                    <button @click="play">Action</button>
+                <div class="keyboard__content">
+                    <div class="number" @click="setNumber(1)">1</div>
+                    <div class="number" @click="setNumber(2)">2</div>
+                    <div class="number" @click="setNumber(3)">3</div>
+                    <div class="number" @click="setNumber(4)">4</div>
+                    <div class="number" @click="setNumber(5)">5</div>
+                    <div class="number" @click="setNumber(6)">6</div>
+                    <div class="number" @click="setNumber(7)">7</div>
+                    <div class="number" @click="setNumber(8)">8</div>
+                    <div class="number" @click="setNumber(9)">9</div>
+                    <div class="delete" @click="deleteNumber()">
+                        <img src="@/assets/png/delete.png"/></div>
+                    <div class="action">
+                        <button @click="play">Action</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -196,28 +206,91 @@
         }
 
         .brief {
-            height: calc(100vh - 25px);
-            border-bottom: 2px dashed white;
+            height: calc(100vh - 14px);
             font-size: 18px;
+            text-align: center;
+            display: flex;
+            justify-content: space-evenly;
+            flex-direction: column;
+            background: url("/png/ecranaccueil_tel.png");
+            background-position-x: center;
+            background-size: cover;
 
             div:first-of-type {
                 text-align: center;
-                margin: 40px 0;
+                position: relative;
+                height: 30px;
+
+                img {
+                    width: 127px;
+                }
+
+                .circle {
+                    width: 20px;
+                    height: 20px;
+                    background: #FF4040;
+                    border-radius: 50%;
+                    position: absolute;
+                    left: calc(50% - 5px);
+                    top: 40px;
+                    transform-origin: left center;
+                    transform: rotate(90deg);
+                    animation: eye 2s infinite alternate;
+                }
             }
 
             .text {
                 width: 90%;
-                margin: 30px auto auto auto;
+                margin: 0 auto;
+                text-align: center;
 
                 strong {
+                    display: block;
+                    margin: 20px auto;
                     color: #FF4040;
                     font-weight: normal;
                 }
+
+                p {
+                    margin: 0;
+                }
+            }
+
+            .baseline {
+                text-align: center;
+                width: 90%;
+                margin: 0 auto;
+                padding-bottom: 30px;
+                // border-bottom: 2px solid #FF4040;
+
+                h1 {
+                    text-transform: uppercase;
+                    font-size: 50px;
+                    font-weight: 500;
+                }
+
+                h4 {
+                    text-transform: uppercase;
+                    font-size: 14px;
+                }
+
+                .top-separator {
+                    margin: 30px auto;
+                    width: 90%;
+                    height: 1px;
+                    background: #ff4040;
+                }
+            }
+
+            > img {
+                width: 16px;
+                align-self: center;
+                animation: goDown 1s infinite alternate;
             }
         }
 
         .separator {
-            margin-top: 5px;
+            margin-bottom: 15px;
             background: #FF4040;
             width: 100%;
             padding: 20px;
@@ -230,9 +303,15 @@
         }
 
         .keyboard {
-            width: 80%;
-            margin: 35px auto auto;
+            border-top: 2px dashed white;
+            width: 100%;
+            padding-top: 35px;
             text-transform: uppercase;
+
+            > div {
+                width: 80%;
+                margin: auto;
+            }
 
             h2 {
                 font-size: 35px;
@@ -334,7 +413,7 @@
                         font-size: 18px;
                         padding-left: 40px;
                         position: relative;
-                        width: calc(100% - 30px);
+                        width: calc(100% - 5vw);
                         height: 45px;
 
                         &:before {
@@ -363,6 +442,35 @@
 
             51% {
                 opacity: 0;
+            }
+        }
+
+        @keyframes eye {
+            0% {
+                transform: translateX(0) translateY(0);
+            }
+
+            40% {
+                transform: translateX(-5px) translateY(5px);
+            }
+
+            60% {
+                transform: translateX(-5px) translateY(5px);
+            }
+
+            100% {
+                transform: translateX(-10px) translateY(0);
+            }
+        }
+
+        @keyframes goDown {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(10px);
+                opacity: 0.5;
             }
         }
     }
