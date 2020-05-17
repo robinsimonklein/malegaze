@@ -60,17 +60,16 @@
 
             background-color: #202020;
             width: 90vw;
-            height: 100vh;
             padding: 50px 0;
             margin: 0 auto;
             position: relative;
 
             &__title {
                 font-family: "Roboto Mono", sans-serif;
-                font-weight: bold;
-                font-size: 35px;
+                font-weight: 500;
+                font-size: 38px;
                 color: #ffff;
-                padding-bottom: 75px;
+                padding-bottom: 140px;
 
                 p {
                     margin: 0;

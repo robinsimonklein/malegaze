@@ -13,14 +13,7 @@
                 J’étais trop maigre. J’étais stupide. J’étais malpolie.
                 Je ne servais à rien. J’étais une mauvaise actrice, et tant d’autres choses”
             </div>
-
-            <div class="impact__content__subQuotes">
-                <div class="impact__content__subQuotes--title">Megan Fox</div>
-                <div class="impact__content__subQuotes--desc">
-                    Considérée comme un sex symbole
-                </div>
-            </div>
-            <div class="impact__content__image"></div>
+            <img src="@/assets/png/end_meganfox.png" alt="Megan Fox, considérée comme un sex symbole"/>
             <div class="impact__content__text">
                 Le male gaze est tellement ancré dans notre société qu’on n’y prête plus attention,
                 c’est devenu une norme qui pénètre notre inconscient, l’inconscient collectif
@@ -46,7 +39,7 @@
         &__header {
             background-color: #202020;
             width: 100vw;
-            height: 100vh;
+            height: 60vh;
             padding: 50px;
             position: relative;
 
@@ -55,6 +48,7 @@
                 font-weight: normal;
                 font-size: 35px;
                 color: #ffff;
+                margin-top: 30px;
             }
 
             &__line {
@@ -82,7 +76,7 @@
         &__content {
 
             background-color: #ffff;
-            padding: 50px;
+            padding: 50px 0;
             position: relative;
 
             &__quotes {
@@ -91,6 +85,7 @@
                 font-weight: lighter;
                 font-style: italic;
                 color: #FF4040;
+                padding: 0 50px;
             }
 
             &__subQuotes {
@@ -115,6 +110,10 @@
 
             }
 
+            img {
+                margin-top: 50px;
+            }
+
             &__image {
                 width: 100%;
                 height: 270px;
@@ -128,6 +127,7 @@
                 font-family: "Roboto", sans-serif;
                 font-size: 20px;
                 font-weight: lighter;
+                padding: 0 50px;
             }
 
         }

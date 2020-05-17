@@ -70,25 +70,26 @@
         &__header {
             background-color: #202020;
             width: 100vw;
-            height: 100vh;
             padding: 50px;
             position: relative;
+            min-height: 80vh;
 
             &__title {
                 font-family: "Roboto Mono", sans-serif;
                 font-weight: normal;
                 font-size: 35px;
                 color: #ffff;
+                margin-top: 30px;
             }
 
             &__line {
-                width: 100%;
+                width: calc(100% - 100px);
                 height: 5px;
                 background-image: linear-gradient(to right, #ffff 50%, #202020 50%);
                 background-position: top;
                 background-size: 21px 2px;
                 background-repeat: repeat-x;
-                margin: 15px 0;
+                margin: 15px auto;
             }
 
             &__borderBottom {
@@ -124,13 +125,14 @@
                 font-size: 26px;
                 font-weight: bold;
                 padding: 0 50px;
+                margin-top: 50px;
             }
 
             &__line {
-                width: 100%;
+                width: calc(100% - 100px);
                 height: 2px;
                 background-color: #FF4040;
-                margin: 15px 0;
+                margin: 15px auto;
                 padding: 0 50px;
             }
 

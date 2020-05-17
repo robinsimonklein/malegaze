@@ -20,7 +20,6 @@
         </a>
         <footer>
             <img src="@/assets/png/gobelins.png" alt="gobelins"/>
-            <p>Nicolas Jupiter - Sonia Rouabhi - Robin Simonklein - Florian Weidmann - Florian Peter</p>
         </footer>
     </div>
 </template>
@@ -80,34 +79,38 @@
                 position: absolute;
                 left: calc(40vw - 70px);
                 top: 50vh;
-                transform: scale(0.7);
+                transform: scale(0.6);
             }
 
             .eye2 {
                 position: absolute;
                 left: calc(70vw - 91px);
                 top: 50vh;
-                transform: scale(0.7);
+                transform: scale(0.6);
             }
 
             .eye3 {
                 position: absolute;
                 left: calc(50vw - 60px);
                 top: 20vh;
-                transform: scale(0.7);
+                transform: scale(0.6);
             }
 
             img {
+                width: 220px;
                 animation: 5s backgroundEye infinite alternate;
             }
         }
 
         .eye {
             position: relative;
+            margin: 0;
+            padding-top: 20px;
+            height: 150px;
 
             .circle {
-                width: 31px;
-                height: 31px;
+                width: 25px;
+                height: 25px;
                 background: #FF4040;
                 border-radius: 50%;
                 position: absolute;
@@ -141,6 +144,7 @@
             h1 {
                 text-transform: uppercase;
                 font-size: 8vw;
+                font-weight: 500;
             }
         }
 
@@ -149,15 +153,18 @@
             font-weight: normal;
             margin-bottom: 50px;
             letter-spacing: 8px;
-            font-size: 1.5vw;
+            font-size: 1.4vw;
             text-transform: uppercase;
+            margin-top: -2vh;
         }
 
         &__start {
-            padding: 20px 80px;
+            padding: 20px 40px;
             border: 2px solid #FF4040;
             position: relative;
             cursor: pointer;
+            margin-top: 40px;
+            background: rgba(0,0,0,0.2);
 
             span {
                 position: relative;
@@ -167,6 +174,7 @@
                 color: #FF4040;
                 text-transform: uppercase;
                 transition: all .5s;
+                letter-spacing: 5px;
             }
 
             &:hover {
@@ -219,10 +227,10 @@
 
     @keyframes backgroundEye {
         from {
-            transform: scale(0.7) translateY(-20px);
+            transform: scale(0.6) translateY(-20px);
         }
         to {
-            transform: scale(0.7) translateY(20px);
+            transform: scale(0.6) translateY(20px);
         }
     }
 </style>

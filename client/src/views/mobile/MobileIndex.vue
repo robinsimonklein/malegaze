@@ -7,8 +7,9 @@
                 <span class="circle"></span>
             </div>
             <div class="baseline">
-                <h1>MaleGaze</h1>
+                <h1>Male Gaze</h1>
                 <h4>Une perspective cinématographique</h4>
+                <div class="top-separator"></div>
             </div>
             <div class="text">
                 <p>
@@ -25,7 +26,7 @@
         <div class="keyboard">
             <div>
                 <h2>Male gaze</h2>
-                <span>Une expérience de 15 minutes</span>
+                <span>Une expérience de 10 minutes</span>
                 <div class="keyboard__display">
                     <div @click="setInput('room')"
                          :class="{'active' : selectedInput === 'room' && !inputs.room}">
@@ -218,6 +219,7 @@
             div:first-of-type {
                 text-align: center;
                 position: relative;
+                height: 30px;
 
                 img {
                     width: 127px;
@@ -259,23 +261,31 @@
                 width: 90%;
                 margin: 0 auto;
                 padding-bottom: 30px;
-                border-bottom: 2px solid #FF4040;
+                // border-bottom: 2px solid #FF4040;
 
                 h1 {
                     text-transform: uppercase;
-                    font-size: 60px;
+                    font-size: 50px;
+                    font-weight: 500;
                 }
 
                 h4 {
                     text-transform: uppercase;
                     font-size: 14px;
                 }
+
+                .top-separator {
+                    margin: 30px auto;
+                    width: 90%;
+                    height: 1px;
+                    background: #ff4040;
+                }
             }
 
             > img {
                 width: 16px;
                 align-self: center;
-                animation: goDown 1s infinite;
+                animation: goDown 1s infinite alternate;
             }
         }
 

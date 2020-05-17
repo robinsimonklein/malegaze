@@ -37,12 +37,13 @@
                 width: 100%;
                 font-size: 50px;
                 font-weight: normal;
-                padding-bottom: 10px;
+                padding-bottom: 20px;
                 border-bottom: 1px solid #FF4040;
             }
 
             p {
-                font-size: 28px;
+                margin-top: 20px;
+                font-size: 24px;
                 font-weight: normal;
                 line-height: 35px;
             }
