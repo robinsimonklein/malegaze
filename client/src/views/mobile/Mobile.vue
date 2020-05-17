@@ -89,6 +89,9 @@
 
             // Join the mobile room
             this.$socket.emit('join_mobile_room', this.mobileId);
+
+            // ask which state on desktop
+            this.$socket.emit('ask_state');
         },
         beforeMount() {
             window.addEventListener('orientationchange', () => {
