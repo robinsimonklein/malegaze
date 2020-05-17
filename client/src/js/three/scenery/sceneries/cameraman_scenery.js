@@ -53,7 +53,6 @@ export default new Scenery({
             initialPosition: {x: 30, y: 30, z: 30},
             settings: {
                 alphaOffset: MathUtils.degToRad(180),
-                showFocus: true,
                 focalLength: 60,
                 focusDistance: 20
             },
@@ -606,6 +605,7 @@ export default new Scenery({
             mesh.geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(0, 50, 0));
 
             const spotLight = new THREE.SpotLight(lightColor);
+            spotLight.name = mesh.name + '_spotlight';
             spotLight.position.set(mesh.position.x, mesh.position.y, mesh.position.z);
             spotLight.color = new THREE.Color(lightColor);
             spotLight.exponent = 30;
