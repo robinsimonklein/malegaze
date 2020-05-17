@@ -2,7 +2,7 @@
     <div class="betchdel">
         <div class="betchdel__header">
             <div class="betchdel__header__title">
-                L’impact du Male Gaze
+                Déceler le Male Gaze
             </div>
             <div class="betchdel__header__line"></div>
             <div class="betchdel__header__borderBottom"></div>
@@ -17,7 +17,7 @@
                 <div class="betchdel__content__line"></div>
                 <div class="betchdel__content__subTitle">
                     Le test de Betchdel permet de se rendre compte en 3 questions de
-                    l’empleure de la présence du male gaze dans le cinéma.
+                    l’ampleur de la présence du male gaze dans le cinéma.
                 </div>
             </div>
 
@@ -43,12 +43,23 @@
             </div>
 
             <div class="betchdel__content__stats">
-
+                <div class="betchdel__content__stats__title">
+                    Sur <strong>8000 films</strong> sortis entre 2016 et 2018
+                </div>
+                <img src="@/assets/png/end_diagramme.png" alt="pie_chart"/>
+                <div class="betchdel__content__stats__title">
+                    <p>
+                        <strong>40%</strong><br/> ne passent pas le test
+                    </p>
+                </div>
+                <p class="betchdel__content__stats__subtitle">
+                    Des films qui passent le test ?
+                </p>
+                <img src="@/assets/png/goDown.png" alt="go down"/>
             </div>
         </div>
 
         <div class="betchdel__borderBottom">
-            <p>Nom projet</p>
             <p>4/4</p>
         </div>
 
@@ -69,15 +80,16 @@
         &__header {
             background-color: #202020;
             width: 100vw;
-            height: 100vh;
+            height: 60vh;
             padding: 50px;
             position: relative;
 
             &__title {
                 font-family: "Roboto Mono", sans-serif;
                 font-weight: normal;
-                font-size: 40px;
+                font-size: 35px;
                 color: #ffff;
+                margin-top: 30px;
             }
 
             &__line {
@@ -103,7 +115,6 @@
         }
 
         &__content {
-
             background-color: #ffff;
             padding-top: 50px;
             position: relative;
@@ -149,22 +160,24 @@
             }
 
             &__list {
-
+                display: flex;
                 background-color: #f2f2f2;
-                padding: 50px 50px;
+                padding: 50px;
+                justify-content: center;
 
                 &--number {
                     font-family: 'Roboto Mono', sans-serif;
-                    font-size: 30px;
+                    font-size: 25px;
                     color: #FF4040;
-                    text-align: center;
+                    text-align: left;
+                    margin-right: 30px;
                 }
 
                 &--text {
-                    font-family: 'Roboto', sans-serif;
-                    font-size: 25px;
+                    font-family: 'Roboto Mono', sans-serif;
+                    font-size: 18px;
                     color: #202020;
-                    text-align: center;
+                    text-align: left;
                 }
 
             }
@@ -172,13 +185,46 @@
             &__list:nth-child(2n+1) {
                 background-color: #ffff;
                 border-top: 1px solid #FF4040;
-                border-bottom: 1px solid #FF4040;
+                border-bottom: 1px solid #ff4040;
             }
 
             &__stats {
-                background-color: #707070;
+                background-color: #FFF5F5;
                 width: 100%;
-                height: 500px;
+                padding: 50px 50px 0 50px;
+                text-align: center;
+                font-size: 20px;
+
+                &__title {
+                    color: black;
+                    font-family: "Roboto Mono", sans-serif;
+
+                    strong {
+                        color: #FF4040;
+                        font-size: 35px;
+                        font-weight: normal;
+                    }
+                }
+
+                p {
+                    margin: 0;
+                }
+
+                img:first-of-type {
+                    margin: 30px;
+                }
+
+                &__subtitle {
+                    color: #FF4040;
+                    font-size: 20px;
+                    margin-top: 50px !important;
+                    margin-bottom: 20px !important;
+                }
+
+                img:last-of-type {
+                    margin-bottom: 20px;
+                    animation: goDown 1s infinite alternate;
+                }
             }
 
         }
@@ -188,7 +234,7 @@
             height: 50px;
             background-color: #FF4040;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             padding: 0 50px;
 
             p {
@@ -197,8 +243,16 @@
             }
 
         }
+    }
 
+    @keyframes goDown {
+        from {
+            transform: translateY(0);
+        }
 
+        to {
+            transform: translateY(10px);
+        }
     }
 
 </style>

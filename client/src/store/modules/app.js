@@ -6,7 +6,7 @@ import EventManager from "../../js/event/EventManager";
 export const app = {
     namespaced: true,
     state: {
-        appState: process.env.VUE_APP_SKIP_MOBILE_SETUP === "true" ? appStates.CAMERAMAN : appStates.INDEX,
+        appState: process.env.VUE_APP_SKIP_MOBILE_SETUP === "true" ? appStates.END : appStates.INDEX,
         isMobile: false
     },
     getters: {

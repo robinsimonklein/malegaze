@@ -64,6 +64,7 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        letter-spacing: 3px;
 
         nav, footer {
             background: #FF4040;
@@ -77,9 +78,12 @@
 
         p {
             font-size: 18px;
-            width: 90%;
             margin: 0 auto;
             display: flex;
+        }
+
+        > p {
+            padding: 0 30px;
         }
 
         .instructions {
@@ -105,6 +109,7 @@
             border: 1px solid #FF4040;
             text-transform: uppercase;
             font-size: 18px;
+            letter-spacing: 5px;
         }
     }
 </style>

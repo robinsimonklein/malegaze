@@ -51,7 +51,7 @@
         }
 
         &__text {
-            font-size: 30px;
+            font-size: 24px;
             letter-spacing: 5px;
             margin-top: 5rem;
             text-align: center;

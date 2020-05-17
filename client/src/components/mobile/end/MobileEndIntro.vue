@@ -2,7 +2,8 @@
     <div class="intro">
         <div class="intro__header">
             <div class="intro__header__title">
-                Le Male Gaze
+                <p>Le Male Gaze</p>
+                <p>En 3 minutes</p>
             </div>
             <div class="intro__header__subTitle">
                 Un concept théorisé <br>
@@ -19,6 +20,9 @@
             </div>
             <div class="intro__header__line"></div>
             <div class="intro__header__borderBottom"></div>
+            <div class="intro__header__subTitle">
+                Des films non Male Gaze ?
+            </div>
         </div>
 
         <div class="intro__presentation">
@@ -31,17 +35,13 @@
             <div class="intro__presentation__line"></div>
             <div class="intro__presentation__description">
                 Le male gaze, “regard masculin” en français, définit un cinéma qui s’attarde sur le physique de la femme.
-                Il est introduit par Laura Mulvey, dans son essai « Visual pleasure and narrative cinema » en 1975.
+                Il est théorisé par Laura Mulvey, dans son essai « Visual pleasure and narrative cinema » en 1975.
             </div>
             <div class="intro__presentation__description">
-                Le male gaze met en scène le rôle des genres ainsi qu’une image sexualisée de la femme afin de satisfaire le regard de l’homme.
-                <br>
-                <br>
-                50 ans après avoir été théorisé, ce concept est toujours une norme cinématographique.
+                50 ans après avoir été théorisé, ce concept est toujours une norme cinématographique en 2020.
             </div>
         </div>
         <div class="intro__borderBottom">
-            <p>Nom projet</p>
             <p>1/4</p>
         </div>
     </div>
@@ -59,17 +59,26 @@
         &__header {
 
             background-color: #202020;
-            width: 100vw;
-            height: 100vh;
-            padding: 50px;
+            width: 90vw;
+            padding: 50px 0;
+            margin: 0 auto;
             position: relative;
 
             &__title {
                 font-family: "Roboto Mono", sans-serif;
-                font-weight: bold;
-                font-size: 54px;
+                font-weight: 500;
+                font-size: 38px;
                 color: #ffff;
-                padding-bottom: 75px;
+                padding-bottom: 140px;
+
+                p {
+                    margin: 0;
+                }
+
+                p:last-of-type {
+                    text-transform: uppercase;
+                    font-size: 18px;
+                }
             }
 
             &__subTitle {
@@ -93,7 +102,8 @@
                 bottom: 0;
                 left: 0;
 
-                width: 100%;
+                width: 100vw;
+                margin-left: -5vw;
                 height: 7px;
                 background-color: #FF4040;
             }
@@ -149,12 +159,14 @@
             height: 50px;
             background-color: #FF4040;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             padding: 0 50px;
 
             p {
                 font-family: "Roboto Mono", sans-serif;
                 font-size: 20px;
+                margin: 0;
+                align-self: center;
             }
 
         }
