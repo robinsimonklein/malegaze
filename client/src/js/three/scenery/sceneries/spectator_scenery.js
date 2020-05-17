@@ -688,7 +688,7 @@ export default new Scenery({
             self.timeline.call(() => {
                 EventManager.publish('camera:instructions', {
                     text: 'Ecoute les personnes autours de toi',
-                    icon: 'icon/tutorial/tutorial_icon_listen.svg'
+                    icon: 'icon/tutorial/tutorial_icon_listen.gif'
                 })
             }, [])
 

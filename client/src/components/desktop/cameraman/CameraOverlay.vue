@@ -495,7 +495,7 @@
             width: 100%;
 
             &-icon {
-                height: 6rem;
+                height: 7rem;
                 opacity: 0;
             }
             &-text {
