@@ -33,13 +33,13 @@ export default new Scenery({
         })
     ],
     renderer: null,
-    controls: controlsTypes.ORBIT,
+    controls: controlsTypes.MOBILE,
     models: [
         new Model({
             name: 'cinema',
             path: 'models/glb/spectator_scenery.glb',
             type: modelTypes.GLB,
-            castShadow: true,
+            castShadow: false,
             receiveShadow : true
         }),
         new Model({
@@ -59,28 +59,30 @@ export default new Scenery({
             type: lightTypes.SPOT,
             light: new THREE.SpotLight(0xFF5781, .65),
             initialPosition: {x: 0, y: 400, z: 1500},
-            properties: {
+           /* properties: {
                 penumbra: 0.3,
-            },
+            },*/
             castShadow : false
 
         }),
 
-        new Light({
-            name: 'pointLight',
-            type: lightTypes.POINT,
-            light: new THREE.PointLight(0xff4444, 1, 800),
-            initialPosition: {x:1300, y: 200, z: 300},
-            castShadow: true
-        }),
-
-      /*  new Light({
+    /*    new Light({
             name: 'spotlight2',
-            type: lightTypes.DIRECTIONAL,
-            light: new THREE.DirectionalLight(0xFF5781, 1),
-            initialPosition: {x: 0, y: 268, z: -785},
+            type: lightTypes.SPOT,
+            light: new THREE.SpotLight(0xFF5781, .65),
+            initialPosition: {x: 1000, y: 50, z: -1000},
             properties: {
-                penumbra: 0.3,
+                angle: Math.PI/4,
+            },
+            castShadow : true
+        }),*/
+       /* new Light({
+            name: 'spotlight3',
+            type: lightTypes.SPOT,
+            light: new THREE.SpotLight(0xFF5781, .65),
+            initialPosition: {x: 0, y: 50, z: -850},
+            properties: {
+                angle: Math.PI/3,
             },
             castShadow : true
         }),*/
@@ -396,7 +398,6 @@ export default new Scenery({
                 }
                 actress.add(eye);
                 eye.lookAt(actress.position)
-                eye.castShadow = true;
                 objects.push(eye);
 
                 const tl = gsap.timeline({delay: Math.random()*3 , yoyo: true, repeat: -1})
@@ -501,7 +502,7 @@ export default new Scenery({
         self.renderer.shadowMap.autoUpdate = false;
         self.renderer.shadowMap.needsUpdate = true;
 
-        self.buildingArray = [];
+       /* self.buildingArray = [];
 
         var childrenCinema = self.modelManager.getLoadedModelByName('cinema').scene;
 
@@ -512,29 +513,22 @@ export default new Scenery({
 
         })
 
-        console.log(self.buildingArray[6])
+        var emptyOject = new THREE.Object3D();
+        emptyOject.position.set(1200, 100, 400)
+        self.scene.add(emptyOject)*/
 
-        self.pointLight = self.lightManager.getLightByName('pointLight');
+      /*  self.pointLight = self.lightManager.getLightByName('pointLight');
 
         var pointLightHelper = new THREE.PointLightHelper(self.pointLight, 10);
-        self.scene.add(pointLightHelper);
+        self.scene.add(pointLightHelper);*/
 
-      /*  self.pointLight2 = self.lightManager.getLightByName('pointLight2');
-
-        var pointLightHelper2 = new THREE.PointLightHelper(self.pointLight2, 10);
-        self.scene.add(pointLightHelper2);*/
 
 
         setTimeout(() => {
             var spotLight = self.lightManager.getLightByName('spotlight');
             spotLight.target =  self.screenMesh;
-            var spotLightHelper = new THREE.SpotLightHelper(spotLight);
-            self.scene.add(spotLightHelper)
-
-           /* var spotLight2 = self.lightManager.getLightByName('spotlight2');
-            spotLight2.target =  self.buildingArray[6];
-            var spotLightHelper2 = new THREE.DirectionalLightHelper(spotLight2, 10);
-            self.scene.add(spotLightHelper2)*/
+            /*var spotLightHelper = new THREE.SpotLightHelper(spotLight);
+            self.scene.add(spotLightHelper)*/
 
         },500)
 
