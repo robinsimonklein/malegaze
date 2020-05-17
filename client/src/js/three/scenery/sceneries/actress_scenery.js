@@ -31,9 +31,18 @@ export default new Scenery({
     controls: controlsTypes.MOBILE,
     models: [
         new Model({
-            name: 'actress_scenery',
-            path: "models/glb/actress_scenery.glb",
-            type: 'gltf'
+            name: 'actress_scenery_woman',
+            path: "models/glb/actress_scenery_woman.glb",
+            type: 'gltf',
+            castShadow : true,
+            receiveShadow : false
+        }),
+        new Model({
+            name: 'actress_scenery_decor',
+            path: "models/glb/actress_scenery_decor.glb",
+            type: 'gltf',
+            castShadow : true,
+            receiveShadow : true
         }),
         new Model({
             name: 'hommes_geants',
@@ -49,8 +58,22 @@ export default new Scenery({
     lights: [
         new Light({
             name: 'directionnal',
-            light: new  THREE.DirectionalLight(0xffffff, 1),
+            light: new  THREE.DirectionalLight(0xffffff, .1),
             initialPosition: {x: 50, y: 200, z: 350},
+        }),
+        new Light({
+            name: 'pointLight',
+            light: new THREE.PointLight(0xFFE5A3, .7, 500),
+            initialPosition: {x: 150, y: 150, z: -350},
+            debug: false,
+            castShadow: false
+        }),
+        new Light({
+            name: 'spotLight',
+            light:  new THREE.SpotLight( 0xFFE5BF, .4 ),
+            initialPosition: {x: 0, y: 500, z: -250},
+            debug: false,
+            castShadow: true
         }),
 
         new Light({
@@ -107,8 +130,6 @@ export default new Scenery({
     ],
     onLoaded: (self) => {
 
-        self.renderer.logarithmicDepthBuffer = true;
-
         self.clickEvent = EventManager.subscribe('actress:click', () => {
             self.shoot();
         });
@@ -155,11 +176,6 @@ export default new Scenery({
         self.smokeParticles = [];
 
         self.eyesAnimationFrame = null;
-
-        /*
-        self.pointLight3 = self.lightManager.getLightByName('pointLight3');
-        let pointLightHelper3 = new THREE.PointLightHelper( self.pointLight3, 10 );
-        self.scene.add( pointLightHelper3 );*/
 
         self.createGUI = () => {
             let gui = new GUI( { name: 'Damp setting' } );
@@ -310,6 +326,7 @@ export default new Scenery({
                 onComplete: () => {
                     console.log('fade in')
                     EventManager.publish('actress:fadeIn');
+                    self.generateLight();
                     self.playAmbiantSound();
                     self.fadeInMusic(self.ambiantSound);
                 },
@@ -326,7 +343,7 @@ export default new Scenery({
 
 
             //t.25 s
-            tl.to(duration, {
+           tl.to(duration, {
                 onComplete: () => {
                     console.log('eyes + voix hommes');
                     self.eyesAttraction();
@@ -390,6 +407,25 @@ export default new Scenery({
 
         };*/
 
+        self.generateLight = () => {
+
+            //Oui je sais c'est moche
+            var womanModel = self.modelManager.getLoadedModelByName('actress_scenery_woman').scene;
+
+            var spotLightTest =  new THREE.SpotLight(0xFFE5BF, .2 );
+            spotLightTest.position.set(0,400, 200);
+            spotLightTest.target = womanModel.children[0];
+            spotLightTest.castShadow = true;
+            spotLightTest.shadow.camera.far = 1000      // default
+            self.scene.add(spotLightTest);
+
+            /* let spotLightHelper = new THREE.SpotLightHelper( spotLightTest, 10 );
+             self.scene.add(spotLightHelper);*/
+
+            self.renderer.shadowMap.autoUpdate = false;
+            self.renderer.shadowMap.needsUpdate = true;
+        }
+
         self.fadeInMusic = (sound) => {
             var volume = {x: sound.getVolume()};
             gsap.to(volume, {
@@ -420,7 +456,7 @@ export default new Scenery({
             });
         };
 
-        self.generateEye(4);
+        self.generateEye(10);
         //self.initEyeAnimation();
 
         self.generateSmoke({initialPosition : {x: 0, y: 600, z: -800}, interval : {
