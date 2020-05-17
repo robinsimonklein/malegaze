@@ -12,8 +12,6 @@ import appStates from '../../../appStates';
 import modelTypes from '../../model/modelTypes';
 import lightTypes from '../../light/lightTypes';
 import EventManager from '../../../event/EventManager';
-import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer';
-import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass';
 import {BloomPass} from 'three/examples/jsm/postprocessing/BloomPass';
 import {FilmPass} from 'three/examples/jsm/postprocessing/FilmPass';
 import * as Nodes from 'three/examples/jsm/nodes/Nodes';
@@ -429,8 +427,6 @@ export default new Scenery({
         }
 
         self.addBlur = () => {
-            self.composer = new EffectComposer(self.renderer);
-            self.composer.addPass(new RenderPass(self.scene, self.cameraManager.camera));
 
             self.bloomPass = new BloomPass(
                 1,
@@ -438,7 +434,6 @@ export default new Scenery({
                 0,
                 256
             );
-            self.composer.addPass(self.bloomPass);
 
             const filmPass = new FilmPass(
                 0.1,
@@ -447,7 +442,6 @@ export default new Scenery({
                 0,
             );
             filmPass.renderToScreen = true;
-            self.composer.addPass(filmPass);
 
             const size = self.renderer.getDrawingBufferSize(new THREE.Vector2());
 
