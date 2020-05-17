@@ -92,88 +92,70 @@ export default new Scenery({
         }),
         new Sound({
             name: 'light_0',
-            path: 'sound/spectator/soundLight.mp3',
+            path: 'sound/spectator/light_sound_1.mp3',
             isLoop: false,
-            volume: .9
+            volume: 0.7
         }),
         new Sound({
             name: 'light_1',
-            path: 'sound/spectator/soundLight.mp3',
+            path: 'sound/spectator/light_sound_2.mp3',
             isLoop: false,
-            volume: .9
+            volume: 0.7
         }),
         new Sound({
             name: 'light_2',
-            path: 'sound/spectator/soundLight.mp3',
+            path: 'sound/spectator/light_sound_3.mp3',
             isLoop: false,
-            volume: .9
+            volume: 0.7
         }),
         new Sound({
             name: 'light_3',
-            path: 'sound/spectator/soundLight.mp3',
+            path: 'sound/spectator/light_sound_4.mp3',
             isLoop: false,
-            volume: .9
+            volume: 0.7
         }),
         new Sound({
             name: 'light_4',
-            path: 'sound/spectator/soundLight.mp3',
+            path: 'sound/spectator/light_sound_1.mp3',
             isLoop: false,
-            volume: .9
+            volume: 0.7
         }),
         new Sound({
             name: 'light_5',
-            path: 'sound/spectator/soundLight.mp3',
+            path: 'sound/spectator/light_sound_2.mp3',
             isLoop: false,
-            volume: .9
+            volume: 0.7
         }),
         new Sound({
-            name: 'voice',
-            path: 'sound/spectator/voice.mp3',
+            name: 'voice_spectator_left',
+            path: 'sound/spectator/voice_spectator_left.mp3',
+            isLoop: false,
+            volume: 0.7
+        }),
+        new Sound({
+            name: 'voice_spectator_right',
+            path: 'sound/spectator/voice_spectator_right.mp3',
             isLoop: false,
             volume: 0.9
         }),
         new Sound({
-            name: 'voice1',
-            path: 'sound/spectator/voice_1.mp3',
+            name: 'voice_woman_sitting',
+            path: 'sound/spectator/voice_woman_sitting.mp3',
             isLoop: false,
             volume: 0.9
         }),
         new Sound({
-            name: 'voice2',
-            path: 'sound/spectator/voice_2.mp3',
+            name: 'voice_woman_running',
+            path: 'sound/spectator/voice_woman_running.mp3',
             isLoop: false,
             volume: 0.9
         }),
         new Sound({
-            name: 'voice3',
-            path: 'sound/spectator/voice_3.mp3',
+            name: 'voice_woman_skate',
+            path: 'sound/spectator/voice_woman_skate.mp3',
             isLoop: false,
             volume: 0.9
         }),
-        new Sound({
-            name: 'voice4',
-            path: 'sound/spectator/voice_4.mp3',
-            isLoop: false,
-            volume: 0.9
-        }),
-        new Sound({
-            name: 'voice5',
-            path: 'sound/spectator/voice_5.mp3',
-            isLoop: false,
-            volume: 0.9
-        }),
-        new Sound({
-            name: 'voice6',
-            path: 'sound/spectator/voice_6.mp3',
-            isLoop: false,
-            volume: 0.9
-        }),
-        new Sound({
-            name: 'voice7',
-            path: 'sound/spectator/voice_7.mp3',
-            isLoop: false,
-            volume: 0.9
-        })
     ],
     onCreated: (self) => {
         self.eyeModel = null;
@@ -193,31 +175,31 @@ export default new Scenery({
         self.sprites = [
             {
                 name: 'spectatrice_gauche',
-                soundName: 'voice1',
+                soundName: 'voice_spectator_left',
                 needZoom: 2,
                 position: new THREE.Vector3(-160,250,600)
             },
             {
                 name: 'spectateur_droite',
-                soundName: 'voice2',
+                soundName: 'voice_spectator_right',
                 needZoom: 2,
                 position: new THREE.Vector3(260,250,600)
             },
             {
                 name: 'femme_assise_droite',
-                soundName: 'voice3',
+                soundName: 'voice_woman_sitting',
                 needZoom: 5,
                 position: new THREE.Vector3(775,120,-500)
             },
             {
                 name: 'femme_running_gauche',
-                soundName: 'voice4',
+                soundName: 'voice_woman_running',
                 needZoom: 5,
                 position: new THREE.Vector3(-800,120,-600)
             },
             {
                 name: 'femme_skate_gauche',
-                soundName: 'voice5',
+                soundName: 'voice_woman_skate',
                 needZoom: 7,
                 position: new THREE.Vector3(-800,120,-1400)
             }
@@ -684,27 +666,6 @@ export default new Scenery({
         });
 
         if(self.spritesEnabled) self.spriteListener(self)
-
-        /* self.smokeParticles.forEach((particles) => {
-            let sp = particles.length;
-            while (sp--) {
-                particles[sp].rotation.z += (delta * 0.2);
-            }
-        }); */
-
-        /*
-        if (self.timer > 3000) {
-            self.smokeParticles.forEach((particles) => {
-                let sp = particles.length;
-                while (sp--) {
-                    if (particles[sp].material.opacity < 0.1) {
-                        particles[sp].material.opacity += 0.01;
-                    }
-                }
-            });
-        }
-
-         */
 
         self.frame.update(delta);
         self.nodepostBlur.render(self.scene, self.cameraManager.camera, self.frame);
