@@ -22,6 +22,7 @@
 
 <style scoped>
     .mobile-end {
-        overflow: auto;
+        overflow-y: scroll;
+        overflow-x: hidden;
     }
 </style>

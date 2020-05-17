@@ -10,7 +10,7 @@
             </ul>
         </div>
         <div v-if="!orientationPermission" class="mobile-orientation__permission">
-            <Popup>
+            <Popup class="popup">
                 <h2>Accès à l'orientation nécessaire</h2>
                 <OrientationPermissionButton v-on:success="listenOrientation" text="Autoriser" />
             </Popup>
@@ -103,12 +103,21 @@
 
     }
 
+    h2 {
+        text-align: center;
+        color: white;
+        font-size: 18px;
+        width: 80%;
+        margin: auto auto 30px auto;
+    }
+
     button {
         background: white;
         color: black;
-        padding: 1rem;
-        border-radius: 1rem;
-        border: none
+        width: 80%;
+        margin: auto;
+        padding: 15px;
+        border: none;
     }
 }
 </style>

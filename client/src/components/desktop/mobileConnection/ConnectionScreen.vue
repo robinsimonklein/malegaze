@@ -11,7 +11,7 @@
                     <h3>Malegaze</h3>
                     <span>Un film malegaze</span>
                 </div>
-                <span>15 minutes</span>
+                <span>10 minutes</span>
             </div>
             <div class="numbers">
                 <div>
@@ -71,6 +71,7 @@
         justify-content: center;
         align-items: center;
         height: 100vh;
+        width: 60%;
 
         h1 {
             margin-bottom: 2rem;
@@ -78,7 +79,7 @@
 
         h2 {
             letter-spacing: 5px;
-            font-size: 32px;
+            font-size: 24px;
             font-weight: normal;
             width: 100%;
             text-align: center;

@@ -36,6 +36,10 @@
         align-items: center;
         background-color: rgba(black, .5);
         padding: 1rem;
+
+        .popup {
+            width: 80%;
+        }
     }
 }
 </style>
