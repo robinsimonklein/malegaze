@@ -250,14 +250,15 @@
             button {
                 opacity: 0;
                 text-transform: uppercase;
-                color: #FF4040;
+                color: #202020;
                 border: 1px solid #FF4040;
-                background: transparent;
+                background: #FF4040;
                 border-radius: 0;
                 width: 50vw;
                 left: calc(50% - 25vw);
                 bottom: 10%;
                 position: absolute;
+                font-weight: bold;
                 padding: 15px 0;
                 letter-spacing: 5px;
             }
