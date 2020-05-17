@@ -12,11 +12,11 @@
             <div class="intro__header__line"></div>
             <div class="intro__header__subTitle">
                 Comment se traduit <br>
-                le Mâle gaze
+                le Male gaze
             </div>
             <div class="intro__header__line"></div>
             <div class="intro__header__subTitle">
-                L’impact du Mâle Gaze
+                L’impact du Male Gaze
             </div>
             <div class="intro__header__line"></div>
             <div class="intro__header__borderBottom"></div>
