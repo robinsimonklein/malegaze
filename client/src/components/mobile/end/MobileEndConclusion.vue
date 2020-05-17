@@ -15,7 +15,7 @@
         <div class="conclusion__share">
             <span>Partager</span>
             <div class="social-networks">
-                <img @click="share" id="twitter" src="@/assets/png/twitter.png"/> <!-- TODO: Partager -->
+                <img @click="share" id="twitter" src="@/assets/png/twitter.png"/>
             </div>
         </div>
         <div class="conclusion__borderBottom"></div>
