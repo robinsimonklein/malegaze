@@ -1,5 +1,5 @@
 <template>
-    <div class="desktop-end">
+    <div v-if="currentView === 'end'" class="desktop-end">
         <div class="definition">
             <h1>Male Gaze</h1>
             <p>Terme qui désigne le fait que la culture visuelle dominante impose au public d’adopter un regard d’homme hétérosexuel.</p>
@@ -9,11 +9,26 @@
             <span>Le male gaze en 3 minutes</span>
         </footer>
     </div>
+    <div v-else-if="currentView === 'credit'" class="desktop-end">
+        <DesktopCredit />
+    </div>
 </template>
 
 <script>
+    import DesktopCredit from './DesktopCredit';
     export default {
         name: "DesktopEnd",
+        components: {DesktopCredit},
+        data() {
+            return {
+                currentView: 'end',
+            }
+        },
+        sockets: {
+            mobile_scrolled() {
+                this.currentView = 'credit';
+            }
+        }
     }
 </script>
 

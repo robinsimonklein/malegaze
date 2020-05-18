@@ -119,6 +119,10 @@ io.on('connection', function (socket) {
         socket.in(socket.mobileRoom).emit('mobile_show_instruction')
     });
 
+    socket.on('mobile_scrolled', () => {
+       socket.in(socket.mobileRoom) .emit('mobile_scrolled')
+    });
+
 
     // --- APP
 
