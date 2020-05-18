@@ -564,8 +564,13 @@ export default new Scenery({
 
                     self.soundManager.getSoundObjectByName('12_real_fin').ended = () => {
 
-                        self.soundManager.getSoundByName('cameraman_ambiance').stop()
-                        store.dispatch('app/requestState', appStates.ACTRESS)
+                        EventManager.publish('cameraman:transition')
+
+                        EventManager.subscribe('cameraman:nextScene', () => {
+                            self.soundManager.getSoundByName('cameraman_ambiance').stop()
+                            store.dispatch('app/requestState', appStates.ACTRESS)
+                        });
+
                     }
 
                     self.soundManager.getSoundObjectByName('12_real_fin').play()
