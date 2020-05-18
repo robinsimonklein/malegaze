@@ -14,7 +14,7 @@
             <div class="trait"></div>
             <div class="trait"></div>
         </div>
-        <h2>Une perspective cinématographique </h2>
+        <h2 class="subtitle">Une perspective cinématographique </h2>
         <a class="desktop-index__start" @click="start">
             <span>Démarrer l’expérience</span>
         </a>
@@ -26,6 +26,7 @@
 
 <script>
     import appStates from "../../js/appStates";
+    import gsap from 'gsap'
 
     export default {
         name: "DesktopIndex",
@@ -37,12 +38,22 @@
         },
         methods: {
             start() {
-                this.$store.dispatch('app/requestState', appStates.SETUP);
+                const tl = new gsap.timeline()
+                tl.to('.desktop-index__start', {duration: 1, ease: 'power1.in', alpha: 0})
+                tl.to('.eye', {duration: 1, ease: 'power1.in', alpha: 0}, '<')
+                tl.to('.moving-eyes', {duration: 1, ease: 'power1.in', alpha: 0}, '<0.1')
+                tl.to('.title', {duration: 1, ease: 'power1.in', alpha: 0}, '<')
+                tl.to('.subtitle', {duration: 1, ease: 'power1.in', alpha: 0}, '<')
+                tl.to('.desktop-index', {duration: 1, ease: 'power1.in', alpha: 0}, '<0.5')
+
+                tl.call(() => {
+                    this.$store.dispatch('app/requestState', appStates.SETUP);
+                })
             }
         },
         mounted() {
-            const middleX = screen.width / 2;
-            const middleY = screen.height / 2;
+            const middleX = window.innerWidth / 2;
+            const middleY = window.innerHeight / 2;
             document.querySelector('.desktop-index').addEventListener('mousemove', (e) => {
                 this.x = - (e.clientX - middleX);
                 this.y = - (e.clientY - middleY);
@@ -77,21 +88,21 @@
 
             .eye1 {
                 position: absolute;
-                left: calc(40vw - 70px);
+                left: calc(35vw - 70px);
                 top: 50vh;
                 transform: scale(0.6);
             }
 
             .eye2 {
                 position: absolute;
-                left: calc(70vw - 91px);
+                left: calc(65vw - 91px);
                 top: 50vh;
                 transform: scale(0.6);
             }
 
             .eye3 {
                 position: absolute;
-                left: calc(50vw - 60px);
+                left: calc(45vw - 60px);
                 top: 20vh;
                 transform: scale(0.6);
             }
@@ -106,7 +117,7 @@
             position: relative;
             margin: 0;
             padding-top: 20px;
-            height: 150px;
+            height: 180px;
 
             .circle {
                 width: 25px;

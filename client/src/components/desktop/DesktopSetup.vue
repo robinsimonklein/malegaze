@@ -17,6 +17,7 @@
     import appStates from '../../js/appStates';
     import ConnectionScreen from './mobileConnection/ConnectionScreen';
     import SetupScreen from './mobileConnection/SetupScreen';
+    import gsap from 'gsap'
 
     export default {
         name: 'DesktopSetup',
@@ -44,9 +45,17 @@
         },
         methods: {
             next() {
-                this.$socket.emit('state_request', appStates.INTRO);
+                const tl = new gsap.timeline()
+                tl.to('.desktop-setup', {duration: 1, ease: 'power2.in', alpha: 0})
+                tl.call(() => {
+                    this.$socket.emit('state_request', appStates.INTRO);
+                })
             }
         },
+        mounted() {
+            const tl = new gsap.timeline()
+            tl.from('.desktop-setup', {duration: 1, ease: 'power2.out', alpha: 0})
+        }
     }
 </script>
 
