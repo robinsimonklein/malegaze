@@ -1,10 +1,11 @@
 <template>
     <div class="mobile">
+        <!--
         <p v-if="debug" class="mobile__debug">
             ID : {{ mobileId }}<br>
             Portrait : {{ isPortrait }}
         </p>
-
+        -->
         <component v-show="isPortrait" :is="currentComponent" />
         <template v-if="!isPortrait">
             <p>Utilisez votre téléphone en orientation portrait.</p>
