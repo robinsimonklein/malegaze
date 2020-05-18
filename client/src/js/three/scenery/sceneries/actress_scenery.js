@@ -130,10 +130,6 @@ export default new Scenery({
     ],
     onLoaded: (self) => {
 
-        self.clickEvent = EventManager.subscribe('actress:click', () => {
-            self.shoot();
-        });
-
         var spriteMap = new THREE.TextureLoader().load( "models/images/oeil.png" );
         var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap } );
         self.eyeSprite =  new THREE.Sprite( spriteMaterial );
@@ -245,9 +241,9 @@ export default new Scenery({
         self.generateEye = (number) => {
 
             for(var i = 0; i < number; i++) {
-                var x = self.randomIntFromInterval(-150 , 150);
+                var x = self.randomIntFromInterval(-100 , 175);
                 var y = self.randomIntFromInterval(200 , 250);
-                var z = self.randomIntFromInterval(-200 , 50) -800;
+                var z = self.randomIntFromInterval(-300 , 50) -800;
 
                 var clonedSprite = self.eyeModel.clone();
                 clonedSprite.position.set(x,y,z);
@@ -280,16 +276,6 @@ export default new Scenery({
             })
         };
 
-        self.endingScene = () => {
-            let endingAttractionFrame = requestAnimationFrame(self.endingScene);
-
-            if(self.endingTimer === 1000) {
-                cancelAnimationFrame(endingAttractionFrame);
-                self.soundManager.stopAll();
-                store.dispatch('app/requestState', appStates.SPECTATOR);
-            }
-            self.endingTimer++;
-        };
 
         self.shoot = () => {
             self.raycaster.setFromCamera({x: 0.0,y: 0.0}, self.cameraManager.camera);
@@ -324,11 +310,19 @@ export default new Scenery({
 
             tl.to(duration, {
                 onComplete: () => {
-                    console.log('fade in')
-                    EventManager.publish('actress:fadeIn');
+                    EventManager.publish('actress:fadeOut');
                     self.generateLight();
                     self.playAmbiantSound();
                     self.fadeInMusic(self.ambiantSound);
+
+                    self.clickEvent = EventManager.subscribe('actress:click', () => {
+                        self.shoot();
+                    });
+
+                    EventManager.subscribe('actress:stopTransition', () => {
+                        self.soundManager.stopAll();
+                        store.dispatch('app/requestState', appStates.SPECTATOR);
+                    });
                 },
 
             });
@@ -448,9 +442,8 @@ export default new Scenery({
                     self.blur.radius.y = blurValue.y;
                 },
                 onComplete: () => {
-                    EventManager.publish('actress:fadeOut');
+                    EventManager.publish('actress:fadeIn');
                     cancelAnimationFrame(self.eyesAnimationFrame);
-                    self.endingScene()
 
                 }
             });
@@ -489,55 +482,6 @@ export default new Scenery({
         self.addBlur();
        // self.createGUI();
         self.timeline();
-
-      //  window.addEventListener('keypress', () => {console.log(self.eyesAttraction())})
-        /*-----------------------------TIMELINES OUI-----------------------------------------*/
-
-        //1.placer son dialogue actrice
-     /*   setTimeout(() => {
-            EventManager.publish('actress:fadeIn');
-        },500)
-
-        //2. Ambiance sonore
-        setTimeout(() => {
-            console.log('ambiant');
-            self.playAmbiantSound();
-            self.fadeInMusic(self.ambiantSound);
-        },2000);*/
-
-        //2. Ambiance sonore
-     /*  setTimeout(() => {
-           console.log('ambiant')
-            self.playAmbiantSound()
-           self.fadeInMusic(self.ambiantSound);
-        },2000);
-
-        //3. Voix actrice + oeil qui approche t.30s
-        setTimeout(() => {
-            console.log('eyeAttraction')
-            self.eyesAttraction();
-            self.fadeMusic(self.ambiantSound, self.ambiantSound2);
-        },30000);
-
-        //4. Voix homme t.35
-        setTimeout(() => {
-            console.log('voix homme')
-        },35000);
-
-        //5. Statues qui s'approchent + possibilités de tirer sur les yeux t.40
-        setTimeout(() => {
-            console.log('menAttraction')
-            EventManager.publish('actress:showInstruction');
-            self.menAttraction()
-        },40000);
-
-        //5. Vision se trouble et début de la dernière bande son t.1min10
-        setTimeout(() => {
-           console.log('blur')
-            self.fadeBlur();
-            self.fadeMusic(self.ambiantSound2, self.ambiantSound3);
-        },61000);*/
-
 
     },
 

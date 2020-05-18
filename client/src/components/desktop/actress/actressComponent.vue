@@ -1,4 +1,3 @@
-import gsap from "gsap";
 <template>
     <div class="actressScene">
         <div class="actressScene__overlayFade" ref="overlayFade"></div>
@@ -31,14 +30,30 @@ import gsap from "gsap";
 
                 this.numberOfCircle = 1;
 
+                var tlFadeIn = new gsap.timeline();
+                tlFadeIn.pause();
+                tlFadeIn.to('.actressScene__overlayFade', {
+                    opacity: 1,
+                    duration: 2,
+                    onComplete() {
+                        EventManager.publish('actress:transition')
+                    }
+                });
+
+                var tlFadeOut = new gsap.timeline();
+                tlFadeOut.pause();
+                tlFadeOut.to('.actressScene__overlayFade', {
+                    opacity: 0,
+                    duration: 1
+                });
 
                 EventManager.subscribe('actress:fadeIn', () => {
-                    this.overlayFade.classList.add('actressScene__overlayFade__active');
+                    tlFadeIn.play();
                 });
 
 
                 EventManager.subscribe('actress:fadeOut', () => {
-                    this.overlayFade.classList.remove('actressScene__overlayFade__active');
+                    tlFadeOut.play();
                 });
 
                 EventManager.subscribe('actress:showInstruction', () => {
@@ -199,13 +214,9 @@ import gsap from "gsap";
             height: 100%;
             top: 0;
             left: 0;
-            z-index: 999;
             opacity: 1;
             transition: all 1.5s;
 
-            &__active {
-                opacity: 0;
-            }
 
         }
 
