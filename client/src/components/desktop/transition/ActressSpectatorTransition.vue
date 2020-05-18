@@ -2,7 +2,7 @@
     <div class="transition-screen">
         <img class="transition-screen__image" src="@/assets/png/transition_screen_camera.png" alt="">
         <div class="transition-screen__wrap">
-            <p>Le corps de la femme est mis en scène à l'aide de <span>gros plans <br/> fragmentés</span>
+            <p>Le corps de la femme est mis en scène à l'aide de <span>gros plans fragmentés</span>
                 et de jeux de <span>champs / contre champs</span></p>
         </div>
     </div>
@@ -74,7 +74,7 @@
                 height: 1px;
                 background-color: #FF4040;
                 position: fixed;
-                top: -100%;
+                top: -50%;
                 left: 50%;
                 transform: translateX(-50%);
             }
@@ -85,7 +85,7 @@
                 height: 1px;
                 background-color: #FF4040;
                 position: fixed;
-                bottom: -100%;
+                bottom: -50%;
                 left: 50%;
                 transform: translateX(-50%);
             }
