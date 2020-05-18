@@ -14,9 +14,24 @@
     import MobileEndImpact from "./end/MobileEndImpact";
     import MobileEndBetchdel from "./end/MobileEndBetchdel";
     import MobileEndConclusion from "./end/MobileEndConclusion";
+
     export default {
         name: "MobileEnd",
         components: {MobileEndBetchdel, MobileEndImpact, MobileEndExplication, MobileEndIntro, MobileEndConclusion},
+        data() {
+            return {
+                isEmitted: false
+            };
+        },
+        mounted() {
+            document.addEventListener("touchmove", () => {
+                if (this.isEmitted) {
+                    return;
+                }
+                this.$socket.emit('mobile_scrolled');
+                this.isEmitted = true;
+            }, false);
+        }
     }
 </script>
 
