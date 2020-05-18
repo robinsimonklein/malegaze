@@ -9,7 +9,7 @@
                 Filmer la femme sous une autre perspective est pourtant possible.
                 Nous vous proposons une sélection d’oeuvres filmées sous un autre angle. </span>
         </div>
-        <div class="conclusion__button">
+        <div class="conclusion__button" @click="goToArticle()">
             <span>Découvrir</span>
         </div>
         <div class="conclusion__share">
@@ -27,9 +27,11 @@
         name: "MobileEndConclusion",
         methods: {
             share() {
-                console.log('clicked');
                 window.open(`https://twitter.com/share?url=https://male-gaze.com/`,
                     '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');
+            },
+            goToArticle() {
+                window.open(`https://1001heroines.fr/heroines-categories/long-metrage/`);
             }
         }
     }
