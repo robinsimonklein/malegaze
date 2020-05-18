@@ -1,7 +1,9 @@
 <template>
     <div id="scene-container" class="scene-container" ref="sceneContainer">
         <CameramanUI v-if="appState === 'cameraman'" />
+        <CameramanActressTransition v-if="appState === 'cameraman'" />
         <ActressComponent v-if="appState === 'actress'"/>
+        <ActressSpectatorTransition  v-if="appState === 'actress'"/>
         <SpectatorComponent v-if="appState === 'spectator'"/>
     </div>
 </template>
@@ -10,6 +12,8 @@
     import ThreeEntryPoint from '../../js/three/ThreeEntryPoint';
     import { mapState } from 'vuex'
     import ActressComponent from './actress/actressComponent';
+    import ActressSpectatorTransition from './transition/ActressSpectatorTransition';
+    import CameramanActressTransition from './transition/CameramanActressTransition';
     import SpectatorComponent from "./spectator/spectatorComponent";
     import CameramanUI from "./cameraman/CameramanUI";
 
@@ -18,7 +22,10 @@
         components: {
             SpectatorComponent,
             CameramanUI,
-            ActressComponent},
+            ActressComponent,
+            ActressSpectatorTransition,
+            CameramanActressTransition
+        },
         computed: {
             ...mapState('app', ['appState']),
         },

@@ -8,8 +8,7 @@
         <div class="cinema-ticket">
             <div class="title">
                 <div>
-                    <h3>Malegaze</h3>
-                    <span>Un film malegaze</span>
+                    <h3>Male Gaze</h3>
                 </div>
                 <span>10 minutes</span>
             </div>

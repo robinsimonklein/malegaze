@@ -13,6 +13,7 @@
 
 <script>
     import appStates from "../../js/appStates";
+    import gsap from 'gsap'
 
     export default {
         name: "MobileIntro",
@@ -20,6 +21,11 @@
             next() {
                 this.$socket.emit('state_request', appStates.CAMERAMAN)
             }
+        },
+        mounted() {
+            const tl = new gsap.timeline()
+            tl.from('.mobile-intro__wrap', {duration: 3, delay: 1, ease: 'power2.out', alpha: 0})
+            tl.from('.mobile-intro__text', {duration: 3, ease: 'power2.out', alpha: 0}, '<0.5')
         }
     }
 </script>
