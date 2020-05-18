@@ -209,7 +209,7 @@
             height: calc(100vh - 14px);
             font-size: 18px;
             text-align: center;
-            display: flex;
+            display: -webkit-flex;;
             justify-content: space-evenly;
             flex-direction: column;
             background: url("/png/ecranaccueil_tel.png");
