@@ -86,7 +86,7 @@
                 height: 1px;
                 background-color: #FF4040;
                 position: fixed;
-                top: -100%;
+                top: -50%;
                 left: 50%;
                 transform: translateX(-50%);
             }
@@ -97,7 +97,7 @@
                 height: 1px;
                 background-color: #FF4040;
                 position: fixed;
-                bottom: -100%;
+                bottom: -50%;
                 left: 50%;
                 transform: translateX(-50%);
             }
