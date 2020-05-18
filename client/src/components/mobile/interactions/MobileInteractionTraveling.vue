@@ -1,6 +1,6 @@
 <template>
     <div class="mobile-interaction interaction-traveling">
-        <img ref="wheel" src="@/assets/svg/mobile_traveling.svg"/>
+        <img ref="wheel" src="@/assets/png/mobile_traveling.png"/>
     </div>
 </template>
 
