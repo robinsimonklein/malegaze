@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 
-import Stats from 'three/examples/jsm/libs/stats.module.js';
 import cameraTypes from './camera/cameraTypes';
 // Sceneries
 import SceneryManager from './scenery/SceneryManager';
@@ -20,7 +19,7 @@ class SceneManager {
     };
     sceneryManager;
 
-    stats;
+    // stats;
 
     clock = new THREE.Clock();
 
@@ -48,8 +47,8 @@ class SceneManager {
      */
     init() {
         // Initiate stats
-        this.stats = new Stats();
-        document.body.appendChild(this.stats.dom);
+        // this.stats = new Stats();
+        // document.body.appendChild(this.stats.dom);
     }
 
     /**
@@ -130,7 +129,6 @@ class SceneManager {
             return;
         }
 
-        this.stats.update();
         this.sceneryManager.update();
 
         // Render depending to the camera type
