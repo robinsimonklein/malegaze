@@ -34,15 +34,23 @@
                 </div>
             </div>
         </div>
-        <footer>
+        <footer class="credits__footer">
             <img src="@/assets/png/gobelins.png" alt="gobelins campus annecy"/>
         </footer>
     </div>
 </template>
 
 <script>
+    import gsap from 'gsap'
+
     export default {
-        name: 'DesktopCredit'
+        name: 'DesktopCredit',
+        mounted() {
+            const tl = new gsap.timeline()
+            tl.from('.thanks', {duration: 3, ease: 'power2.out', alpha: 0})
+            tl.from('.realisation', {duration: 3, ease: 'power2.out', alpha: 0}, '<0.2')
+            tl.from('.credits__footer', {duration: 3, ease: 'power2.out', alpha: 0, y: 10}, '<0.5')
+        }
     }
 </script>
 
