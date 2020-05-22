@@ -7,7 +7,7 @@
 Comment peut-on faire prendre conscience de l’**impact** qu’a le **male gaze** dans notre perception des **femmes** au quotidien, au travers du **cinéma** ?
 
 ## Présentation
-**[Male Gaze](https://malegaze.netlify.app)** est une expérience interactive visant à faire prendre conscience à l'utilisateur du phénomène de Male Gaze. 
+**[Male Gaze](https://male-gaze.com)** est une expérience interactive visant à faire prendre conscience à l'utilisateur du phénomène de Male Gaze. 
 
 ### Concept
 Nous souhaitons plonger l’utilisateur en plein coeur d’une une scène de tournage pour qu’il prenne réellement conscience de ce qu’implique le Male gaze dans le monde cinématographique. Il va être confronté à toutes les étapes de la création d’un scénario tourné autour du male gaze. 
