@@ -1,7 +1,6 @@
 # HTTPS Configuration for local development
-## Client
 
-- Use [mkcert](https://github.com/FiloSottile/mkcert) to generate local certificate in `/cert` folder.
+- Use [mkcert](https://github.com/FiloSottile/mkcert) to generate local certificate in `/cert` folder, in root of project.
 ````bash
 # Create and go in /cert
 mkdir cert && cd cert
@@ -16,7 +15,9 @@ mkcert localhost 127.0.0.1 [localip] ::1
 mkcert -install
 ````
 
-- Add the *key* and *pem* in `vue.config.js`
+## Client
+
+- Add the *key* and *pem* in `client/vue.config.js`
 ```js
 https = {
     key: fs.readFileSync('./cert/localhost+4-key.pem'),
@@ -24,9 +25,9 @@ https = {
 }
 ```
 
-- Set HTTPS to `true` in `.env` file.
+- Set VUE_APP_HTTPS to `true` in `.env` file.
 ````dotenv
-HTTPS=true
+VUE_APP_HTTPS=true
 ````
 
 - Run the project in dev mode
@@ -44,11 +45,7 @@ yarn serve
 
 ## Server
 
-- Copy the `/cert` folder from `client` and past it in `server`
-
-⋅⋅⋅See [here](#client) how to create the certificate.
-
-- Add the *key* and *pem* in `app.js`
+- Add the *key* and *pem* in `server/app.js`
 ```js
 server = https.createServer({
     key: fs.readFileSync(`${__dirname}/cert/localhost+4-key.pem`, 'utf8'),

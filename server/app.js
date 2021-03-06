@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const app = require('express')();
 const http = require('http');
 const https = require('https');
@@ -8,16 +9,19 @@ require('dotenv').config()
 // Setup server
 let server;
 const port = process.env.PORT ? process.env.PORT : 3000
+
 if (process.env.HTTPS === "true" && process.env.NODE_ENV === 'development') {
+    const projectDir = path.join(__dirname, '../')
     server = https.createServer({
-        key: fs.readFileSync(`${__dirname}/cert/${process.env.KEY_PEM}`, 'utf8'),
-        cert: fs.readFileSync(`${__dirname}/cert/${process.env.PEM}`, 'utf8')
+        key: fs.readFileSync(path.join(projectDir, `/cert/${process.env.KEY_PEM}`), 'utf8'),
+        cert: fs.readFileSync(path.join(projectDir, `/cert/${process.env.PEM}`), 'utf8')
     }, app)
 } else {
     server = http.createServer(app)
 }
 
 // Starting logs
+console.log('HTTPS: ', process.env.HTTPS)
 console.log('NODE_ENV: ', process.env.NODE_ENV)
 console.log('PUBLIC_HOST: ', process.env.PUBLIC_HOST)
 
