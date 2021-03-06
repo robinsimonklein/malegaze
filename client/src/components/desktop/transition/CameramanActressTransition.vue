@@ -2,7 +2,7 @@
     <div class="transition-cameraman">
         <img class="transition-cameraman__image" src="@/assets/png/transition_screen_spot.png" alt="">
         <div class="transition-cameraman__wrap">
-            <p>Le corps de la femme s'identifier comme un <span>objet de convoitise.</span>
+            <p>Le corps de la femme s'identifie comme un <span>objet de convoitise.</span>
                 Les regards extérieurs émettent une pression sur les femmes, modifient <span>leur comportement</span> dans la
                 société et <span>la perception qu'elles ont d'elles-mêmes.</span>
             </p>
