@@ -213,8 +213,12 @@
         footer {
             text-align: center;
             position: absolute;
-            bottom: 20px;
+            bottom: 30px;
             font-size: 12px;
+
+            img {
+                height: 25px;
+            }
         }
     }
 
