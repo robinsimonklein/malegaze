@@ -20,11 +20,7 @@
             }
         },
         methods: {
-            createTimeline() {
-
-            },
             playTimeline() {
-                this.createTimeline()
                 this.timeline.pause(0)
                 this.timeline.play()
             }

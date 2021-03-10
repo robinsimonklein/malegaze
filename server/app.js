@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const app = require('express')();
 const http = require('http');
 const https = require('https');
@@ -8,25 +9,40 @@ require('dotenv').config()
 // Setup server
 let server;
 const port = process.env.PORT ? process.env.PORT : 3000
+
 if (process.env.HTTPS === "true" && process.env.NODE_ENV === 'development') {
+    const projectDir = path.join(__dirname, '../')
     server = https.createServer({
-        key: fs.readFileSync(`${__dirname}/cert/${process.env.KEY_PEM}`, 'utf8'),
-        cert: fs.readFileSync(`${__dirname}/cert/${process.env.PEM}`, 'utf8')
+        key: fs.readFileSync(path.join(projectDir, `/cert/${process.env.KEY_PEM}`), 'utf8'),
+        cert: fs.readFileSync(path.join(projectDir, `/cert/${process.env.PEM}`), 'utf8')
     }, app)
 } else {
     server = http.createServer(app)
 }
 
 // Starting logs
+console.log('HTTPS: ', process.env.HTTPS)
 console.log('NODE_ENV: ', process.env.NODE_ENV)
 console.log('PUBLIC_HOST: ', process.env.PUBLIC_HOST)
 
 // Create io
 const io = require('socket.io')(server, {
-    origins: `${process.env.PUBLIC_HOST}:* http://${process.env.PUBLIC_HOST}:* https://${process.env.PUBLIC_HOST}:* ` +
-        'localhost:* http://localhost:* https://localhost:* ' +
-        '127.0.0.1:* http://127.0.0.1:* https://127.0.0.1:* ' +
-        'male-gaze.com:* http://male-gaze.com:* https://male-gaze.com:* '
+    allowEIO3: true,
+    cors: {
+        origin: [
+            `${process.env.PUBLIC_HOST}:8080`, `http://${process.env.PUBLIC_HOST}:8080`, `https://${process.env.PUBLIC_HOST}:8080`,
+            `${process.env.PUBLIC_HOST}`, `http://${process.env.PUBLIC_HOST}`, `https://${process.env.PUBLIC_HOST}`,
+            'localhost:* http://localhost:*', 'https://localhost:*', 'localhost:* http://localhost', 'https://localhost',
+            '127.0.0.1:* http://127.0.0.1:*', 'https://127.0.0.1:*', '127.0.0.1:* http://127.0.0.1', 'https://127.0.0.1',
+            'male-gaze.com:*', 'http://male-gaze.com:*', 'https://male-gaze.com:*',
+            'male-gaze.com', 'http://male-gaze.com', 'https://male-gaze.com'
+        ],
+        methods: ["GET", "POST"],
+        credentials: true
+    },
+    /*
+    origins:
+     */
 });
 
 
@@ -50,15 +66,13 @@ io.on('connection', function (socket) {
             socket.leave(socket.mobileRoom)
         }
         socket.join(mobileId)
-        socket.join(mobileId)
         socket.mobileRoom = mobileId
 
         console.log(socket.id + ' joined mobile room :', mobileId)
     })
 
     socket.on('ask_mobile_room', (mobileId, callback) => {
-        const rooms = io.sockets.adapter.rooms;
-        rooms[mobileId] !== undefined ? callback(true) : callback(false)
+        io.sockets.adapter.rooms.has(mobileId) ? callback(true) : callback(false)
     })
 
     // --- DISCONNECT
